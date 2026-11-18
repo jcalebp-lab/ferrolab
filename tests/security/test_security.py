@@ -63,9 +63,25 @@ def _files(base: Path):
             yield p
 
 
+def _publishable_files():
+    """Archivos que Git subiría (rastreados + nuevos no ignorados). `.env` queda fuera por .gitignore."""
+    import subprocess
+
+    out = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=ROOT,
+                         capture_output=True, text=True, check=True).stdout.splitlines()
+    return [ROOT / f for f in out if (ROOT / f).is_file() and not (set(Path(f).parts) & SKIP_DIRS)]
+
+
+def test_env_files_are_ignored_by_git():
+    import subprocess
+
+    r = subprocess.run(["git", "check-ignore", ".env"], cwd=ROOT, capture_output=True, text=True)
+    assert r.returncode == 0, ".env debe estar en .gitignore"
+
+
 def test_sec06_no_secrets_in_repository():
     hits = []
-    for p in _files(ROOT):
+    for p in _publishable_files():
         if p.suffix in {".png", ".jpg", ".ico", ".woff2", ".ttf", ".otf", ".zip", ".wasm"}:
             continue
         text = p.read_text(errors="ignore")

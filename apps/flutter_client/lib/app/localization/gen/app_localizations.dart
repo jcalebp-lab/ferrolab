@@ -1,0 +1,1808 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'gen/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('es'),
+  ];
+
+  /// No description provided for @appTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'FERROLAB'**
+  String get appTitle;
+
+  /// No description provided for @appSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Laboratorio virtual de tratamientos térmicos'**
+  String get appSubtitle;
+
+  /// No description provided for @welcomeHeadline.
+  ///
+  /// In es, this message translates to:
+  /// **'Entiende cómo el calor transforma los metales.'**
+  String get welcomeHeadline;
+
+  /// No description provided for @welcomeBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Explora tratamientos térmicos con simulaciones educativas y descubre qué sabemos realmente sobre cada resultado.'**
+  String get welcomeBody;
+
+  /// No description provided for @welcomeStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Comenzar'**
+  String get welcomeStart;
+
+  /// No description provided for @welcomeSkip.
+  ///
+  /// In es, this message translates to:
+  /// **'Omitir introducción'**
+  String get welcomeSkip;
+
+  /// No description provided for @welcomeFree.
+  ///
+  /// In es, this message translates to:
+  /// **'Gratis · Sin cuenta · Sin anuncios'**
+  String get welcomeFree;
+
+  /// No description provided for @onbStep1Title.
+  ///
+  /// In es, this message translates to:
+  /// **'1. Elige material y tratamiento'**
+  String get onbStep1Title;
+
+  /// No description provided for @onbStep1Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Tres materiales reales y seis tratamientos. No todas las combinaciones están respaldadas: FERROLAB te dice por qué.'**
+  String get onbStep1Body;
+
+  /// No description provided for @onbStep2Title.
+  ///
+  /// In es, this message translates to:
+  /// **'2. Configura y ejecuta'**
+  String get onbStep2Title;
+
+  /// No description provided for @onbStep2Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Tú controlas temperatura y tiempo de mantenimiento. El enfriamiento lo fija el protocolo.'**
+  String get onbStep2Body;
+
+  /// No description provided for @onbStep3Title.
+  ///
+  /// In es, this message translates to:
+  /// **'3. Interpreta con evidencia'**
+  String get onbStep3Title;
+
+  /// No description provided for @onbStep3Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada resultado indica su fuente y su nivel de evidencia. Si no hay datos, lo verás claramente.'**
+  String get onbStep3Body;
+
+  /// No description provided for @next.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente'**
+  String get next;
+
+  /// No description provided for @back.
+  ///
+  /// In es, this message translates to:
+  /// **'Atrás'**
+  String get back;
+
+  /// No description provided for @continueLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get continueLabel;
+
+  /// No description provided for @close.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get close;
+
+  /// No description provided for @cancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get cancel;
+
+  /// No description provided for @confirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar'**
+  String get confirm;
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué exploramos hoy?'**
+  String get homeGreeting;
+
+  /// No description provided for @homeHero.
+  ///
+  /// In es, this message translates to:
+  /// **'Comprende lo que el calor cambia en los metales'**
+  String get homeHero;
+
+  /// No description provided for @homeLabTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Laboratorio virtual'**
+  String get homeLabTitle;
+
+  /// No description provided for @homeLabBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige material y tratamiento, configura el horno y analiza el resultado.'**
+  String get homeLabBody;
+
+  /// No description provided for @homeStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar simulación'**
+  String get homeStart;
+
+  /// No description provided for @homeLearn.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprender'**
+  String get homeLearn;
+
+  /// No description provided for @homeMicro.
+  ///
+  /// In es, this message translates to:
+  /// **'Explorar microestructuras'**
+  String get homeMicro;
+
+  /// No description provided for @homePractice.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo práctica'**
+  String get homePractice;
+
+  /// No description provided for @homeHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi historial'**
+  String get homeHistory;
+
+  /// No description provided for @homeTeacher.
+  ///
+  /// In es, this message translates to:
+  /// **'Docentes'**
+  String get homeTeacher;
+
+  /// No description provided for @homeBanner.
+  ///
+  /// In es, this message translates to:
+  /// **'Herramienta educativa. Las propiedades dependen de datos y condiciones reales.'**
+  String get homeBanner;
+
+  /// No description provided for @homeLastSession.
+  ///
+  /// In es, this message translates to:
+  /// **'Última simulación'**
+  String get homeLastSession;
+
+  /// No description provided for @unreviewedBanner.
+  ///
+  /// In es, this message translates to:
+  /// **'Contenido editorial pendiente de revisión por un especialista.'**
+  String get unreviewedBanner;
+
+  /// No description provided for @settings.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get settings;
+
+  /// No description provided for @stepOf.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso {step} de {total}'**
+  String stepOf(Object step, Object total);
+
+  /// No description provided for @materialTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un material'**
+  String get materialTitle;
+
+  /// No description provided for @materialSteel.
+  ///
+  /// In es, this message translates to:
+  /// **'Acero'**
+  String get materialSteel;
+
+  /// No description provided for @materialCastIron.
+  ///
+  /// In es, this message translates to:
+  /// **'Fundición gris'**
+  String get materialCastIron;
+
+  /// No description provided for @materialViewSheet.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver ficha'**
+  String get materialViewSheet;
+
+  /// No description provided for @materialNoComposition.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin rangos de composición verificados cargados.'**
+  String get materialNoComposition;
+
+  /// No description provided for @materialInitialCondition.
+  ///
+  /// In es, this message translates to:
+  /// **'Condición inicial'**
+  String get materialInitialCondition;
+
+  /// No description provided for @materialLimitations.
+  ///
+  /// In es, this message translates to:
+  /// **'Limitaciones'**
+  String get materialLimitations;
+
+  /// No description provided for @materialSuggestedReading.
+  ///
+  /// In es, this message translates to:
+  /// **'Lectura sugerida (no verificada)'**
+  String get materialSuggestedReading;
+
+  /// No description provided for @treatmentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un tratamiento'**
+  String get treatmentTitle;
+
+  /// No description provided for @treatmentWhyNot.
+  ///
+  /// In es, this message translates to:
+  /// **'Conoce por qué'**
+  String get treatmentWhyNot;
+
+  /// No description provided for @compat_supported.
+  ///
+  /// In es, this message translates to:
+  /// **'Compatible con protocolo'**
+  String get compat_supported;
+
+  /// No description provided for @compat_conditional.
+  ///
+  /// In es, this message translates to:
+  /// **'Condicional'**
+  String get compat_conditional;
+
+  /// No description provided for @compat_educational_only.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo aprendizaje'**
+  String get compat_educational_only;
+
+  /// No description provided for @compat_unsupported.
+  ///
+  /// In es, this message translates to:
+  /// **'No soportado'**
+  String get compat_unsupported;
+
+  /// No description provided for @treatmentPrerequisites.
+  ///
+  /// In es, this message translates to:
+  /// **'Requisitos'**
+  String get treatmentPrerequisites;
+
+  /// No description provided for @treatmentStages.
+  ///
+  /// In es, this message translates to:
+  /// **'Etapas del proceso'**
+  String get treatmentStages;
+
+  /// No description provided for @paramsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Configura tu experimento'**
+  String get paramsTitle;
+
+  /// No description provided for @paramsYouControl.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que tú controlas'**
+  String get paramsYouControl;
+
+  /// No description provided for @paramsProtocolDefines.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que define el protocolo'**
+  String get paramsProtocolDefines;
+
+  /// No description provided for @paramsTemperature.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperatura objetivo'**
+  String get paramsTemperature;
+
+  /// No description provided for @paramsHold.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiempo de mantenimiento'**
+  String get paramsHold;
+
+  /// No description provided for @paramsMinutes.
+  ///
+  /// In es, this message translates to:
+  /// **'minutos'**
+  String get paramsMinutes;
+
+  /// No description provided for @paramsHoldStage.
+  ///
+  /// In es, this message translates to:
+  /// **'Se aplica a: {stage}'**
+  String paramsHoldStage(Object stage);
+
+  /// No description provided for @paramsFurnaceRange.
+  ///
+  /// In es, this message translates to:
+  /// **'Rango del horno (interfaz): {min}–{max} °C'**
+  String paramsFurnaceRange(Object min, Object max);
+
+  /// No description provided for @paramsThermalLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'Rango válido del protocolo'**
+  String get paramsThermalLimit;
+
+  /// No description provided for @paramsRangeUnpublished.
+  ///
+  /// In es, this message translates to:
+  /// **'Rango válido del protocolo: aún no documentado'**
+  String get paramsRangeUnpublished;
+
+  /// No description provided for @paramsRangeTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'El rango válido depende del material y del tratamiento; el máximo del horno es solo la capacidad visual del instrumento.'**
+  String get paramsRangeTooltip;
+
+  /// No description provided for @paramsPhysicalLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'Límite físico de seguridad: {limit} °C (fusión)'**
+  String paramsPhysicalLimit(Object limit);
+
+  /// No description provided for @protocolLocked.
+  ///
+  /// In es, this message translates to:
+  /// **'Enfriamiento definido por protocolo'**
+  String get protocolLocked;
+
+  /// No description provided for @protocolLockedWhy.
+  ///
+  /// In es, this message translates to:
+  /// **'Se selecciona automáticamente según el protocolo revisado por material y tratamiento; no es configurable para mantener la simulación trazable.'**
+  String get protocolLockedWhy;
+
+  /// No description provided for @protocolPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Protocolo pendiente de revisión'**
+  String get protocolPending;
+
+  /// No description provided for @protocolMedium.
+  ///
+  /// In es, this message translates to:
+  /// **'Medio'**
+  String get protocolMedium;
+
+  /// No description provided for @paramsReview.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar configuración'**
+  String get paramsReview;
+
+  /// No description provided for @paramsInvalidNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Introduce un número válido'**
+  String get paramsInvalidNumber;
+
+  /// No description provided for @paramsOutOfUi.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuera del rango de la interfaz'**
+  String get paramsOutOfUi;
+
+  /// No description provided for @runReview.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar experimento'**
+  String get runReview;
+
+  /// No description provided for @reviewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu experimento'**
+  String get reviewTitle;
+
+  /// No description provided for @reviewMaterial.
+  ///
+  /// In es, this message translates to:
+  /// **'Material'**
+  String get reviewMaterial;
+
+  /// No description provided for @reviewTreatment.
+  ///
+  /// In es, this message translates to:
+  /// **'Tratamiento'**
+  String get reviewTreatment;
+
+  /// No description provided for @reviewTemperature.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperatura'**
+  String get reviewTemperature;
+
+  /// No description provided for @reviewTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiempo'**
+  String get reviewTime;
+
+  /// No description provided for @reviewInitial.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado inicial'**
+  String get reviewInitial;
+
+  /// No description provided for @reviewCooling.
+  ///
+  /// In es, this message translates to:
+  /// **'Enfriamiento'**
+  String get reviewCooling;
+
+  /// No description provided for @reviewAutomatic.
+  ///
+  /// In es, this message translates to:
+  /// **'Automático'**
+  String get reviewAutomatic;
+
+  /// No description provided for @reviewHeadsUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de empezar'**
+  String get reviewHeadsUp;
+
+  /// No description provided for @reviewExpectInsufficient.
+  ///
+  /// In es, this message translates to:
+  /// **'Con la evidencia actual no habrá cifras de dureza ni de fases para esta condición; verás el ciclo, la explicación y las fuentes.'**
+  String get reviewExpectInsufficient;
+
+  /// No description provided for @reviewStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar laboratorio'**
+  String get reviewStart;
+
+  /// No description provided for @reviewEdit.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar'**
+  String get reviewEdit;
+
+  /// No description provided for @reviewBlocked.
+  ///
+  /// In es, this message translates to:
+  /// **'No se puede ejecutar con estos parámetros'**
+  String get reviewBlocked;
+
+  /// No description provided for @validating.
+  ///
+  /// In es, this message translates to:
+  /// **'Validando…'**
+  String get validating;
+
+  /// No description provided for @furnaceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Laboratorio'**
+  String get furnaceTitle;
+
+  /// No description provided for @furnaceStage.
+  ///
+  /// In es, this message translates to:
+  /// **'Etapa'**
+  String get furnaceStage;
+
+  /// No description provided for @furnaceTemp.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperatura'**
+  String get furnaceTemp;
+
+  /// No description provided for @furnacePhysicalTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiempo de proceso simulado'**
+  String get furnacePhysicalTime;
+
+  /// No description provided for @furnaceAnimTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Duración de animación'**
+  String get furnaceAnimTime;
+
+  /// No description provided for @furnaceSpeed.
+  ///
+  /// In es, this message translates to:
+  /// **'Reproducción: {factor}×'**
+  String furnaceSpeed(Object factor);
+
+  /// No description provided for @furnaceSchematicSpeed.
+  ///
+  /// In es, this message translates to:
+  /// **'Reproducción esquemática (no a escala)'**
+  String get furnaceSchematicSpeed;
+
+  /// No description provided for @furnaceVisualDisclaimer.
+  ///
+  /// In es, this message translates to:
+  /// **'El color de la pieza es ilustrativo'**
+  String get furnaceVisualDisclaimer;
+
+  /// No description provided for @furnacePlay.
+  ///
+  /// In es, this message translates to:
+  /// **'Reproducir'**
+  String get furnacePlay;
+
+  /// No description provided for @furnacePause.
+  ///
+  /// In es, this message translates to:
+  /// **'Pausar'**
+  String get furnacePause;
+
+  /// No description provided for @furnaceRestart.
+  ///
+  /// In es, this message translates to:
+  /// **'Repetir'**
+  String get furnaceRestart;
+
+  /// No description provided for @furnaceSkip.
+  ///
+  /// In es, this message translates to:
+  /// **'Saltar al final'**
+  String get furnaceSkip;
+
+  /// No description provided for @furnaceSeeResults.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver resultados'**
+  String get furnaceSeeResults;
+
+  /// No description provided for @furnaceYourTarget.
+  ///
+  /// In es, this message translates to:
+  /// **'{value} °C (tu objetivo)'**
+  String furnaceYourTarget(Object value);
+
+  /// No description provided for @furnaceYourHold.
+  ///
+  /// In es, this message translates to:
+  /// **'{value} min (tu valor)'**
+  String furnaceYourHold(Object value);
+
+  /// No description provided for @furnaceAmbient.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperatura ambiente'**
+  String get furnaceAmbient;
+
+  /// No description provided for @furnaceBath.
+  ///
+  /// In es, this message translates to:
+  /// **'Baño (temperatura no publicada)'**
+  String get furnaceBath;
+
+  /// No description provided for @furnaceDurationUnpublished.
+  ///
+  /// In es, this message translates to:
+  /// **'Duración no publicada'**
+  String get furnaceDurationUnpublished;
+
+  /// No description provided for @furnaceReducedMotion.
+  ///
+  /// In es, this message translates to:
+  /// **'Movimiento reducido: se muestran las etapas sin animación.'**
+  String get furnaceReducedMotion;
+
+  /// No description provided for @furnaceRunning.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculando con el motor científico…'**
+  String get furnaceRunning;
+
+  /// No description provided for @chartTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperatura vs. tiempo'**
+  String get chartTitle;
+
+  /// No description provided for @chartSchematic.
+  ///
+  /// In es, this message translates to:
+  /// **'Esquema del ciclo: eje de tiempo no a escala'**
+  String get chartSchematic;
+
+  /// No description provided for @chartPhysical.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial del motor científico (tramos lineales didácticos)'**
+  String get chartPhysical;
+
+  /// No description provided for @chartTimeAxis.
+  ///
+  /// In es, this message translates to:
+  /// **'tiempo'**
+  String get chartTimeAxis;
+
+  /// No description provided for @chartNoData.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin trayectoria para mostrar'**
+  String get chartNoData;
+
+  /// No description provided for @resultsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Esto podemos concluir'**
+  String get resultsTitle;
+
+  /// No description provided for @status_completed.
+  ///
+  /// In es, this message translates to:
+  /// **'Resultado completo respaldado'**
+  String get status_completed;
+
+  /// No description provided for @status_partial_result.
+  ///
+  /// In es, this message translates to:
+  /// **'Resultado parcial'**
+  String get status_partial_result;
+
+  /// No description provided for @status_insufficient_evidence.
+  ///
+  /// In es, this message translates to:
+  /// **'Evidencia insuficiente para cifras'**
+  String get status_insufficient_evidence;
+
+  /// No description provided for @status_unsupported.
+  ///
+  /// In es, this message translates to:
+  /// **'Combinación no soportada'**
+  String get status_unsupported;
+
+  /// No description provided for @status_invalid_input.
+  ///
+  /// In es, this message translates to:
+  /// **'Entrada fuera de dominio'**
+  String get status_invalid_input;
+
+  /// No description provided for @status_internal_error.
+  ///
+  /// In es, this message translates to:
+  /// **'Error interno'**
+  String get status_internal_error;
+
+  /// No description provided for @statusInsufficientBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta combinación se puede estudiar, pero no calcular con rigor todavía.'**
+  String get statusInsufficientBody;
+
+  /// No description provided for @resultsSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen del tratamiento'**
+  String get resultsSummary;
+
+  /// No description provided for @resultsHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial térmico'**
+  String get resultsHistory;
+
+  /// No description provided for @resultsTransformations.
+  ///
+  /// In es, this message translates to:
+  /// **'Transformación y fases'**
+  String get resultsTransformations;
+
+  /// No description provided for @resultsTransformationsNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Fases cristalográficas y microconstituyentes se muestran por separado; nunca se suman entre sí.'**
+  String get resultsTransformationsNote;
+
+  /// No description provided for @resultsProperties.
+  ///
+  /// In es, this message translates to:
+  /// **'Propiedades'**
+  String get resultsProperties;
+
+  /// No description provided for @resultsMicroscope.
+  ///
+  /// In es, this message translates to:
+  /// **'Microscopio'**
+  String get resultsMicroscope;
+
+  /// No description provided for @resultsFoundation.
+  ///
+  /// In es, this message translates to:
+  /// **'Fundamento científico'**
+  String get resultsFoundation;
+
+  /// No description provided for @resultsKeepLearning.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir aprendiendo'**
+  String get resultsKeepLearning;
+
+  /// No description provided for @q_phase_fractions.
+  ///
+  /// In es, this message translates to:
+  /// **'Fracciones de fases'**
+  String get q_phase_fractions;
+
+  /// No description provided for @q_microconstituent_fractions.
+  ///
+  /// In es, this message translates to:
+  /// **'Microconstituyentes'**
+  String get q_microconstituent_fractions;
+
+  /// No description provided for @q_hardness.
+  ///
+  /// In es, this message translates to:
+  /// **'Dureza final'**
+  String get q_hardness;
+
+  /// No description provided for @q_grain_size.
+  ///
+  /// In es, this message translates to:
+  /// **'Tamaño de grano'**
+  String get q_grain_size;
+
+  /// No description provided for @q_mechanical_properties.
+  ///
+  /// In es, this message translates to:
+  /// **'Propiedades mecánicas'**
+  String get q_mechanical_properties;
+
+  /// No description provided for @resultsUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No estimable con la evidencia actual'**
+  String get resultsUnavailable;
+
+  /// No description provided for @resultsViewSource.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver fuente y límites'**
+  String get resultsViewSource;
+
+  /// No description provided for @resultsWhatsMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué datos faltan?'**
+  String get resultsWhatsMissing;
+
+  /// No description provided for @resultsWhatsMissingBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Para mostrar una cifra, FERROLAB necesita un dato experimental o un modelo validado para esta condición exacta (material, estado inicial, protocolo publicado, temperatura y tiempo), con fuente, localizador y rango de validez, revisado por una persona con formación metalúrgica.'**
+  String get resultsWhatsMissingBody;
+
+  /// No description provided for @evidence_validated.
+  ///
+  /// In es, this message translates to:
+  /// **'Validado'**
+  String get evidence_validated;
+
+  /// No description provided for @evidence_bounded_estimate.
+  ///
+  /// In es, this message translates to:
+  /// **'Estimación acotada'**
+  String get evidence_bounded_estimate;
+
+  /// No description provided for @evidence_qualitative.
+  ///
+  /// In es, this message translates to:
+  /// **'Cualitativo'**
+  String get evidence_qualitative;
+
+  /// No description provided for @evidence_insufficient_evidence.
+  ///
+  /// In es, this message translates to:
+  /// **'Evidencia insuficiente'**
+  String get evidence_insufficient_evidence;
+
+  /// No description provided for @evidence_unsupported.
+  ///
+  /// In es, this message translates to:
+  /// **'No soportado'**
+  String get evidence_unsupported;
+
+  /// No description provided for @kind_measured.
+  ///
+  /// In es, this message translates to:
+  /// **'Medido'**
+  String get kind_measured;
+
+  /// No description provided for @kind_literature.
+  ///
+  /// In es, this message translates to:
+  /// **'Bibliográfico'**
+  String get kind_literature;
+
+  /// No description provided for @kind_modeled.
+  ///
+  /// In es, this message translates to:
+  /// **'Modelado'**
+  String get kind_modeled;
+
+  /// No description provided for @kind_illustrative.
+  ///
+  /// In es, this message translates to:
+  /// **'Ilustrativo'**
+  String get kind_illustrative;
+
+  /// No description provided for @kind_unavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No disponible'**
+  String get kind_unavailable;
+
+  /// No description provided for @resultsWarnings.
+  ///
+  /// In es, this message translates to:
+  /// **'Advertencias y limitaciones'**
+  String get resultsWarnings;
+
+  /// No description provided for @resultsAssumptions.
+  ///
+  /// In es, this message translates to:
+  /// **'Supuestos'**
+  String get resultsAssumptions;
+
+  /// No description provided for @resultsSources.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuentes'**
+  String get resultsSources;
+
+  /// No description provided for @resultsVersions.
+  ///
+  /// In es, this message translates to:
+  /// **'Versiones'**
+  String get resultsVersions;
+
+  /// No description provided for @resultsProtocol.
+  ///
+  /// In es, this message translates to:
+  /// **'Protocolo'**
+  String get resultsProtocol;
+
+  /// No description provided for @resultsSuggestedReading.
+  ///
+  /// In es, this message translates to:
+  /// **'Lectura sugerida'**
+  String get resultsSuggestedReading;
+
+  /// No description provided for @resultsSupportsValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Respalda una cifra'**
+  String get resultsSupportsValue;
+
+  /// No description provided for @resultsSupportsLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'Respalda un límite'**
+  String get resultsSupportsLimit;
+
+  /// No description provided for @sourceUnverified.
+  ///
+  /// In es, this message translates to:
+  /// **'Referencia no verificada por el proyecto'**
+  String get sourceUnverified;
+
+  /// No description provided for @sourceVerified.
+  ///
+  /// In es, this message translates to:
+  /// **'Referencia verificada'**
+  String get sourceVerified;
+
+  /// No description provided for @resultsSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar en historial'**
+  String get resultsSave;
+
+  /// No description provided for @resultsSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardado en este dispositivo'**
+  String get resultsSaved;
+
+  /// No description provided for @resultsWhatIf.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué pasaría si…?'**
+  String get resultsWhatIf;
+
+  /// No description provided for @resultsWhatIfBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambia una variable y compara con este resultado.'**
+  String get resultsWhatIfBody;
+
+  /// No description provided for @resultsCompare.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparar'**
+  String get resultsCompare;
+
+  /// No description provided for @resultsNewRun.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva prueba'**
+  String get resultsNewRun;
+
+  /// No description provided for @resultsCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar resumen'**
+  String get resultsCopy;
+
+  /// No description provided for @resultsCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen copiado'**
+  String get resultsCopied;
+
+  /// No description provided for @resultsEducationalBanner.
+  ///
+  /// In es, this message translates to:
+  /// **'Herramienta educativa, no tratamiento industrial.'**
+  String get resultsEducationalBanner;
+
+  /// No description provided for @tutorExplain.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Por qué ocurrió esto?'**
+  String get tutorExplain;
+
+  /// No description provided for @tutorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tutor educativo'**
+  String get tutorTitle;
+
+  /// No description provided for @tutorEditorialMode.
+  ///
+  /// In es, this message translates to:
+  /// **'Explicación editorial (sin IA)'**
+  String get tutorEditorialMode;
+
+  /// No description provided for @tutorAiMode.
+  ///
+  /// In es, this message translates to:
+  /// **'Generado por IA a partir de contexto revisado'**
+  String get tutorAiMode;
+
+  /// No description provided for @tutorAskHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una pregunta conceptual'**
+  String get tutorAskHint;
+
+  /// No description provided for @tutorAsk.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntar'**
+  String get tutorAsk;
+
+  /// No description provided for @tutorPrivacy.
+  ///
+  /// In es, this message translates to:
+  /// **'Si el tutor IA está activo, tu pregunta se envía a un proveedor externo. No escribas datos personales.'**
+  String get tutorPrivacy;
+
+  /// No description provided for @tutorQuick1.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué diferencia hay entre TTT y CCT?'**
+  String get tutorQuick1;
+
+  /// No description provided for @tutorQuick2.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Por qué importa la velocidad de enfriamiento?'**
+  String get tutorQuick2;
+
+  /// No description provided for @tutorQuick3.
+  ///
+  /// In es, this message translates to:
+  /// **'¿En qué se diferencian martempering y austempering?'**
+  String get tutorQuick3;
+
+  /// No description provided for @tutorQuick4.
+  ///
+  /// In es, this message translates to:
+  /// **'¿La fundición gris se comporta como el acero?'**
+  String get tutorQuick4;
+
+  /// No description provided for @tutorQuick5.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Por qué no aparece un valor de dureza?'**
+  String get tutorQuick5;
+
+  /// No description provided for @microTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Microestructura'**
+  String get microTitle;
+
+  /// No description provided for @microNoMatch.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no tenemos una micrografía verificada de esta condición.'**
+  String get microNoMatch;
+
+  /// No description provided for @microNoMatchBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Para mostrar una micrografía exigimos licencia comprobada, autor, técnica, aumento y que corresponda al material y la condición. No mostramos imágenes de otros aceros como si fueran de este experimento.'**
+  String get microNoMatchBody;
+
+  /// No description provided for @microDigitalZoom.
+  ///
+  /// In es, this message translates to:
+  /// **'Zoom digital, no aumento óptico'**
+  String get microDigitalZoom;
+
+  /// No description provided for @microZoomIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Acercar'**
+  String get microZoomIn;
+
+  /// No description provided for @microZoomOut.
+  ///
+  /// In es, this message translates to:
+  /// **'Alejar'**
+  String get microZoomOut;
+
+  /// No description provided for @microScaleCalibrated.
+  ///
+  /// In es, this message translates to:
+  /// **'Barra de escala calibrada: {value} µm'**
+  String microScaleCalibrated(Object value);
+
+  /// No description provided for @microScaleMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin calibración: no se permite medir'**
+  String get microScaleMissing;
+
+  /// No description provided for @microLibraryEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'La biblioteca de micrografías está vacía: aún no hay imágenes con licencia y metadatos verificados.'**
+  String get microLibraryEmpty;
+
+  /// No description provided for @microAttribution.
+  ///
+  /// In es, this message translates to:
+  /// **'Autor / licencia'**
+  String get microAttribution;
+
+  /// No description provided for @learnTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprender'**
+  String get learnTitle;
+
+  /// No description provided for @learnGlossary.
+  ///
+  /// In es, this message translates to:
+  /// **'Glosario'**
+  String get learnGlossary;
+
+  /// No description provided for @learnConcepts.
+  ///
+  /// In es, this message translates to:
+  /// **'Conceptos'**
+  String get learnConcepts;
+
+  /// No description provided for @learnFaq.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas frecuentes'**
+  String get learnFaq;
+
+  /// No description provided for @learnTreatments.
+  ///
+  /// In es, this message translates to:
+  /// **'Tratamientos'**
+  String get learnTreatments;
+
+  /// No description provided for @learnDiagrams.
+  ///
+  /// In es, this message translates to:
+  /// **'Diagramas'**
+  String get learnDiagrams;
+
+  /// No description provided for @learnDiagramsBody.
+  ///
+  /// In es, this message translates to:
+  /// **'FERROLAB solo dibuja curvas TTT, CCT o Fe–C a partir de datos digitalizados con fuente y permiso. Todavía no hay ninguno publicado, así que aquí encontrarás la explicación conceptual sin líneas ficticias.'**
+  String get learnDiagramsBody;
+
+  /// No description provided for @learnRelated.
+  ///
+  /// In es, this message translates to:
+  /// **'Relacionado'**
+  String get learnRelated;
+
+  /// No description provided for @learnSearch.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar'**
+  String get learnSearch;
+
+  /// No description provided for @practiceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo práctica'**
+  String get practiceTitle;
+
+  /// No description provided for @practiceIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas conceptuales con retroalimentación. No es una calificación oficial y tu progreso queda solo en este dispositivo.'**
+  String get practiceIntro;
+
+  /// No description provided for @practiceCorrect.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Correcto!'**
+  String get practiceCorrect;
+
+  /// No description provided for @practiceIncorrect.
+  ///
+  /// In es, this message translates to:
+  /// **'No exactamente'**
+  String get practiceIncorrect;
+
+  /// No description provided for @practiceScore.
+  ///
+  /// In es, this message translates to:
+  /// **'{correct} de {total} correctas'**
+  String practiceScore(Object correct, Object total);
+
+  /// No description provided for @practiceNext.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente pregunta'**
+  String get practiceNext;
+
+  /// No description provided for @practiceRestart.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar de nuevo'**
+  String get practiceRestart;
+
+  /// No description provided for @practiceHypothesis.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de simular: ¿qué esperas que ocurra?'**
+  String get practiceHypothesis;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial local'**
+  String get historyTitle;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no has guardado simulaciones.'**
+  String get historyEmpty;
+
+  /// No description provided for @historyLocalNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Se guarda solo en este dispositivo/navegador. Si borras los datos o cambias de dispositivo, se pierde. No hay sincronización.'**
+  String get historyLocalNote;
+
+  /// No description provided for @historyDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar historial local'**
+  String get historyDelete;
+
+  /// No description provided for @historyDeleteConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar todo el historial guardado en este dispositivo?'**
+  String get historyDeleteConfirm;
+
+  /// No description provided for @historySelectTwo.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona dos simulaciones para comparar'**
+  String get historySelectTwo;
+
+  /// No description provided for @compareTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparación'**
+  String get compareTitle;
+
+  /// No description provided for @compareNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo se comparan magnitudes con la misma unidad y evidencia. Las ausencias se muestran como —.'**
+  String get compareNote;
+
+  /// No description provided for @compareDifferent.
+  ///
+  /// In es, this message translates to:
+  /// **'Diferencias'**
+  String get compareDifferent;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In es, this message translates to:
+  /// **'Idioma'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsTheme.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema'**
+  String get settingsTheme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get themeDark;
+
+  /// No description provided for @settingsReduceMotion.
+  ///
+  /// In es, this message translates to:
+  /// **'Reducir movimiento'**
+  String get settingsReduceMotion;
+
+  /// No description provided for @settingsSound.
+  ///
+  /// In es, this message translates to:
+  /// **'Sonido'**
+  String get settingsSound;
+
+  /// No description provided for @settingsSoundNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin sonidos en esta versión.'**
+  String get settingsSoundNote;
+
+  /// No description provided for @settingsAchievements.
+  ///
+  /// In es, this message translates to:
+  /// **'Logros'**
+  String get settingsAchievements;
+
+  /// No description provided for @settingsAchievementsNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Logros locales y desactivables; no se envían a ningún servidor.'**
+  String get settingsAchievementsNote;
+
+  /// No description provided for @settingsTutorial.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver la introducción otra vez'**
+  String get settingsTutorial;
+
+  /// No description provided for @settingsPrivacy.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad'**
+  String get settingsPrivacy;
+
+  /// No description provided for @settingsPrivacyBody.
+  ///
+  /// In es, this message translates to:
+  /// **'FERROLAB no te pide cuenta, correo ni datos personales. Tus preferencias, historial, práctica y logros se guardan solo en este dispositivo. El servidor calcula cada simulación y no la almacena.'**
+  String get settingsPrivacyBody;
+
+  /// No description provided for @settingsSources.
+  ///
+  /// In es, this message translates to:
+  /// **'Bibliografía y fuentes'**
+  String get settingsSources;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca de'**
+  String get settingsAbout;
+
+  /// No description provided for @settingsAdmin.
+  ///
+  /// In es, this message translates to:
+  /// **'Panel de administración'**
+  String get settingsAdmin;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsNotificationsNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Desactivadas. FERROLAB no envía recordatorios.'**
+  String get settingsNotificationsNote;
+
+  /// No description provided for @sourcesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Bibliografía y fuentes'**
+  String get sourcesTitle;
+
+  /// No description provided for @sourcesNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Citar una obra no demuestra acceso a su contenido. Las referencias marcadas «no verificada» son lecturas sugeridas y no respaldan ninguna cifra.'**
+  String get sourcesNote;
+
+  /// No description provided for @achFirstRun.
+  ///
+  /// In es, this message translates to:
+  /// **'Primer experimento'**
+  String get achFirstRun;
+
+  /// No description provided for @achAllMaterials.
+  ///
+  /// In es, this message translates to:
+  /// **'Exploraste los tres materiales'**
+  String get achAllMaterials;
+
+  /// No description provided for @achAllTreatments.
+  ///
+  /// In es, this message translates to:
+  /// **'Probaste los seis tratamientos'**
+  String get achAllTreatments;
+
+  /// No description provided for @achPractice.
+  ///
+  /// In es, this message translates to:
+  /// **'Cinco respuestas correctas en práctica'**
+  String get achPractice;
+
+  /// No description provided for @achHonest.
+  ///
+  /// In es, this message translates to:
+  /// **'Encontraste un límite de la evidencia'**
+  String get achHonest;
+
+  /// No description provided for @achUnlocked.
+  ///
+  /// In es, this message translates to:
+  /// **'Logro desbloqueado: {name}'**
+  String achUnlocked(Object name);
+
+  /// No description provided for @teacherTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo docente'**
+  String get teacherTitle;
+
+  /// No description provided for @teacherIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea un código de actividad con una configuración fija. Los estudiantes lo introducen sin cuenta ni datos personales. Un código no es una contraseña ni autentica a nadie.'**
+  String get teacherIntro;
+
+  /// No description provided for @teacherCreate.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear código con la configuración actual'**
+  String get teacherCreate;
+
+  /// No description provided for @teacherCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de actividad'**
+  String get teacherCode;
+
+  /// No description provided for @teacherEnter.
+  ///
+  /// In es, this message translates to:
+  /// **'Introducir un código'**
+  String get teacherEnter;
+
+  /// No description provided for @teacherLoad.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargar actividad'**
+  String get teacherLoad;
+
+  /// No description provided for @teacherInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Código no válido'**
+  String get teacherInvalid;
+
+  /// No description provided for @teacherNoConfig.
+  ///
+  /// In es, this message translates to:
+  /// **'Primero configura una simulación (material y tratamiento).'**
+  String get teacherNoConfig;
+
+  /// No description provided for @teacherPresentation.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo presentación'**
+  String get teacherPresentation;
+
+  /// No description provided for @networkError.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión al motor. Tu configuración sigue aquí.'**
+  String get networkError;
+
+  /// No description provided for @networkRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get networkRetry;
+
+  /// No description provided for @internalError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos completar esta solicitud.'**
+  String get internalError;
+
+  /// No description provided for @supportCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de soporte: {code}'**
+  String supportCode(Object code);
+
+  /// No description provided for @rateLimited.
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiadas solicitudes; espera un momento e inténtalo de nuevo.'**
+  String get rateLimited;
+
+  /// No description provided for @loading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando…'**
+  String get loading;
+
+  /// No description provided for @adminTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'FERROLAB Admin'**
+  String get adminTitle;
+
+  /// No description provided for @adminLogin.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar sesión'**
+  String get adminLogin;
+
+  /// No description provided for @adminEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get adminEmail;
+
+  /// No description provided for @adminPassword.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get adminPassword;
+
+  /// No description provided for @adminDevToken.
+  ///
+  /// In es, this message translates to:
+  /// **'Token de desarrollo'**
+  String get adminDevToken;
+
+  /// No description provided for @adminDevTokenHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo en desarrollo local: pega el token generado con scripts/dev_admin_token.py'**
+  String get adminDevTokenHint;
+
+  /// No description provided for @adminNotConfigured.
+  ///
+  /// In es, this message translates to:
+  /// **'La administración no está disponible: el servidor no tiene base de datos o autenticación configurada.'**
+  String get adminNotConfigured;
+
+  /// No description provided for @adminLogout.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get adminLogout;
+
+  /// No description provided for @adminRecords.
+  ///
+  /// In es, this message translates to:
+  /// **'Registros'**
+  String get adminRecords;
+
+  /// No description provided for @adminReleases.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicaciones'**
+  String get adminReleases;
+
+  /// No description provided for @adminAudit.
+  ///
+  /// In es, this message translates to:
+  /// **'Auditoría'**
+  String get adminAudit;
+
+  /// No description provided for @adminRole.
+  ///
+  /// In es, this message translates to:
+  /// **'Rol: {role}'**
+  String adminRole(Object role);
+
+  /// No description provided for @adminReview.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar como revisado'**
+  String get adminReview;
+
+  /// No description provided for @adminToDraft.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a borrador'**
+  String get adminToDraft;
+
+  /// No description provided for @adminRetire.
+  ///
+  /// In es, this message translates to:
+  /// **'Retirar'**
+  String get adminRetire;
+
+  /// No description provided for @adminSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar borrador'**
+  String get adminSave;
+
+  /// No description provided for @adminSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardado como borrador'**
+  String get adminSaved;
+
+  /// No description provided for @adminNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo registro'**
+  String get adminNew;
+
+  /// No description provided for @adminPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Comprobar publicación'**
+  String get adminPreview;
+
+  /// No description provided for @adminPublish.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar versión'**
+  String get adminPublish;
+
+  /// No description provided for @adminActivate.
+  ///
+  /// In es, this message translates to:
+  /// **'Activar (revertir a esta)'**
+  String get adminActivate;
+
+  /// No description provided for @adminVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión (p. ej. 1.0.0)'**
+  String get adminVersion;
+
+  /// No description provided for @adminActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa'**
+  String get adminActive;
+
+  /// No description provided for @adminProblems.
+  ///
+  /// In es, this message translates to:
+  /// **'Problemas que bloquean la publicación'**
+  String get adminProblems;
+
+  /// No description provided for @adminReport.
+  ///
+  /// In es, this message translates to:
+  /// **'Informe'**
+  String get adminReport;
+
+  /// No description provided for @adminReviewWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar significa que una persona con formación metalúrgica comprobó la fuente, el localizador, las unidades y el dominio. No lo marques si no lo hiciste.'**
+  String get adminReviewWarning;
+
+  /// No description provided for @adminJsonField.
+  ///
+  /// In es, this message translates to:
+  /// **'(JSON)'**
+  String get adminJsonField;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'es'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}

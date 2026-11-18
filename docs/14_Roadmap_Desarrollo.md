@@ -79,3 +79,9 @@ Mantener consistentes los 16 documentos con cualquier decisión relevante y evit
 ## 8. Aceptación final del MVP
 
 Se obtiene si: compila Flutter Web, API responde, catálogo correcto, estudiante sin login completa un recorrido, FSE es determinista, cada cifra está sustentada (o no se muestra), las imágenes cumplen permisos, el admin tiene seguridad y se puede ejecutar/desplegar el proyecto mediante comandos documentados. Un prototipo de Figma, pantallas sin backend o promesas de «IA muy precisa» **no** cumplen esta definición.
+
+---
+
+## 9. Registro de implementación (añadido por Claude Code, 18-11-2026)
+
+Las decisiones, contradicciones resueltas y bloqueos se registran en `docs/DECISIONS.md` y el estado real en `docs/PROGRESO.md`. Instrucciones de ejecución: `COMO_EJECUTAR.md`.

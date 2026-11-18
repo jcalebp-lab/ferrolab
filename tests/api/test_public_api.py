@@ -150,3 +150,10 @@ def test_production_refuses_unreviewed_snapshot(settings_factory):
     r = c.get("/api/v1/materials")
     assert r.status_code == 503 and r.json()["error"]["code"] == "dependency_unavailable"
     assert c.get("/docs").status_code == 404
+
+
+def test_allowed_origins_from_comma_separated_env(monkeypatch):
+    from app.core.config import Settings
+
+    monkeypatch.setenv("ALLOWED_ORIGINS", "http://a.example, http://b.example")
+    assert Settings(_env_file=None).allowed_origins == ["http://a.example", "http://b.example"]

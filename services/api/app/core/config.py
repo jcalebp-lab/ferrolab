@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import Field, SecretStr, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     # Sin DATABASE_URL la API sirve el snapshot del archivo seed (modo degradado, sin admin).
     database_url: SecretStr | None = None
     snapshot_file: Path = REPO_ROOT / "database" / "seeds" / "catalog_seed.json"
-    allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:8080", "http://127.0.0.1:8080"])
+    allowed_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["http://localhost:8080", "http://127.0.0.1:8080"])
 
     # Autenticación de administración (Supabase Auth): JWKS (claves asimétricas) o
     # secreto HS256 heredado. Ambos solo en el servidor.
@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     ai_enabled: bool = False
     ai_provider: Literal["none", "anthropic"] = "none"
     ai_api_key: SecretStr | None = None
-    ai_model: str = "claude-haiku-5-5"
+    ai_model: str = "claude-opus-5-5"
     ai_daily_request_budget: int = 0
     ai_timeout_s: float = 20.0
 

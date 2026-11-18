@@ -1,0 +1,36 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_USER: ferrolab, POSTGRES_PASSWORD: ci_only_password, POSTGRES_DB: ferrolab_test }
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://ferrolab:ci_only_password@localhost:5432/ferrolab_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+      - name: Roles locales para pruebas RLS
+        run: |
+          PGPASSWORD=ci_only_password psql -h localhost -U ferrolab -d ferrolab_test -f database/policies/0000_local_roles.sql
+          PGPASSWORD=ci_only_password psql -h localhost -U ferrolab -d ferrolab_test -c "grant anon, authenticated to ferrolab"
+      - run: uv run ruff check .
+      - run: uv run pytest tests -q
+  flutter:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: apps/flutter_client } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, flutter-version: "3.50.0" }
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build web --release --no-web-resources-cdn
