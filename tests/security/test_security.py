@@ -102,9 +102,8 @@ def test_sec06_flutter_sources_do_not_reference_server_secrets():
 
 
 def test_staging_never_accepts_dev_tokens_and_requires_db(settings_factory):
-    from fastapi.testclient import TestClient
-
     from app.main import create_app
+    from fastapi.testclient import TestClient
 
     s = settings_factory(ferrolab_env="staging", admin_dev_login=True)
     assert s.is_public and not s.dev_login_allowed
