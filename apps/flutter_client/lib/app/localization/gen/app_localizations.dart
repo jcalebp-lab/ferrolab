@@ -1771,6 +1771,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'(JSON)'**
   String get adminJsonField;
+
+  /// No description provided for @settingsServer.
+  ///
+  /// In es, this message translates to:
+  /// **'Servidor de FERROLAB'**
+  String get settingsServer;
+
+  /// No description provided for @settingsServerHint.
+  ///
+  /// In es, this message translates to:
+  /// **'p. ej. http://192.168.1.20:8000'**
+  String get settingsServerHint;
+
+  /// No description provided for @settingsServerSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar y probar'**
+  String get settingsServerSave;
+
+  /// No description provided for @settingsServerReset.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar el predeterminado'**
+  String get settingsServerReset;
+
+  /// No description provided for @settingsServerOk.
+  ///
+  /// In es, this message translates to:
+  /// **'Conectado: {version}'**
+  String settingsServerOk(Object version);
+
+  /// No description provided for @settingsServerInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una dirección que empiece por http:// o https://'**
+  String get settingsServerInvalid;
+
+  /// No description provided for @settingsServerCurrent.
+  ///
+  /// In es, this message translates to:
+  /// **'Dirección actual: {url}'**
+  String settingsServerCurrent(Object url);
+
+  /// No description provided for @settingsServerNote.
+  ///
+  /// In es, this message translates to:
+  /// **'La app necesita el servidor de FERROLAB para calcular. En tu casa puedes usar tu computadora en la misma Wi‑Fi (http://IP:8000). Las direcciones http:// no van cifradas: úsalas solo en tu red local.'**
+  String get settingsServerNote;
+
+  /// No description provided for @homeConfigureServer.
+  ///
+  /// In es, this message translates to:
+  /// **'Configurar servidor'**
+  String get homeConfigureServer;
 }
 
 class _AppLocalizationsDelegate

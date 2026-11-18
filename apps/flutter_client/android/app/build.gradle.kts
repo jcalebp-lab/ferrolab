@@ -38,6 +38,9 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // HTTP sin cifrar solo para pruebas en red local: ORG_GRADLE_PROJECT_ferrolabAllowCleartext=true flutter build apk
+        manifestPlaceholders["usesCleartextTraffic"] =
+            (project.findProperty("ferrolabAllowCleartext") ?: "false").toString()
     }
 
     signingConfigs {

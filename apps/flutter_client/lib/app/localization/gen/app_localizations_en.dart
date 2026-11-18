@@ -906,4 +906,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminJsonField => '(JSON)';
+
+  @override
+  String get settingsServer => 'FERROLAB server';
+
+  @override
+  String get settingsServerHint => 'e.g. http://192.168.1.20:8000';
+
+  @override
+  String get settingsServerSave => 'Save and test';
+
+  @override
+  String get settingsServerReset => 'Use default';
+
+  @override
+  String settingsServerOk(Object version) {
+    return 'Connected: $version';
+  }
+
+  @override
+  String get settingsServerInvalid =>
+      'Enter an address starting with http:// or https://';
+
+  @override
+  String settingsServerCurrent(Object url) {
+    return 'Current address: $url';
+  }
+
+  @override
+  String get settingsServerNote =>
+      'The app needs the FERROLAB server to compute. At home you can use your computer on the same Wi‑Fi (http://IP:8000). http:// addresses are not encrypted: use them only on your local network.';
+
+  @override
+  String get homeConfigureServer => 'Configure server';
 }

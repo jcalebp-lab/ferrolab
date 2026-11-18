@@ -911,4 +911,37 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adminJsonField => '(JSON)';
+
+  @override
+  String get settingsServer => 'Servidor de FERROLAB';
+
+  @override
+  String get settingsServerHint => 'p. ej. http://192.168.1.20:8000';
+
+  @override
+  String get settingsServerSave => 'Guardar y probar';
+
+  @override
+  String get settingsServerReset => 'Usar el predeterminado';
+
+  @override
+  String settingsServerOk(Object version) {
+    return 'Conectado: $version';
+  }
+
+  @override
+  String get settingsServerInvalid =>
+      'Escribe una dirección que empiece por http:// o https://';
+
+  @override
+  String settingsServerCurrent(Object url) {
+    return 'Dirección actual: $url';
+  }
+
+  @override
+  String get settingsServerNote =>
+      'La app necesita el servidor de FERROLAB para calcular. En tu casa puedes usar tu computadora en la misma Wi‑Fi (http://IP:8000). Las direcciones http:// no van cifradas: úsalas solo en tu red local.';
+
+  @override
+  String get homeConfigureServer => 'Configurar servidor';
 }

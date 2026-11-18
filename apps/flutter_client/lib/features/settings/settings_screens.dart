@@ -6,6 +6,7 @@ import '../../app/l10n.dart';
 import '../../app/providers.dart';
 import '../../core/design_system/tokens.dart';
 import '../../shared/widgets/widgets.dart';
+import 'server_card.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -26,6 +27,8 @@ class SettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(t.settings)),
       body: PageBody(maxWidth: 720, children: [
+        const ServerCard(),
+        const Gap(FlSpace.m),
         SectionCard(
           title: t.settingsLanguage,
           icon: Icons.translate,

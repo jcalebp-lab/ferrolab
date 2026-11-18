@@ -69,7 +69,15 @@ class HomeScreen extends ConsumerWidget {
         Text(t.homeGreeting, style: context.text.titleMedium?.copyWith(color: context.fl.textSecondary)),
         const Gap(FlSpace.m),
         if (health.value?.unreviewed ?? false) ...[const UnreviewedBanner(), const Gap(FlSpace.m)],
-        if (health.hasError) ...[ErrorView(error: health.error!, onRetry: () => ref.invalidate(healthProvider)), const Gap(FlSpace.m)],
+        if (health.hasError) ...[
+          ErrorView(error: health.error!, onRetry: () => ref.invalidate(healthProvider)),
+          OutlinedButton.icon(
+            onPressed: () => context.push('/settings'),
+            icon: const Icon(Icons.dns_outlined),
+            label: Text(t.homeConfigureServer),
+          ),
+          const Gap(FlSpace.m),
+        ],
         hero,
         const Gap(FlSpace.l),
         LayoutBuilder(builder: (context, c) {

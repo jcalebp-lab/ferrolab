@@ -14,6 +14,18 @@ hablar con `localhost`. Sin servidor público, cualquier app instalada mostrarí
 
 ## Ruta B — Android APK (instalación directa): gratis
 
+**APK de prueba ya compilado** (`FERROLAB-0.1.0-prueba.apk`): admite http:// en red local. Tras instalarlo:
+abra **Ajustes → Servidor de FERROLAB**, escriba `http://IP-DE-SU-COMPUTADORA:8000` (con el servidor
+arrancado como en COMO_EJECUTAR §4b, misma Wi‑Fi) y pulse «Guardar y probar».
+
+Para generar un APK nuevo en su propia computadora (con Android SDK instalado):
+
+```bash
+cd apps/flutter_client && ORG_GRADLE_PROJECT_ferrolabAllowCleartext=true flutter build apk --release
+```
+
+O en la nube con GitHub:
+
 1. Subir este proyecto a un repositorio de GitHub.
 2. Pestaña **Actions → «Apps móviles» → Run workflow**, escribiendo la URL pública de la API.
 3. Al terminar, descargar el artefacto `ferrolab-android` (contiene `app-release.apk`).
@@ -45,6 +57,7 @@ hablar con `localhost`. Sin servidor público, cualquier app instalada mostrarí
 |---|---|
 | Nombre «FERROLAB», icono original, permiso de Internet en Android, firma opcional | Hecho |
 | Flujo de compilación en la nube (`.github/workflows/mobile.yml`) | Escrito y validado como YAML; **no ejecutado** (no hay repositorio en GitHub) |
-| Compilar APK en este entorno | Bloqueado: la red del entorno no permite descargar el Android SDK (`dl.google.com`) |
+| Compilar APK en este entorno | Hecho: `FERROLAB-0.1.0-prueba.apk` (57 MB, firma de pruebas, http local permitido) |
 | Compilar iOS en este entorno | Imposible: requiere macOS |
+| Pantalla Ajustes → Servidor (elegir a qué servidor conectarse) | Hecho |
 | Servidor público de la API | Pendiente: decisión y cuenta del propietario |

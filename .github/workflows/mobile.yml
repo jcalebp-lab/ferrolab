@@ -6,8 +6,13 @@ on:
   workflow_dispatch:
     inputs:
       api_base_url:
-        description: "URL pública HTTPS de la API (p. ej. https://api.mi-dominio.org)"
-        required: true
+        description: "URL de la API por defecto (se puede cambiar en Ajustes → Servidor)"
+        required: false
+        default: ""
+      allow_local_http:
+        description: "Permitir http:// sin cifrar (solo pruebas en red local)"
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -35,6 +40,8 @@ jobs:
       - run: flutter pub get
       - run: flutter test
       - run: flutter build apk --release --dart-define=API_BASE_URL=${{ inputs.api_base_url }}
+        env:
+          ORG_GRADLE_PROJECT_ferrolabAllowCleartext: ${{ inputs.allow_local_http }}
       - run: flutter build appbundle --release --dart-define=API_BASE_URL=${{ inputs.api_base_url }}
       - uses: actions/upload-artifact@v4
         with:

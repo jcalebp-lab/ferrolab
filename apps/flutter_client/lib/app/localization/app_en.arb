@@ -278,5 +278,14 @@
   "adminProblems": "Problems blocking the release",
   "adminReport": "Report",
   "adminReviewWarning": "Reviewing means a person with metallurgical training checked the source, locator, units and domain. Do not mark it if you did not.",
-  "adminJsonField": "(JSON)"
+  "adminJsonField": "(JSON)",
+  "settingsServer": "FERROLAB server",
+  "settingsServerHint": "e.g. http://192.168.1.20:8000",
+  "settingsServerSave": "Save and test",
+  "settingsServerReset": "Use default",
+  "settingsServerOk": "Connected: {version}",
+  "settingsServerInvalid": "Enter an address starting with http:// or https://",
+  "settingsServerCurrent": "Current address: {url}",
+  "settingsServerNote": "The app needs the FERROLAB server to compute. At home you can use your computer on the same Wi‑Fi (http://IP:8000). http:// addresses are not encrypted: use them only on your local network.",
+  "homeConfigureServer": "Configure server"
 }

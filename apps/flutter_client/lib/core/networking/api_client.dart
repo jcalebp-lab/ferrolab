@@ -28,9 +28,10 @@ class NetworkException implements Exception {
 class ApiClient {
   ApiClient({http.Client? client, String? baseUrl})
       : _http = client ?? http.Client(),
-        _base = (baseUrl ?? AppConfig.apiBaseUrl).replaceAll(RegExp(r'/$'), '');
+        _base = ((baseUrl == null || baseUrl.isEmpty) ? AppConfig.apiBaseUrl : baseUrl).replaceAll(RegExp(r'/$'), '');
   final http.Client _http;
   final String _base;
+  String get baseUrl => _base;
 
   Uri _u(String path, [Map<String, String>? q]) => Uri.parse('$_base$path').replace(queryParameters: q);
 

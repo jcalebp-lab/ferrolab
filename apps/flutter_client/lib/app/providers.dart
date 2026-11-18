@@ -6,29 +6,34 @@ import '../core/storage/local_store.dart';
 import '../shared/models/models.dart';
 
 final localStoreProvider = Provider<LocalStore>((ref) => throw UnimplementedError('se sobreescribe en main'));
-final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
+final apiClientProvider = Provider<ApiClient>(
+    (ref) => ApiClient(baseUrl: ref.watch(settingsProvider.select((s) => s.serverUrl))));
 final repositoryProvider = Provider<FerrolabRepository>((ref) => FerrolabRepository(ref.watch(apiClientProvider)));
 
 // ------------------------------------------------------------------ ajustes
 @immutable
 class AppSettings {
   const AppSettings({this.locale = 'es', this.themeMode = ThemeMode.system, this.reduceMotion = false,
-      this.achievements = true, this.onboardingSeen = false});
+      this.achievements = true, this.onboardingSeen = false, this.serverUrl});
   final String locale;
+  /// Dirección del servidor elegida por el usuario (null = predeterminada de la compilación).
+  final String? serverUrl;
   final ThemeMode themeMode;
   final bool reduceMotion, achievements, onboardingSeen;
 
   AppSettings copyWith({String? locale, ThemeMode? themeMode, bool? reduceMotion, bool? achievements,
-          bool? onboardingSeen}) =>
+          bool? onboardingSeen, String? serverUrl, bool clearServer = false}) =>
       AppSettings(
         locale: locale ?? this.locale,
         themeMode: themeMode ?? this.themeMode,
         reduceMotion: reduceMotion ?? this.reduceMotion,
         achievements: achievements ?? this.achievements,
         onboardingSeen: onboardingSeen ?? this.onboardingSeen,
+        serverUrl: clearServer ? null : (serverUrl ?? this.serverUrl),
       );
 
   Map<String, dynamic> toJson() => {
+        'serverUrl': serverUrl,
         'locale': locale,
         'theme': themeMode.name,
         'reduceMotion': reduceMotion,
@@ -42,6 +47,7 @@ class AppSettings {
         reduceMotion: j['reduceMotion'] as bool? ?? false,
         achievements: j['achievements'] as bool? ?? true,
         onboardingSeen: j['onboardingSeen'] as bool? ?? false,
+        serverUrl: j['serverUrl'] as String?,
       );
 }
 
