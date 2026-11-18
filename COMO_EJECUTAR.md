@@ -89,6 +89,22 @@ uv run python scripts/dev_admin_token.py --user 00000000-0000-4000-8000-00000000
 
 La documentación interactiva de la API está en http://localhost:8000/docs.
 
+## 4b. Probar en tu celular (misma red Wi‑Fi)
+
+1. Compila la web sin dirección fija de API (usará la misma dirección desde la que se abre):
+
+```bash
+cd apps/flutter_client && flutter build web --release --no-web-resources-cdn && cd ../..
+```
+
+2. En `.env` pon `SERVE_WEB_APP=true` y arranca el servidor escuchando en la red local:
+
+```bash
+uv run uvicorn app.main:app --app-dir services/api --host 0.0.0.0 --port 8000
+```
+
+3. Averigua la IP de tu computadora (Windows: `ipconfig`; macOS/Linux: `ipconfig getifaddr en0` o `hostname -I`) y en el navegador del celular abre `http://TU-IP:8000` (por ejemplo `http://192.168.1.20:8000`). Si no carga, permite el puerto 8000 en el firewall de la computadora. Solo para pruebas en tu red: no es una publicación en Internet.
+
 ## 5. Cómo se publica contenido científico (flujo del panel)
 
 1. **Registros** → elige el tipo (materiales, evidencia, protocolos…) → edita → **Guardar borrador**.
