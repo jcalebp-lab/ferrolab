@@ -44,7 +44,9 @@ def main() -> int:
         print("db_setup es solo para desarrollo/pruebas", file=sys.stderr)
         return 2
     engine = make_engine(s.database_url.get_secret_value())
-    print("Migraciones:", apply(engine, local_roles=True))
+    # En Supabase los roles anon/authenticated ya existen: SKIP_LOCAL_DB_ROLES=true.
+    local_roles = os.environ.get("SKIP_LOCAL_DB_ROLES", "").lower() != "true"
+    print("Migraciones:", apply(engine, local_roles=local_roles))
     repo = PostgresRepository(engine)
     seed = json.loads((ROOT / "database" / "seeds" / "catalog_seed.json").read_text(encoding="utf-8"))
     created = 0

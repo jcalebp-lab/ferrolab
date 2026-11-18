@@ -12,6 +12,8 @@ services:
         value: staging          # piloto público: muestra contenido marcado «pendiente de revisión»
       - key: SERVE_WEB_APP
         value: "true"
+      - key: SKIP_LOCAL_DB_ROLES
+        value: "true"
       - key: DATABASE_URL       # Supabase → Connect → «Session pooler» (compatible con IPv4)
         sync: false
       - key: ALLOWED_ORIGINS
