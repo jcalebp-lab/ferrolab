@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Necesario en compilaciones release para hablar con la API de FERROLAB. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="ferrolab"
+        android:label="FERROLAB"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

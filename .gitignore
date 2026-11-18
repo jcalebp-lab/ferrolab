@@ -14,3 +14,6 @@ apps/flutter_client/.flutter-plugins*
 node_modules/
 tests/e2e/screenshots/*.png
 !tests/e2e/screenshots/.gitkeep
+apps/flutter_client/android/key.properties
+*.jks
+*.keystore

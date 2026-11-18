@@ -1,0 +1,60 @@
+# Compila las apps móviles en la nube de GitHub (gratis en repositorios públicos;
+# en privados consume minutos incluidos en el plan). Se lanza a mano desde la pestaña
+# «Actions» → «Apps móviles» → «Run workflow», indicando la URL pública HTTPS de la API.
+name: Apps móviles
+on:
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: "URL pública HTTPS de la API (p. ej. https://api.mi-dominio.org)"
+        required: true
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    defaults: { run: { working-directory: apps/flutter_client } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, flutter-version: "3.50.0" }
+      - name: Clave de firma (opcional, desde secretos del repositorio)
+        if: ${{ env.HAS_KEYSTORE == 'true' }}
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PW: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_B64" | base64 -d > android/app/upload.jks
+          printf 'storeFile=upload.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' "$STORE_PW" "$KEY_ALIAS" "$KEY_PW" > android/key.properties
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter build apk --release --dart-define=API_BASE_URL=${{ inputs.api_base_url }}
+      - run: flutter build appbundle --release --dart-define=API_BASE_URL=${{ inputs.api_base_url }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ferrolab-android
+          path: |
+            apps/flutter_client/build/app/outputs/flutter-apk/app-release.apk
+            apps/flutter_client/build/app/outputs/bundle/release/app-release.aab
+  ios:
+    runs-on: macos-latest
+    defaults: { run: { working-directory: apps/flutter_client } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, flutter-version: "3.50.0" }
+      - run: flutter pub get
+      # Sin firma: comprueba que compila para iOS. Instalar en un iPhone o subir a TestFlight
+      # exige una cuenta Apple Developer y certificados (ver docs/PUBLICAR_MOVIL.md).
+      - run: flutter build ios --release --no-codesign --dart-define=API_BASE_URL=${{ inputs.api_base_url }}
+      - run: cd build/ios/iphoneos && zip -qr ../../../ferrolab-ios-sin-firma.zip Runner.app
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ferrolab-ios-sin-firma
+          path: apps/flutter_client/ferrolab-ios-sin-firma.zip

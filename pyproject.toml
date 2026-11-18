@@ -12,7 +12,14 @@ ferrolab-fse = { workspace = true }
 ferrolab-api = { workspace = true }
 
 [dependency-groups]
-dev = ["pytest>=8.3", "pytest-cov>=6", "hypothesis>=6.120", "ruff>=0.8", "mypy>=1.13"]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=6",
+    "hypothesis>=6.120",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "pillow>=13.0.0",
+]
 
 [tool.uv]
 package = false
