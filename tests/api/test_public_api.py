@@ -160,9 +160,8 @@ def test_allowed_origins_from_comma_separated_env(monkeypatch):
 
 
 def test_serve_web_app_same_origin(settings_factory, tmp_path):
-    from fastapi.testclient import TestClient
-
     from app.main import create_app
+    from fastapi.testclient import TestClient
 
     (tmp_path / "index.html").write_text("<html>FERROLAB</html>")
     c = TestClient(create_app(settings_factory(serve_web_app=True, web_app_dir=tmp_path)))
