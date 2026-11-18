@@ -1,0 +1,83 @@
+{
+  "material_id": [
+    "aisi_1045",
+    "aisi_8620",
+    "astm_a48_class_30"
+  ],
+  "treatment_id": [
+    "quench",
+    "temper",
+    "anneal",
+    "normalize",
+    "austemper",
+    "martemper"
+  ],
+  "material_family": [
+    "steel",
+    "gray_cast_iron"
+  ],
+  "compatibility_status": [
+    "supported",
+    "conditional",
+    "educational_only",
+    "unsupported"
+  ],
+  "simulation_status": [
+    "completed",
+    "partial_result",
+    "insufficient_evidence",
+    "unsupported",
+    "invalid_input",
+    "internal_error"
+  ],
+  "evidence_kind": [
+    "measured",
+    "literature",
+    "modeled",
+    "illustrative",
+    "unavailable"
+  ],
+  "evidence_level": [
+    "validated",
+    "bounded_estimate",
+    "qualitative",
+    "insufficient_evidence",
+    "unsupported"
+  ],
+  "review_status": [
+    "draft",
+    "reviewed",
+    "published",
+    "retired"
+  ],
+  "stage_kind": [
+    "heat",
+    "hold",
+    "transfer",
+    "cool",
+    "isothermal_hold"
+  ],
+  "schematic_level": [
+    "ambient",
+    "target",
+    "bath"
+  ],
+  "quantity_code": [
+    "phase_fractions",
+    "microconstituent_fractions",
+    "hardness",
+    "grain_size",
+    "mechanical_properties"
+  ],
+  "match_quality": [
+    "exact",
+    "comparable",
+    "illustrative",
+    "none"
+  ],
+  "admin_role": [
+    "editor",
+    "reviewer",
+    "admin"
+  ]
+}
