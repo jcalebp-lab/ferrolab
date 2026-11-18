@@ -42,6 +42,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                        expose_headers=["X-Request-ID", "ETag", "Retry-After"], max_age=600)
     app.include_router(public.router)
     app.include_router(admin.router)
+    if s.serve_web_app:
+        from fastapi.staticfiles import StaticFiles
+
+        if not (s.web_app_dir / "index.html").exists():
+            raise RuntimeError(f"SERVE_WEB_APP=true pero no existe {s.web_app_dir}/index.html: compile la web primero")
+        # Montado al final: las rutas /api/v1 tienen prioridad.
+        app.mount("/", StaticFiles(directory=s.web_app_dir, html=True), name="web")
     return app
 
 

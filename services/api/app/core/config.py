@@ -46,6 +46,10 @@ class Settings(BaseSettings):
     ai_daily_request_budget: int = 0
     ai_timeout_s: float = 20.0
 
+    # Servir la app web compilada desde el mismo servidor (misma dirección que la API).
+    serve_web_app: bool = False
+    web_app_dir: Path = REPO_ROOT / "apps" / "flutter_client" / "build" / "web"
+
     log_level: str = "INFO"
     expose_docs: bool = True
 

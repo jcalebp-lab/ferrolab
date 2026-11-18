@@ -157,3 +157,17 @@ def test_allowed_origins_from_comma_separated_env(monkeypatch):
 
     monkeypatch.setenv("ALLOWED_ORIGINS", "http://a.example, http://b.example")
     assert Settings(_env_file=None).allowed_origins == ["http://a.example", "http://b.example"]
+
+
+def test_serve_web_app_same_origin(settings_factory, tmp_path):
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    (tmp_path / "index.html").write_text("<html>FERROLAB</html>")
+    c = TestClient(create_app(settings_factory(serve_web_app=True, web_app_dir=tmp_path)))
+    page = c.get("/")
+    assert page.status_code == 200 and "FERROLAB" in page.text
+    assert "frame-ancestors" not in page.headers.get("content-security-policy", "")
+    api = c.get("/api/v1/health/live")
+    assert api.json() == {"status": "ok"} and "default-src 'none'" in api.headers["content-security-policy"]

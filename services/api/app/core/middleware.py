@@ -36,11 +36,16 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
         response.headers["X-Request-ID"] = rid
         response.headers.setdefault("X-Content-Type-Options", "nosniff")
         response.headers.setdefault("Referrer-Policy", "no-referrer")
-        response.headers.setdefault("X-Frame-Options", "DENY")
-        response.headers.setdefault("Cross-Origin-Resource-Policy", "same-site")
-        if not request.url.path.startswith(("/docs", "/redoc", "/openapi")):
+        path = request.url.path
+        if path.startswith("/api/"):
+            # Respuestas JSON: sin incrustación ni caché.
+            response.headers.setdefault("X-Frame-Options", "DENY")
+            response.headers.setdefault("Cross-Origin-Resource-Policy", "same-site")
             response.headers.setdefault("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
-        response.headers.setdefault("Cache-Control", "no-store")
+            response.headers.setdefault("Cache-Control", "no-store")
+        elif not path.startswith(("/docs", "/redoc", "/openapi")):
+            # App web estática (si SERVE_WEB_APP): revalidar para no servir versiones viejas.
+            response.headers.setdefault("Cache-Control", "no-cache")
         log.info("%s %s %s %.1fms rid=%s", request.method, request.url.path, response.status_code,
                  (time.perf_counter() - start) * 1000, rid)
         return response
