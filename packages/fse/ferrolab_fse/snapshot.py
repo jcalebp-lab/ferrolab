@@ -56,6 +56,7 @@ class Source(_Frozen):
     # ha consultado el contenido; NO respalda cifras.
     verification_status: Literal["unverified", "verified"] = "unverified"
     notes: str | None = None
+    review_status: ReviewStatus = ReviewStatus.DRAFT
 
 
 class EvidenceRecord(_Frozen):
