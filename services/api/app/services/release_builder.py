@@ -11,9 +11,8 @@ from __future__ import annotations
 import copy
 from typing import Any
 
-from pydantic import ValidationError
-
 from ferrolab_fse import DatasetSnapshot
+from pydantic import ValidationError
 
 OFFICIAL = {"reviewed", "published"}
 DEV = {"draft", "reviewed", "published"}
@@ -123,6 +122,9 @@ def build_snapshot(rows: dict[str, list[dict[str, Any]]], *, version: str, inclu
             for item in coll:
                 if isinstance(item, dict):
                     item.pop("_meta", None)
+                    # En una release oficial todo lo incluido queda publicado por esta misma release.
+                    if not include_drafts and item.get("review_status") == "reviewed":
+                        item["review_status"] = "published"
     try:
         return DatasetSnapshot.model_validate(d), report
     except ValidationError as exc:

@@ -17,7 +17,7 @@ def convert_with_table(value: float, table: list[tuple[float, float]]) -> float:
     pts = sorted(table)
     if not (pts[0][0] <= value <= pts[-1][0]):
         raise ValueError("valor fuera del dominio de la tabla de conversión")
-    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:], strict=False):
         if x0 <= value <= x1:
             return y0 if x1 == x0 else y0 + (y1 - y0) * (value - x0) / (x1 - x0)
     raise ValueError("valor fuera del dominio")  # pragma: no cover

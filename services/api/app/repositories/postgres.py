@@ -5,13 +5,12 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from ferrolab_fse import DatasetSnapshot
+from ferrolab_fse.enums import ReviewStatus
 from pydantic import BaseModel, ValidationError
 from sqlalchemy import Engine, text
 from sqlalchemy.engine import Connection
 from sqlalchemy.exc import IntegrityError
-
-from ferrolab_fse import DatasetSnapshot
-from ferrolab_fse.enums import ReviewStatus
 
 from .entities import ENTITIES, INSERT_ORDER, Entity
 

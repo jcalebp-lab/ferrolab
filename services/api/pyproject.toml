@@ -12,6 +12,7 @@ dependencies = [
   "psycopg[binary]>=3.2",
   "httpx>=0.28",
   "pyjwt[crypto]>=2.10",
+  "anthropic>=1.0",
 ]
 
 [tool.uv.sources]

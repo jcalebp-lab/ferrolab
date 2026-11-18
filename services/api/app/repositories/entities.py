@@ -10,9 +10,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from pydantic import BaseModel
-
 from ferrolab_fse import snapshot as S
+from pydantic import BaseModel
 
 
 @dataclass(frozen=True)

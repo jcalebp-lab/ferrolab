@@ -2,14 +2,22 @@ from __future__ import annotations
 
 import copy
 import json
+import os
+import sys
+import time
 from pathlib import Path
 
+import jwt
 import pytest
-
+from fastapi.testclient import TestClient
 from ferrolab_fse import DatasetSnapshot
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = ROOT / "database" / "seeds" / "catalog_seed.json"
+sys.path.insert(0, str(ROOT / "services" / "api"))
+
+from app.core.config import Settings  # noqa: E402
+from app.main import create_app  # noqa: E402
 
 
 @pytest.fixture(scope="session")
@@ -74,3 +82,33 @@ def synthetic_published_snapshot(seed_data) -> DatasetSnapshot:
                  "duration_evidence_id": "ev_cool"},
             ]
     return DatasetSnapshot.model_validate(d)
+
+
+TEST_SECRET = "test-only-secret-not-used-anywhere-else-0123456789"
+
+
+def make_token(sub: str, secret: str = TEST_SECRET, aud: str = "authenticated", exp_in: int = 600) -> str:
+    now = int(time.time())
+    return jwt.encode({"sub": sub, "aud": aud, "iat": now, "exp": now + exp_in}, secret, algorithm="HS256")
+
+
+@pytest.fixture()
+def client() -> TestClient:
+    s = Settings(_env_file=None, ferrolab_env="test", supabase_jwt_secret=TEST_SECRET)
+    return TestClient(create_app(s))
+
+
+@pytest.fixture()
+def settings_factory():
+    def f(**kw):
+        base = {"ferrolab_env": "test", "supabase_jwt_secret": TEST_SECRET}
+        return Settings(_env_file=None, **{**base, **kw})
+    return f
+
+
+DB_URL = os.environ.get("TEST_DATABASE_URL")
+
+
+@pytest.fixture()
+def token():
+    return make_token

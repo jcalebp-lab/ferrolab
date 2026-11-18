@@ -9,14 +9,13 @@ import json
 import os
 
 import pytest
-from sqlalchemy import text
-from sqlalchemy.exc import DBAPIError
-
 from app.db.migrate import apply
 from app.db.session import make_engine
 from app.repositories.entities import ENTITIES, INSERT_ORDER
 from app.repositories.postgres import PostgresRepository, RepoError
 from app.services.release_builder import DEV, OFFICIAL, ReleaseBuildError, build_snapshot
+from sqlalchemy import text
+from sqlalchemy.exc import DBAPIError
 
 URL = os.environ.get("TEST_DATABASE_URL")
 pytestmark = [pytest.mark.db, pytest.mark.skipif(not URL, reason="TEST_DATABASE_URL no configurada")]

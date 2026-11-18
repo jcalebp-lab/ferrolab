@@ -89,7 +89,7 @@ class EvidenceRecord(_Frozen):
         return _finite(v)
 
     @model_validator(mode="after")
-    def _numeric_needs_provenance(self) -> "EvidenceRecord":
+    def _numeric_needs_provenance(self) -> EvidenceRecord:
         if self.value is not None:
             if not self.unit:
                 raise ValueError(f"evidencia {self.id}: valor numérico sin unidad")
@@ -107,7 +107,7 @@ class CompositionRange(_Frozen):
     evidence_id: str
 
     @model_validator(mode="after")
-    def _bounds(self) -> "CompositionRange":
+    def _bounds(self) -> CompositionRange:
         for v in (self.min_wt_pct, self.max_wt_pct, self.nominal_wt_pct):
             _finite(v)
             if v is not None and not (0 <= v <= 100):
@@ -163,7 +163,7 @@ class Treatment(_Frozen):
     qualitative_outcome_es: str
     qualitative_outcome_en: str
     # Estructura de la máquina de estados (doc 04 §13.4), sin cifras.
-    stage_outline: list["StageTemplate"]
+    stage_outline: list[StageTemplate]
     suggested_source_ids: list[str] = Field(default_factory=list)
     review_status: ReviewStatus = ReviewStatus.DRAFT
 
@@ -193,7 +193,7 @@ class MaterialTreatment(_Frozen):
     review_status: ReviewStatus = ReviewStatus.DRAFT
 
     @model_validator(mode="after")
-    def _bounds(self) -> "MaterialTreatment":
+    def _bounds(self) -> MaterialTreatment:
         for v in (self.temperature_min_c, self.temperature_max_c, self.hold_min_s, self.hold_max_s):
             _finite(v)
         if (self.temperature_min_c is not None or self.temperature_max_c is not None) and not self.temperature_evidence_id:
@@ -234,7 +234,7 @@ class ProtocolStage(_Frozen):
     duration_evidence_id: str | None = None
 
     @model_validator(mode="after")
-    def _consistency(self) -> "ProtocolStage":
+    def _consistency(self) -> ProtocolStage:
         _finite(self.end_temperature_c)
         _finite(self.duration_s)
         _finite(self.rate_c_per_s)
@@ -270,7 +270,7 @@ class Protocol(_Frozen):
     review_status: ReviewStatus = ReviewStatus.DRAFT
 
     @model_validator(mode="after")
-    def _ordered(self) -> "Protocol":
+    def _ordered(self) -> Protocol:
         ords = [s.ordinal for s in self.stages]
         if ords != sorted(ords) or len(set(ords)) != len(ords):
             raise ValueError("etapas de protocolo fuera de orden o repetidas")
@@ -348,7 +348,7 @@ class Micrograph(_Frozen):
     review_status: ReviewStatus = ReviewStatus.DRAFT
 
     @model_validator(mode="after")
-    def _checks(self) -> "Micrograph":
+    def _checks(self) -> Micrograph:
         if self.magnification_x is not None and self.magnification_x <= 0:
             raise ValueError("magnification_x debe ser > 0")
         if self.scale_bar_um is not None and self.scale_bar_um <= 0:
@@ -381,7 +381,7 @@ class PracticeQuestion(_Frozen):
     review_status: ReviewStatus = ReviewStatus.DRAFT
 
     @model_validator(mode="after")
-    def _opts(self) -> "PracticeQuestion":
+    def _opts(self) -> PracticeQuestion:
         if len(self.options_es) != len(self.options_en) or not (0 <= self.correct_index < len(self.options_es)):
             raise ValueError(f"pregunta {self.id}: opciones inconsistentes")
         return self
@@ -415,7 +415,7 @@ class DatasetSnapshot(_Frozen):
     practice_questions: list[PracticeQuestion] = Field(default_factory=list)
 
     @model_validator(mode="after")
-    def _referential_integrity(self) -> "DatasetSnapshot":
+    def _referential_integrity(self) -> DatasetSnapshot:
         src = {s.id for s in self.sources}
         ev = {e.id for e in self.evidence}
         mats = {m.id for m in self.materials}

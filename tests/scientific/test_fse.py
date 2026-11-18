@@ -12,18 +12,17 @@ import json
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings
-from hypothesis import strategies as st
-from pydantic import ValidationError
-
 from ferrolab_fse import ScientificEngine, SimulationRequest
 from ferrolab_fse.enums import CompatibilityStatus, MaterialId, SimulationStatus, TreatmentId
-from ferrolab_fse.models import ModelNotActivated
-from ferrolab_fse.models import andrews, jmak, koistinen_marburger as km
+from ferrolab_fse.models import ModelNotActivated, andrews, jmak
+from ferrolab_fse.models import koistinen_marburger as km
 from ferrolab_fse.models.hardness import convert_with_table
 from ferrolab_fse.result import ResultFact, Results
 from ferrolab_fse.snapshot import ModelVersion
 from ferrolab_fse.thermal import ThermalHistoryError, ThermalStage, validate_stages
+from hypothesis import given, settings
+from hypothesis import strategies as st
+from pydantic import ValidationError
 
 FSE_DIR = Path(__file__).resolve().parents[2] / "packages" / "fse" / "ferrolab_fse"
 
@@ -224,7 +223,7 @@ def test_no_hardcoded_coefficients_in_models():
         tree = ast.parse(path.read_text())
         nums = {n.value for n in ast.walk(tree) if isinstance(n, ast.Constant) and isinstance(n.value, float | int)
                 and not isinstance(n.value, bool)}
-        assert nums <= {0, 1, 0.0, 1.0, 2}, f"{path.name}: {nums}"
+        assert nums <= {0, 1, 2}, f"{path.name}: {nums}"
 
 
 # SCI-10 historial térmico ---------------------------------------------------------

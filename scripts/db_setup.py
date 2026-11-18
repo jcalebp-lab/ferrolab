@@ -16,14 +16,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "services" / "api"))
 
-from sqlalchemy import text  # noqa: E402
-
 from app.core.config import get_settings  # noqa: E402
 from app.db.migrate import apply  # noqa: E402
 from app.db.session import make_engine  # noqa: E402
 from app.repositories.entities import ENTITIES, INSERT_ORDER  # noqa: E402
 from app.repositories.postgres import PostgresRepository  # noqa: E402
 from app.services.release_builder import DEV, build_snapshot  # noqa: E402
+from sqlalchemy import text  # noqa: E402
 
 
 def main() -> int:

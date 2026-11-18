@@ -43,7 +43,7 @@ class ResultFact(BaseModel):
     uncertainty: dict[str, Any] | None = None
 
     @model_validator(mode="after")
-    def _gate_c1(self) -> "ResultFact":
+    def _gate_c1(self) -> ResultFact:
         if not math.isfinite(self.value):
             raise ValueError("valor no finito")
         if not self.unit or not self.method or not self.source_ids:
@@ -66,7 +66,7 @@ class Results(BaseModel):
     mechanical_properties: dict[str, ResultFact] | None = None
 
     @model_validator(mode="after")
-    def _gate_c5(self) -> "Results":
+    def _gate_c5(self) -> Results:
         for name, group, allowed in (
             ("phase_fractions", self.phase_fractions, PHASE_KEYS),
             ("microconstituent_fractions", self.microconstituent_fractions, MICROCONSTITUENT_KEYS),
