@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    ferrolab_env: Literal["development", "test", "production"] = "development"
+    ferrolab_env: Literal["development", "test", "staging", "production"] = "development"
     # Sin DATABASE_URL la API sirve el snapshot del archivo seed (modo degradado, sin admin).
     database_url: SecretStr | None = None
     snapshot_file: Path = REPO_ROOT / "database" / "seeds" / "catalog_seed.json"
@@ -65,8 +65,14 @@ class Settings(BaseSettings):
         return self.ferrolab_env == "production"
 
     @property
+    def is_public(self) -> bool:
+        """staging = piloto público en internet; production = versión oficial revisada."""
+        return self.ferrolab_env in ("staging", "production")
+
+    @property
     def dev_login_allowed(self) -> bool:
-        return self.admin_dev_login and not self.is_production
+        # Los tokens de desarrollo NUNCA se aceptan en un servidor público.
+        return self.admin_dev_login and not self.is_public
 
 
 @lru_cache

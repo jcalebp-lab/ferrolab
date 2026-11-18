@@ -1,0 +1,32 @@
+# Blueprint de Render: Dashboard → New → Blueprint → elegir este repositorio.
+# Los valores marcados sync:false se escriben a mano en el panel (nunca en Git).
+services:
+  - type: web
+    name: ferrolab
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/v1/health/live
+    autoDeploy: true
+    envVars:
+      - key: FERROLAB_ENV
+        value: staging          # piloto público: muestra contenido marcado «pendiente de revisión»
+      - key: SERVE_WEB_APP
+        value: "true"
+      - key: DATABASE_URL       # Supabase → Connect → «Session pooler» (compatible con IPv4)
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false             # p. ej. https://ferrolab.onrender.com
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_JWT_ISSUER
+        sync: false             # https://<proyecto>.supabase.co/auth/v1
+      - key: SUPABASE_JWKS_URL
+        sync: false             # https://<proyecto>.supabase.co/auth/v1/.well-known/jwks.json
+      - key: ADMIN_BOOTSTRAP_USER_ID   # Supabase → Authentication → Users → su «User UID»
+        sync: false
+      - key: ADMIN_DEV_LOGIN
+        value: "false"
+      - key: AI_ENABLED
+        value: "false"

@@ -34,7 +34,7 @@ def main() -> int:
     ap.add_argument("--ttl", type=int, default=3600)
     a = ap.parse_args()
     s = get_settings()
-    if s.is_production or s.supabase_jwt_secret is None:
+    if s.is_public or s.supabase_jwt_secret is None:
         print("Solo desarrollo y requiere SUPABASE_JWT_SECRET", file=sys.stderr)
         return 2
     print(mint(a.user, s.supabase_jwt_secret.get_secret_value(), s.supabase_jwt_audience, s.supabase_jwt_issuer, a.ttl))

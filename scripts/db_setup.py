@@ -31,6 +31,11 @@ def main() -> int:
     ap.add_argument("--admin-email")
     ap.add_argument("--role", default="admin", choices=["editor", "reviewer", "admin"])
     args = ap.parse_args()
+    # En un servidor (Render) sin terminal: ADMIN_BOOTSTRAP_USER_ID = id del usuario en Supabase Auth.
+    import os
+
+    args.admin_user = args.admin_user or os.environ.get("ADMIN_BOOTSTRAP_USER_ID") or None
+    args.admin_email = args.admin_email or os.environ.get("ADMIN_BOOTSTRAP_EMAIL") or None
     s = get_settings()
     if s.database_url is None:
         print("Falta DATABASE_URL", file=sys.stderr)

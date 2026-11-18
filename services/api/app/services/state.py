@@ -57,7 +57,7 @@ class AppState:
             snap, checksum = got
             origin = "database_release"
         else:
-            if self.settings.is_production:
+            if self.settings.is_public:
                 raise ApiError(503, "dependency_unavailable", "Producción requiere DATABASE_URL")
             snap = DatasetSnapshot.model_validate(json.loads(self.settings.snapshot_file.read_text(encoding="utf-8")))
             checksum = snap.checksum()

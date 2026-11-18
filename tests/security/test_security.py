@@ -99,3 +99,21 @@ def test_sec06_flutter_sources_do_not_reference_server_secrets():
         if p.suffix in {".dart", ".json", ".yaml", ".html", ".js"}:
             t = p.read_text(errors="ignore")
             assert "service_role" not in t.lower() and "AI_API_KEY" not in t and "DATABASE_URL" not in t, p
+
+
+def test_staging_never_accepts_dev_tokens_and_requires_db(settings_factory):
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    s = settings_factory(ferrolab_env="staging", admin_dev_login=True)
+    assert s.is_public and not s.dev_login_allowed
+    c = TestClient(create_app(s))
+    assert c.get("/api/v1/materials").status_code == 503  # piloto público sin BD: no sirve datos
+
+
+def test_staging_serves_unreviewed_but_production_refuses():
+    from app.core.config import Settings
+
+    assert Settings(_env_file=None, ferrolab_env="staging").is_production is False
+    assert Settings(_env_file=None, ferrolab_env="production").is_production is True
