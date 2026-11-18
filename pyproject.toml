@@ -1,0 +1,32 @@
+[project]
+name = "ferrolab-workspace"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["ferrolab-fse", "ferrolab-api"]
+
+[tool.uv.workspace]
+members = ["packages/fse", "services/api"]
+
+[tool.uv.sources]
+ferrolab-fse = { workspace = true }
+ferrolab-api = { workspace = true }
+
+[dependency-groups]
+dev = ["pytest>=8.3", "pytest-cov>=6", "hypothesis>=6.120", "ruff>=0.8", "mypy>=1.13"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["db: requiere PostgreSQL (DATABASE_URL)"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["apps"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501", "B008"]

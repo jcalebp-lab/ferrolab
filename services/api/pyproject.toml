@@ -1,0 +1,25 @@
+[project]
+name = "ferrolab-api"
+version = "0.1.0"
+description = "API FastAPI de FERROLAB"
+requires-python = ">=3.12"
+dependencies = [
+  "ferrolab-fse",
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.32",
+  "pydantic-settings>=2.6",
+  "sqlalchemy>=2.0.36,<3",
+  "psycopg[binary]>=3.2",
+  "httpx>=0.28",
+  "pyjwt[crypto]>=2.10",
+]
+
+[tool.uv.sources]
+ferrolab-fse = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]

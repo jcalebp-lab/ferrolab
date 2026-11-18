@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+.env
+.env.*
+!.env.example
+apps/flutter_client/.dart_tool/
+apps/flutter_client/build/
+apps/flutter_client/.flutter-plugins*
+node_modules/
+tests/e2e/screenshots/*.png
+!tests/e2e/screenshots/.gitkeep
