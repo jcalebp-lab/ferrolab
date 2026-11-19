@@ -143,7 +143,7 @@
   "furnaceRunning": "Calculando con el motor científico…",
   "chartTitle": "Temperatura vs. tiempo",
   "chartSchematic": "Esquema del ciclo: eje de tiempo no a escala",
-  "chartPhysical": "Historial del motor científico (tramos lineales didácticos)",
+  "chartPhysical": "Historial térmico del motor científico (centro de la probeta)",
   "chartTimeAxis": "tiempo",
   "chartNoData": "Sin trayectoria para mostrar",
   "resultsTitle": "Esto podemos concluir",
@@ -360,5 +360,153 @@
     }
   },
   "settingsServerNote": "La app necesita el servidor de FERROLAB para calcular. En tu casa puedes usar tu computadora en la misma Wi‑Fi (http://IP:8000). Las direcciones http:// no van cifradas: úsalas solo en tu red local.",
-  "homeConfigureServer": "Configurar servidor"
+  "homeConfigureServer": "Configurar servidor",
+  "recTitle": "Práctica recomendada",
+  "recUse": "Usar valores recomendados",
+  "recOutsideTemp": "Esta temperatura está fuera de lo recomendado por la literatura: es una mala práctica. Puedes simularla para ver qué pasa, pero el resultado lo advertirá.",
+  "recOutsideHold": "Este tiempo está fuera de lo recomendado.",
+  "recNoNumber": "la fuente no da cifra",
+  "recBath": "Baño",
+  "constFerrite": "Ferrita proeutectoide",
+  "constPearlite": "Perlita",
+  "constBainite": "Bainita",
+  "constMartensite": "Martensita",
+  "constTemperedMartensite": "Martensita revenida",
+  "constRetained": "Austenita retenida",
+  "constGraphite": "Grafito en láminas (tipo A)",
+  "phaseFerrite": "Ferrita (α)",
+  "phaseCementite": "Cementita (Fe₃C)",
+  "phaseAustenite": "Austenita (γ)",
+  "grayMatrixPearlite": "Matriz perlítica",
+  "grayMatrixFerritePearlite": "Matriz ferrito-perlítica",
+  "grayMatrixMartensite": "Matriz martensítica",
+  "grayMatrixTempered": "Matriz de martensita revenida",
+  "grayMatrixAusferrite": "Matriz ausferrítica",
+  "microGeneratedTitle": "Microestructura generada",
+  "microGeneratedNote": "Ilustración GENERADA por FERROLAB a partir de las fracciones calculadas por el modelo (centro de la probeta). No es una micrografía real: sirve para reconocer los constituyentes.",
+  "microGesture": "Pellizca o usa la rueda del ratón para acercar; arrastra para recorrer la muestra.",
+  "microReset": "Volver al aumento inicial",
+  "microRealTitle": "Micrografía real con licencia",
+  "microQualitative": "Fundición gris: matriz y grafito cualitativos (sin fracciones calculadas).",
+  "microUnchanged": "No hubo austenización: la microestructura de partida no cambia y no se dibuja una nueva.",
+  "microOpen": "Abrir el microscopio",
+  "diagTitle": "Diagramas TTT y CCT de tu práctica",
+  "diagTtt": "TTT",
+  "diagCct": "CCT",
+  "diagTttNote": "TTT: tiempo para empezar (1 %) y terminar (99 %) cada transformación si la temperatura se mantiene constante. Tu curva muestra el enfriamiento real del centro de la probeta.",
+  "diagCctNote": "CCT: inicio de cada transformación en enfriamiento continuo a velocidades constantes. Donde tu curva cruza una zona, se forma ese constituyente.",
+  "diagYourPath": "Tu práctica (centro)",
+  "diagAxes": "Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM 7.",
+  "diagTable": "Ver datos del diagrama",
+  "modelTitle": "Detalles de la estimación",
+  "modelLabel": "Estimación por modelos empíricos publicados; no revisada por un especialista.",
+  "modelCritical": "Temperaturas críticas (calculadas)",
+  "modelComposition": "Composición nominal usada (% en masa)",
+  "modelSurface": "Superficie de la probeta",
+  "modelPrior": "Estado templado de partida (calculado con la práctica recomendada de temple)",
+  "modelSpecimen": "Probeta de referencia: cilindro de 12,7 mm, resultados en el centro.",
+  "factBand": "Banda de incertidumbre",
+  "recTemperature": "Temperatura: {range}",
+  "@recTemperature": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "recHold": "Mantenimiento: {range}",
+  "@recHold": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "recMedium": "Medio de enfriamiento: {medium}",
+  "@recMedium": {
+    "placeholders": {
+      "medium": {
+        "type": "String"
+      }
+    }
+  },
+  "recSources": "Fuentes: {sources}",
+  "@recSources": {
+    "placeholders": {
+      "sources": {
+        "type": "String"
+      }
+    }
+  },
+  "microMagnification": "≈ {x}× en pantalla",
+  "@microMagnification": {
+    "placeholders": {
+      "x": {
+        "type": "String"
+      }
+    }
+  },
+  "diagPoint": "Tu práctica: t = {time} · {temp} °C",
+  "@diagPoint": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "diagNose": "nariz: {time} a {temp} °C",
+  "@diagNose": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "modelCooling": "Velocidad de enfriamiento a 700 °C: {rate} °C/s",
+  "@modelCooling": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "modelBath": "Temperatura del baño (modelo): {temp} °C",
+  "@modelBath": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "modelAustenite": "Austenita formada en el mantenimiento: {pct} %",
+  "@modelAustenite": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "factBandValue": "{lo} – {hi}",
+  "@factBandValue": {
+    "placeholders": {
+      "lo": {
+        "type": "String"
+      },
+      "hi": {
+        "type": "String"
+      }
+    }
+  },
+  "mediumWater": "agua",
+  "mediumOil": "aceite",
+  "mediumAir": "aire en calma",
+  "mediumFurnace": "horno",
+  "mediumSaltBath": "baño de sales",
+  "reviewExpectModel": "Se calcularán ESTIMACIONES de modelos publicados: fases, constituyentes, dureza y diagramas TTT/CCT de tu práctica. Irán etiquetadas como estimaciones (no mediciones)."
 }

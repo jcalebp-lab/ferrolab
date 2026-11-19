@@ -186,7 +186,13 @@ class TreatmentStepScreen extends ConsumerWidget {
                       tr: tr,
                       pair: ps.byTreatment(tr.id),
                       selected: sim.treatmentId == tr.id,
-                      onTap: () => ref.read(simulationProvider.notifier).selectTreatment(tr.id),
+                      onTap: () {
+                        final n = ref.read(simulationProvider.notifier)..selectTreatment(tr.id);
+                        // Arranca con la práctica recomendada para evitar datos incoherentes.
+                        final rec = ps.byTreatment(tr.id)?.recommendation;
+                        if (rec?.suggestedTemperature != null) n.setTemperature(rec!.suggestedTemperature!);
+                        if (rec?.suggestedHold != null) n.setHold(rec!.suggestedHold!);
+                      },
                     ),
                   ),
               ]);
@@ -332,7 +338,22 @@ class _ParamsStepScreenState extends ConsumerState<ParamsStepScreen> {
             final ui = ps.interface;
             final dom = pair.temperatureDomain;
             final holdLabel = pair.protocol?.stages.where((s) => s.userHold).firstOrNull?.label;
+            final rec = pair.recommendation;
             return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              if (rec != null) ...[
+                _RecommendationCard(
+                  rec: rec,
+                  temperatureC: sim.temperatureC,
+                  holdMin: sim.holdMin,
+                  onUse: () {
+                    final tt = rec.suggestedTemperature;
+                    final hh = rec.suggestedHold;
+                    if (tt != null) _setTemp(tt, ui);
+                    if (hh != null) _setHold(hh, ui);
+                  },
+                ),
+                const Gap(FlSpace.m),
+              ],
               Text(t.paramsYouControl, style: context.text.titleMedium),
               const Gap(FlSpace.s),
               SectionCard(
@@ -438,6 +459,51 @@ class _ParamsStepScreenState extends ConsumerState<ParamsStepScreen> {
   }
 }
 
+String _range(double? lo, double? hi, String unit, String none) {
+  if (lo == null && hi == null) return none;
+  if (lo != null && hi != null) return lo == hi ? '${fmtNum(lo)} $unit' : '${fmtNum(lo)}–${fmtNum(hi)} $unit';
+  return lo != null ? '≥ ${fmtNum(lo)} $unit' : '≤ ${fmtNum(hi!)} $unit';
+}
+
+/// Rango de práctica recomendado por la literatura, con un botón para aplicarlo.
+class _RecommendationCard extends StatelessWidget {
+  const _RecommendationCard({required this.rec, required this.temperatureC, required this.holdMin, required this.onUse});
+  final RecommendationDto rec;
+  final double temperatureC, holdMin;
+  final VoidCallback onUse;
+  @override
+  Widget build(BuildContext context) {
+    final t = context.t;
+    final tOk = rec.temperatureOk(temperatureC);
+    final hOk = rec.holdOk(holdMin);
+    return SectionCard(
+      key: const Key('recommendationCard'),
+      title: t.recTitle,
+      icon: Icons.verified_outlined,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(t.recTemperature(_range(rec.tMin, rec.tMax, '°C', t.recNoNumber)), style: context.text.titleMedium),
+        Text(t.recHold(_range(rec.holdMin, rec.holdMax, t.paramsMinutes, t.recNoNumber)), style: context.text.titleMedium),
+        Text(t.recMedium(t.medium(rec.medium))),
+        const Gap(FlSpace.s),
+        Text(rec.note, style: context.text.bodyMedium),
+        if (rec.bathRule != null) ...[const Gap(FlSpace.xs), Text('${t.recBath}: ${rec.bathRule}', style: context.text.bodySmall)],
+        const Gap(FlSpace.xs),
+        Text(t.recSources(rec.sourceIds.join(', ')), style: context.text.bodySmall),
+        const Gap(FlSpace.s),
+        if (!tOk) ...[Notice(t.recOutsideTemp, kind: 'warning'), const Gap(FlSpace.xs)],
+        if (!hOk) ...[Notice(t.recOutsideHold, kind: 'limitation'), const Gap(FlSpace.xs)],
+        if (rec.suggestedTemperature != null || rec.suggestedHold != null)
+          FilledButton.tonalIcon(
+            key: const Key('useRecommended'),
+            onPressed: onUse,
+            icon: const Icon(Icons.auto_fix_high),
+            label: Text(t.recUse),
+          ),
+      ]),
+    );
+  }
+}
+
 class _ProtocolCard extends StatelessWidget {
   const _ProtocolCard({required this.pair});
   final PairDto pair;
@@ -507,7 +573,7 @@ class ReviewStepScreen extends ConsumerWidget {
             KeyValue(t.reviewTemperature, '${fmtNum(sim.temperatureC)} °C'),
             KeyValue(t.reviewTime, '${fmtNum(sim.holdMin)} ${t.paramsMinutes}'),
             KeyValue(t.reviewInitial, m?.initialConditions.firstOrNull?.name ?? '—'),
-            KeyValue(t.reviewCooling, '${t.reviewAutomatic} 🔒 · ${pair?.protocol?.medium ?? '—'}'),
+            KeyValue(t.reviewCooling, '${t.reviewAutomatic} 🔒 · ${pair?.protocol?.medium ?? (pair?.recommendation != null ? t.medium(pair!.recommendation!.medium) : '—')}'),
           ]),
         ),
         const Gap(FlSpace.l),
@@ -519,7 +585,10 @@ class ReviewStepScreen extends ConsumerWidget {
         if (v != null) ...[
           Text(canRun ? t.reviewHeadsUp : t.reviewBlocked, style: context.text.titleMedium),
           const Gap(FlSpace.s),
-          if (canRun && !v.quantitativeEligible) ...[Notice(t.reviewExpectInsufficient, kind: 'limitation'), const Gap(FlSpace.s)],
+          if (canRun && v.predictedStatus == SimulationStatus.partialResult && !v.quantitativeEligible)
+            ...[Notice(t.reviewExpectModel, kind: 'info', icon: Icons.functions), const Gap(FlSpace.s)]
+          else if (canRun && !v.quantitativeEligible)
+            ...[Notice(t.reviewExpectInsufficient, kind: 'limitation'), const Gap(FlSpace.s)],
           for (final w in v.warnings.where((w) => w.severity != 'info'))
             Padding(
               padding: const EdgeInsets.only(bottom: FlSpace.s),

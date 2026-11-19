@@ -6,6 +6,7 @@ import '../../app/providers.dart';
 import '../../core/design_system/tokens.dart';
 import '../../shared/models/models.dart';
 import '../../shared/widgets/widgets.dart';
+import 'microstructure_view.dart';
 
 /// Microscopio virtual (doc 07 §3.6): solo imágenes con licencia verificada y coincidencia documentada.
 class MicroscopeScreen extends ConsumerWidget {
@@ -13,10 +14,25 @@ class MicroscopeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = context.t;
-    final m = ref.watch(simulationProvider).result?.micrograph;
+    final r = ref.watch(simulationProvider).result;
+    final m = r?.micrograph;
+    final spec = r?.illustration;
+    final drawable = spec != null && (spec['family'] == 'gray_cast_iron' || spec['fractions'] != null);
     return Scaffold(
       appBar: AppBar(title: Text(t.microTitle)),
       body: PageBody(maxWidth: 900, children: [
+        if (drawable) ...[
+          Text(t.microGeneratedTitle, style: context.text.titleLarge),
+          const Gap(FlSpace.s),
+          Notice(t.microGeneratedNote, kind: 'info', icon: Icons.brush_outlined),
+          const Gap(FlSpace.m),
+          GeneratedMicroscope(spec: spec, height: 640),
+          const Gap(FlSpace.m),
+          MicroLegend(spec: spec),
+          const Gap(FlSpace.xl),
+          Text(t.microRealTitle, style: context.text.titleLarge),
+          const Gap(FlSpace.s),
+        ],
         if (m == null) ...[
           const Icon(Icons.image_not_supported_outlined, size: 64),
           const Gap(FlSpace.l),

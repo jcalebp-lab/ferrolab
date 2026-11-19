@@ -321,6 +321,8 @@ class ScientificEngine:
             status = SimulationStatus.UNSUPPORTED
         elif quant:
             status = SimulationStatus.COMPLETED  # predicción optimista; se confirma al simular
+        elif ME.supported(req.material_id):
+            status = SimulationStatus.PARTIAL_RESULT  # estimaciones de modelo (D-26)
         else:
             status = SimulationStatus.INSUFFICIENT_EVIDENCE
         return ValidationReport(

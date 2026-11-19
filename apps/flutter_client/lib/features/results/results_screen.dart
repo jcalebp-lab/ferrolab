@@ -10,7 +10,9 @@ import '../../shared/models/models.dart';
 import '../../shared/widgets/widgets.dart';
 import '../ai_tutor/tutor_sheet.dart';
 import '../simulation/playback.dart';
+import '../microscope/microstructure_view.dart';
 import '../simulation/thermal_chart.dart';
+import 'diagrams.dart';
 
 class ResultsScreen extends ConsumerWidget {
   const ResultsScreen({super.key, this.fromHistory});
@@ -97,9 +99,31 @@ class ResultsBody extends ConsumerWidget {
         ]),
       ),
       const Gap(FlSpace.m),
+      if (r.illustration != null) ...[
+        SectionCard(
+          key: const Key('generatedMicroCard'),
+          title: t.microGeneratedTitle,
+          icon: Icons.biotech_outlined,
+          child: _GeneratedMicroSummary(spec: r.illustration!),
+        ),
+        const Gap(FlSpace.m),
+      ],
+      if (r.diagrams.isNotEmpty) ...[
+        SectionCard(
+          key: const Key('diagramsCard'),
+          title: t.diagTitle,
+          icon: Icons.stacked_line_chart,
+          child: TransformationDiagrams(diagrams: r.diagrams),
+        ),
+        const Gap(FlSpace.m),
+      ],
+      if (r.modelEstimate != null && r.modelEstimate!['critical_temperatures_c'] != null) ...[
+        _ModelDetails(est: r.modelEstimate!),
+        const Gap(FlSpace.m),
+      ],
       SectionCard(
-        title: t.resultsMicroscope,
-        icon: Icons.biotech_outlined,
+        title: t.microRealTitle,
+        icon: Icons.photo_library_outlined,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (r.micrograph == null)
             Notice(t.microNoMatch, kind: 'limitation', icon: Icons.image_not_supported_outlined)
@@ -210,12 +234,30 @@ class ResultFactCard extends StatelessWidget {
 
   Widget _fact(BuildContext context, String? key, ResultFact f) {
     final t = context.t;
-    final value = f.unit == 'fraction' ? '${(f.value * 100).toStringAsFixed(1)} %' : '${fmtNum(f.value)} ${f.unit}';
+    final frac = f.unit == 'fraction';
+    String fmt(num v) => frac ? '${(v * 100).toStringAsFixed(1)} %' : '${fmtNum(v.toDouble().roundToDouble())} ${f.unit}';
+    final value = fmt(f.value);
+    final u = f.uncertainty;
+    final hrc = u?['hrc'] as num?;
+    final lo = u?['min'] as num?, hi = u?['max'] as num?;
+    String? band;
+    if (lo != null && hi != null && (hi - lo).abs() > (frac ? 0.0005 : 0.5)) {
+      band = t.factBandValue(fmt(lo), fmt(hi));
+      final hl = u?['hrc_min'] as num?, hh = u?['hrc_max'] as num?;
+      if (!frac && (hl != null || hh != null)) {
+        band = '$band  (${hl != null ? '${hl.round()}' : '<20'}–${hh != null ? '${hh.round()}' : '<20'} HRC)';
+      }
+    }
+    final surf = u?['surface_hv'] as num?;
     return Padding(
       padding: const EdgeInsets.only(bottom: FlSpace.s),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(key == null ? value : '$key: $value', style: context.text.headlineSmall),
-        if (f.uncertainty != null) Text('± ${f.uncertainty}', style: context.text.bodySmall),
+        Text(key == null ? value : '${t.constituent(key)}: $value', style: context.text.headlineSmall),
+        if (hrc != null) Text('≈ ${hrc.round()} HRC', style: context.text.titleMedium),
+        if (band != null) Text('${t.factBand}: $band', style: context.text.bodySmall),
+        if (surf != null) Text('${t.modelSurface}: ${fmtNum(surf.toDouble().roundToDouble())} HV'
+            '${u?['surface_hrc'] != null ? ' ≈ ${(u!['surface_hrc'] as num).round()} HRC' : ''}', style: context.text.bodySmall),
+        if (u != null && lo == null) Text('± $u', style: context.text.bodySmall),
         Wrap(spacing: FlSpace.s, runSpacing: FlSpace.xs, children: [
           EvidenceBadge(f.evidenceLevel),
           Pill(icon: Icons.source_outlined, label: t.kind(f.evidenceKind), background: context.fl.accentSoft),
@@ -419,6 +461,92 @@ class _KeepLearning extends ConsumerWidget {
               }
             },
           ),
+      ]),
+    );
+  }
+}
+
+
+class _GeneratedMicroSummary extends StatelessWidget {
+  const _GeneratedMicroSummary({required this.spec});
+  final Map<String, dynamic> spec;
+  @override
+  Widget build(BuildContext context) {
+    final t = context.t;
+    final hasPicture = spec['family'] == 'gray_cast_iron' || spec['fractions'] != null;
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Notice(t.microGeneratedNote, kind: 'info', icon: Icons.brush_outlined),
+      const Gap(FlSpace.s),
+      if (!hasPicture)
+        Notice(t.microUnchanged, kind: 'limitation')
+      else ...[
+        if (spec['family'] == 'gray_cast_iron') ...[Text(t.microQualitative, style: context.text.bodySmall), const Gap(FlSpace.s)],
+        GeneratedMicroscope(spec: spec, height: 340),
+        const Gap(FlSpace.s),
+        MicroLegend(spec: spec),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            key: const Key('openMicroscope'),
+            onPressed: () => context.push('/lab/microscope'),
+            icon: const Icon(Icons.open_in_full),
+            label: Text(t.microOpen),
+          ),
+        ),
+      ],
+    ]);
+  }
+}
+
+class _ModelDetails extends StatelessWidget {
+  const _ModelDetails({required this.est});
+  final Map<String, dynamic> est;
+  @override
+  Widget build(BuildContext context) {
+    final t = context.t;
+    final crit = (est['critical_temperatures_c'] as Map).cast<String, num>();
+    final comp = ((est['composition_nominal_wt_pct'] as Map?) ?? const {}).cast<String, num>();
+    final prior = est['prior_state'] as Map?;
+    String c(String k) => crit[k] == null ? '—' : '${crit[k]!.round()} °C';
+    return SectionCard(
+      key: const Key('modelDetails'),
+      title: t.modelTitle,
+      icon: Icons.functions,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Notice(t.modelLabel, kind: 'limitation', icon: Icons.info_outline),
+        const Gap(FlSpace.s),
+        Text(t.modelSpecimen, style: context.text.bodySmall),
+        if (est['cooling_rate_700c_k_s'] != null)
+          Text(t.modelCooling(fmtNum(((est['cooling_rate_700c_k_s'] as num) * 100).round() / 100))),
+        if (est['bath_temperature_c'] != null) Text(t.modelBath(fmtNum((est['bath_temperature_c'] as num).toDouble()))),
+        if (est['austenite_fraction_at_hold'] != null)
+          Text(t.modelAustenite(((est['austenite_fraction_at_hold'] as num) * 100).toStringAsFixed(0))),
+        if (prior != null && prior['fractions'] != null) ...[
+          const Gap(FlSpace.s),
+          Text(t.modelPrior, style: context.text.titleSmall),
+          for (final e in (prior['fractions'] as Map).cast<String, num>().entries.where((e) => e.value >= .005))
+            KeyValue(t.constituent(e.key), '${(e.value * 100).toStringAsFixed(1)} %'),
+          if (prior['hardness_hv'] != null)
+            KeyValue(t.q_hardness, '${(prior['hardness_hv'] as num).round()} HV'
+                '${prior['hardness_hrc'] != null ? ' ≈ ${(prior['hardness_hrc'] as num).round()} HRC' : ''}'),
+        ],
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: Text(t.modelCritical),
+          children: [
+            KeyValue('Ac1 (Andrews)', c('ac1_c')),
+            KeyValue('Ac3 (Andrews)', c('ac3_c')),
+            KeyValue('Ae1 (Grange / Li)', c('ae1_li_c')),
+            KeyValue('Ae3 (Grange / Li)', c('ae3_li_c')),
+            KeyValue('Bs (Li)', c('bs_li_c')),
+            KeyValue('Ms (Andrews)', c('ms_model_c')),
+          ],
+        ),
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: Text(t.modelComposition),
+          children: [for (final e in comp.entries) KeyValue(e.key, e.value.toString())],
+        ),
       ]),
     );
   }

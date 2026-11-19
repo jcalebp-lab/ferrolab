@@ -123,25 +123,6 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "Model {model} exists in code but is disabled: verified coefficients, domain or a reviewed "
         "reference case are missing.",
     ),
-}
-
-ASSUMPTIONS: dict[str, tuple[str, str]] = {
-    "GEOMETRY_OMITTED": (
-        "Geometría omitida: simplificación educativa. No se predicen gradientes internos ni piezas reales.",
-        "Geometry omitted: educational simplification. Internal gradients and real parts are not predicted.",
-    ),
-    "COOLING_FIXED_BY_PROTOCOL": (
-        "El medio y el perfil de enfriamiento los fija el protocolo; no los elige el estudiante.",
-        "The cooling medium and profile are fixed by the protocol; the student does not choose them.",
-    ),
-    "EDUCATIONAL_NOT_INDUSTRIAL": (
-        "Herramienta educativa, no tratamiento industrial.",
-        "Educational tool, not an industrial treatment.",
-    ),
-    "LINEAR_SEGMENTS_ILLUSTRATIVE": (
-        "Los tramos entre puntos son líneas rectas: representación didáctica, no cinética medida.",
-        "Segments between points are straight lines: a teaching representation, not measured kinetics.",
-    ),
     # --- motor metalúrgico (D-26) -----------------------------------------------
     "OUTSIDE_RECOMMENDED_TEMPERATURE": (
         "La temperatura elegida ({temperature_c} °C) está fuera del rango recomendado por la literatura para "
@@ -194,6 +175,25 @@ ASSUMPTIONS: dict[str, tuple[str, str]] = {
     "CAST_IRON_ILLUSTRATION_ONLY": (
         "Fundición gris: no hay modelo cinético validado; la microestructura se muestra como ilustración cualitativa.",
         "Gray cast iron: no validated kinetic model; the microstructure is shown as a qualitative illustration.",
+    ),
+}
+
+ASSUMPTIONS: dict[str, tuple[str, str]] = {
+    "GEOMETRY_OMITTED": (
+        "Geometría omitida: simplificación educativa. No se predicen gradientes internos ni piezas reales.",
+        "Geometry omitted: educational simplification. Internal gradients and real parts are not predicted.",
+    ),
+    "COOLING_FIXED_BY_PROTOCOL": (
+        "El medio y el perfil de enfriamiento los fija el protocolo; no los elige el estudiante.",
+        "The cooling medium and profile are fixed by the protocol; the student does not choose them.",
+    ),
+    "EDUCATIONAL_NOT_INDUSTRIAL": (
+        "Herramienta educativa, no tratamiento industrial.",
+        "Educational tool, not an industrial treatment.",
+    ),
+    "LINEAR_SEGMENTS_ILLUSTRATIVE": (
+        "Los tramos entre puntos son líneas rectas: representación didáctica, no cinética medida.",
+        "Segments between points are straight lines: a teaching representation, not measured kinetics.",
     ),
 }
 

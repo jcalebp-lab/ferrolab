@@ -128,10 +128,40 @@ class ProtocolSummary {
       );
 }
 
+/// Práctica recomendada por la literatura (cada rango con su fuente).
+class RecommendationDto {
+  RecommendationDto({this.tMin, this.tMax, this.tTypical, this.holdMin, this.holdMax, this.holdTypical,
+      required this.medium, required this.sourceIds, required this.note, this.bathRule});
+  final double? tMin, tMax, tTypical, holdMin, holdMax, holdTypical;
+  final String medium, note;
+  final String? bathRule;
+  final List<String> sourceIds;
+
+  /// Temperatura sugerida: la típica de la fuente o, si no la hay, el centro del rango.
+  double? get suggestedTemperature =>
+      tTypical ?? (tMin != null && tMax != null ? ((tMin! + tMax!) / 2).roundToDouble() : (tMax ?? tMin));
+  double? get suggestedHold => holdTypical ?? holdMin;
+  bool temperatureOk(double v) => (tMin == null || v >= tMin!) && (tMax == null || v <= tMax!);
+  bool holdOk(double v) => (holdMin == null || v >= holdMin!) && (holdMax == null || v <= holdMax!);
+
+  factory RecommendationDto.fromJson(Json j) => RecommendationDto(
+        tMin: _d(j['temperature_min_c']),
+        tMax: _d(j['temperature_max_c']),
+        tTypical: _d(j['temperature_typical_c']),
+        holdMin: _d(j['hold_min_min']),
+        holdMax: _d(j['hold_max_min']),
+        holdTypical: _d(j['hold_typical_min']),
+        medium: j['medium'] as String,
+        sourceIds: _ls(j['source_ids']),
+        note: j['note'] as String,
+        bathRule: j['bath_rule'] as String?,
+      );
+}
+
 class PairDto {
   PairDto({required this.treatmentId, required this.name, required this.compatibility, this.reason,
       required this.quantitative, required this.temperatureDomain, required this.holdDomain, this.physicalLimitC,
-      this.protocol});
+      this.protocol, this.recommendation});
   final String treatmentId, name;
   final CompatibilityStatus compatibility;
   final String? reason;
@@ -139,6 +169,7 @@ class PairDto {
   final DomainDto temperatureDomain, holdDomain;
   final double? physicalLimitC;
   final ProtocolSummary? protocol;
+  final RecommendationDto? recommendation;
 
   factory PairDto.fromJson(Json j) => PairDto(
         treatmentId: j['treatment_id'] as String,
@@ -150,6 +181,8 @@ class PairDto {
         holdDomain: DomainDto.fromJson(j['hold_domain'] as Json),
         physicalLimitC: _d(j['physical_limit_c']),
         protocol: j['protocol'] == null ? null : ProtocolSummary.fromJson(j['protocol'] as Json),
+        recommendation:
+            j['recommendation'] == null ? null : RecommendationDto.fromJson(j['recommendation'] as Json),
       );
 }
 
@@ -413,6 +446,11 @@ class SimulationResultDto {
   final ExplanationDto explanation;
 
   bool get hasPhysicalHistory => thermalHistory.length >= 2;
+
+  /// Diagramas TTT/CCT calculados para el material, con la trayectoria de la práctica.
+  List<DiagramDto> get diagrams => ((raw['diagrams'] as List?) ?? const []).map((d) => DiagramDto.fromJson(d as Json)).toList();
+  Json? get illustration => raw['microstructure_illustration'] as Json?;
+  Json? get modelEstimate => raw['model_estimate'] as Json?;
   bool get playable => hasPhysicalHistory || (schematic?.isNotEmpty ?? false);
 
   factory SimulationResultDto.fromJson(Json j) {
@@ -544,5 +582,33 @@ class HealthDto {
         adminDevLogin: j['admin_dev_login'] as bool,
         supabaseUrl: j['supabase_url'] as String?,
         supabaseAnonKey: j['supabase_anon_key'] as String?,
+      );
+}
+
+
+class DiagramCurve {
+  DiagramCurve({required this.name, required this.reaction, required this.points});
+  final String name, reaction;
+  final List<(double, double)> points; // (t_s, °C)
+  factory DiagramCurve.fromJson(Json j) => DiagramCurve(
+        name: j['name'] as String,
+        reaction: j['reaction'] as String,
+        points: (j['points'] as List).map((p) => (_d((p as List)[0])!, _d(p[1])!)).toList(),
+      );
+}
+
+class DiagramDto {
+  DiagramDto({required this.kind, required this.curves, required this.lines, required this.userPath, required this.runs});
+  final String kind; // TTT | CCT
+  final List<DiagramCurve> curves;
+  final Map<String, double> lines;
+  final List<(double, double)> userPath;
+  final List<Json> runs;
+  factory DiagramDto.fromJson(Json j) => DiagramDto(
+        kind: j['kind'] as String,
+        curves: _l(j['curves'], DiagramCurve.fromJson),
+        lines: ((j['lines'] as Json?) ?? const {}).map((k, v) => MapEntry(k, _d(v)!)),
+        userPath: ((j['user_path'] as List?) ?? const []).map((p) => (_d((p as List)[0])!, _d(p[1])!)).toList(),
+        runs: ((j['runs'] as List?) ?? const []).cast<Json>(),
       );
 }

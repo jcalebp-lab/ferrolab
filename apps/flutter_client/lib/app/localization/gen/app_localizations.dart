@@ -737,7 +737,7 @@ abstract class AppLocalizations {
   /// No description provided for @chartPhysical.
   ///
   /// In es, this message translates to:
-  /// **'Historial del motor científico (tramos lineales didácticos)'**
+  /// **'Historial térmico del motor científico (centro de la probeta)'**
   String get chartPhysical;
 
   /// No description provided for @chartTimeAxis.
@@ -1825,6 +1825,378 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Configurar servidor'**
   String get homeConfigureServer;
+
+  /// No description provided for @recTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Práctica recomendada'**
+  String get recTitle;
+
+  /// No description provided for @recUse.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar valores recomendados'**
+  String get recUse;
+
+  /// No description provided for @recOutsideTemp.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta temperatura está fuera de lo recomendado por la literatura: es una mala práctica. Puedes simularla para ver qué pasa, pero el resultado lo advertirá.'**
+  String get recOutsideTemp;
+
+  /// No description provided for @recOutsideHold.
+  ///
+  /// In es, this message translates to:
+  /// **'Este tiempo está fuera de lo recomendado.'**
+  String get recOutsideHold;
+
+  /// No description provided for @recNoNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'la fuente no da cifra'**
+  String get recNoNumber;
+
+  /// No description provided for @recBath.
+  ///
+  /// In es, this message translates to:
+  /// **'Baño'**
+  String get recBath;
+
+  /// No description provided for @constFerrite.
+  ///
+  /// In es, this message translates to:
+  /// **'Ferrita proeutectoide'**
+  String get constFerrite;
+
+  /// No description provided for @constPearlite.
+  ///
+  /// In es, this message translates to:
+  /// **'Perlita'**
+  String get constPearlite;
+
+  /// No description provided for @constBainite.
+  ///
+  /// In es, this message translates to:
+  /// **'Bainita'**
+  String get constBainite;
+
+  /// No description provided for @constMartensite.
+  ///
+  /// In es, this message translates to:
+  /// **'Martensita'**
+  String get constMartensite;
+
+  /// No description provided for @constTemperedMartensite.
+  ///
+  /// In es, this message translates to:
+  /// **'Martensita revenida'**
+  String get constTemperedMartensite;
+
+  /// No description provided for @constRetained.
+  ///
+  /// In es, this message translates to:
+  /// **'Austenita retenida'**
+  String get constRetained;
+
+  /// No description provided for @constGraphite.
+  ///
+  /// In es, this message translates to:
+  /// **'Grafito en láminas (tipo A)'**
+  String get constGraphite;
+
+  /// No description provided for @phaseFerrite.
+  ///
+  /// In es, this message translates to:
+  /// **'Ferrita (α)'**
+  String get phaseFerrite;
+
+  /// No description provided for @phaseCementite.
+  ///
+  /// In es, this message translates to:
+  /// **'Cementita (Fe₃C)'**
+  String get phaseCementite;
+
+  /// No description provided for @phaseAustenite.
+  ///
+  /// In es, this message translates to:
+  /// **'Austenita (γ)'**
+  String get phaseAustenite;
+
+  /// No description provided for @grayMatrixPearlite.
+  ///
+  /// In es, this message translates to:
+  /// **'Matriz perlítica'**
+  String get grayMatrixPearlite;
+
+  /// No description provided for @grayMatrixFerritePearlite.
+  ///
+  /// In es, this message translates to:
+  /// **'Matriz ferrito-perlítica'**
+  String get grayMatrixFerritePearlite;
+
+  /// No description provided for @grayMatrixMartensite.
+  ///
+  /// In es, this message translates to:
+  /// **'Matriz martensítica'**
+  String get grayMatrixMartensite;
+
+  /// No description provided for @grayMatrixTempered.
+  ///
+  /// In es, this message translates to:
+  /// **'Matriz de martensita revenida'**
+  String get grayMatrixTempered;
+
+  /// No description provided for @grayMatrixAusferrite.
+  ///
+  /// In es, this message translates to:
+  /// **'Matriz ausferrítica'**
+  String get grayMatrixAusferrite;
+
+  /// No description provided for @microGeneratedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Microestructura generada'**
+  String get microGeneratedTitle;
+
+  /// No description provided for @microGeneratedNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Ilustración GENERADA por FERROLAB a partir de las fracciones calculadas por el modelo (centro de la probeta). No es una micrografía real: sirve para reconocer los constituyentes.'**
+  String get microGeneratedNote;
+
+  /// No description provided for @microGesture.
+  ///
+  /// In es, this message translates to:
+  /// **'Pellizca o usa la rueda del ratón para acercar; arrastra para recorrer la muestra.'**
+  String get microGesture;
+
+  /// No description provided for @microReset.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver al aumento inicial'**
+  String get microReset;
+
+  /// No description provided for @microRealTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Micrografía real con licencia'**
+  String get microRealTitle;
+
+  /// No description provided for @microQualitative.
+  ///
+  /// In es, this message translates to:
+  /// **'Fundición gris: matriz y grafito cualitativos (sin fracciones calculadas).'**
+  String get microQualitative;
+
+  /// No description provided for @microUnchanged.
+  ///
+  /// In es, this message translates to:
+  /// **'No hubo austenización: la microestructura de partida no cambia y no se dibuja una nueva.'**
+  String get microUnchanged;
+
+  /// No description provided for @microOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir el microscopio'**
+  String get microOpen;
+
+  /// No description provided for @diagTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Diagramas TTT y CCT de tu práctica'**
+  String get diagTitle;
+
+  /// No description provided for @diagTtt.
+  ///
+  /// In es, this message translates to:
+  /// **'TTT'**
+  String get diagTtt;
+
+  /// No description provided for @diagCct.
+  ///
+  /// In es, this message translates to:
+  /// **'CCT'**
+  String get diagCct;
+
+  /// No description provided for @diagTttNote.
+  ///
+  /// In es, this message translates to:
+  /// **'TTT: tiempo para empezar (1 %) y terminar (99 %) cada transformación si la temperatura se mantiene constante. Tu curva muestra el enfriamiento real del centro de la probeta.'**
+  String get diagTttNote;
+
+  /// No description provided for @diagCctNote.
+  ///
+  /// In es, this message translates to:
+  /// **'CCT: inicio de cada transformación en enfriamiento continuo a velocidades constantes. Donde tu curva cruza una zona, se forma ese constituyente.'**
+  String get diagCctNote;
+
+  /// No description provided for @diagYourPath.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu práctica (centro)'**
+  String get diagYourPath;
+
+  /// No description provided for @diagAxes.
+  ///
+  /// In es, this message translates to:
+  /// **'Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM 7.'**
+  String get diagAxes;
+
+  /// No description provided for @diagTable.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver datos del diagrama'**
+  String get diagTable;
+
+  /// No description provided for @modelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles de la estimación'**
+  String get modelTitle;
+
+  /// No description provided for @modelLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Estimación por modelos empíricos publicados; no revisada por un especialista.'**
+  String get modelLabel;
+
+  /// No description provided for @modelCritical.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperaturas críticas (calculadas)'**
+  String get modelCritical;
+
+  /// No description provided for @modelComposition.
+  ///
+  /// In es, this message translates to:
+  /// **'Composición nominal usada (% en masa)'**
+  String get modelComposition;
+
+  /// No description provided for @modelSurface.
+  ///
+  /// In es, this message translates to:
+  /// **'Superficie de la probeta'**
+  String get modelSurface;
+
+  /// No description provided for @modelPrior.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado templado de partida (calculado con la práctica recomendada de temple)'**
+  String get modelPrior;
+
+  /// No description provided for @modelSpecimen.
+  ///
+  /// In es, this message translates to:
+  /// **'Probeta de referencia: cilindro de 12,7 mm, resultados en el centro.'**
+  String get modelSpecimen;
+
+  /// No description provided for @factBand.
+  ///
+  /// In es, this message translates to:
+  /// **'Banda de incertidumbre'**
+  String get factBand;
+
+  /// No description provided for @recTemperature.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperatura: {range}'**
+  String recTemperature(String range);
+
+  /// No description provided for @recHold.
+  ///
+  /// In es, this message translates to:
+  /// **'Mantenimiento: {range}'**
+  String recHold(String range);
+
+  /// No description provided for @recMedium.
+  ///
+  /// In es, this message translates to:
+  /// **'Medio de enfriamiento: {medium}'**
+  String recMedium(String medium);
+
+  /// No description provided for @recSources.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuentes: {sources}'**
+  String recSources(String sources);
+
+  /// No description provided for @microMagnification.
+  ///
+  /// In es, this message translates to:
+  /// **'≈ {x}× en pantalla'**
+  String microMagnification(String x);
+
+  /// No description provided for @diagPoint.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu práctica: t = {time} · {temp} °C'**
+  String diagPoint(String time, String temp);
+
+  /// No description provided for @diagNose.
+  ///
+  /// In es, this message translates to:
+  /// **'nariz: {time} a {temp} °C'**
+  String diagNose(String time, String temp);
+
+  /// No description provided for @modelCooling.
+  ///
+  /// In es, this message translates to:
+  /// **'Velocidad de enfriamiento a 700 °C: {rate} °C/s'**
+  String modelCooling(String rate);
+
+  /// No description provided for @modelBath.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperatura del baño (modelo): {temp} °C'**
+  String modelBath(String temp);
+
+  /// No description provided for @modelAustenite.
+  ///
+  /// In es, this message translates to:
+  /// **'Austenita formada en el mantenimiento: {pct} %'**
+  String modelAustenite(String pct);
+
+  /// No description provided for @factBandValue.
+  ///
+  /// In es, this message translates to:
+  /// **'{lo} – {hi}'**
+  String factBandValue(String lo, String hi);
+
+  /// No description provided for @mediumWater.
+  ///
+  /// In es, this message translates to:
+  /// **'agua'**
+  String get mediumWater;
+
+  /// No description provided for @mediumOil.
+  ///
+  /// In es, this message translates to:
+  /// **'aceite'**
+  String get mediumOil;
+
+  /// No description provided for @mediumAir.
+  ///
+  /// In es, this message translates to:
+  /// **'aire en calma'**
+  String get mediumAir;
+
+  /// No description provided for @mediumFurnace.
+  ///
+  /// In es, this message translates to:
+  /// **'horno'**
+  String get mediumFurnace;
+
+  /// No description provided for @mediumSaltBath.
+  ///
+  /// In es, this message translates to:
+  /// **'baño de sales'**
+  String get mediumSaltBath;
+
+  /// No description provided for @reviewExpectModel.
+  ///
+  /// In es, this message translates to:
+  /// **'Se calcularán ESTIMACIONES de modelos publicados: fases, constituyentes, dureza y diagramas TTT/CCT de tu práctica. Irán etiquetadas como estimaciones (no mediciones).'**
+  String get reviewExpectModel;
 }
 
 class _AppLocalizationsDelegate

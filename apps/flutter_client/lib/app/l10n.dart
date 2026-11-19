@@ -49,4 +49,36 @@ extension EnumLabels on AppLocalizations {
         QuantityCode.grainSize => q_grain_size,
         QuantityCode.mechanicalProperties => q_mechanical_properties,
       };
+
+  /// Nombre de constituyente o fase (claves del contrato del FSE).
+  String constituent(String key) => switch (key) {
+        'proeutectoid_ferrite' => constFerrite,
+        'pearlite' => constPearlite,
+        'bainite' => constBainite,
+        'martensite' => constMartensite,
+        'tempered_martensite' => constTemperedMartensite,
+        'retained_austenite' => constRetained,
+        'graphite_flakes' || 'graphite' => constGraphite,
+        'ferrite' => phaseFerrite,
+        'cementite' => phaseCementite,
+        'austenite' => phaseAustenite,
+        _ => key,
+      };
+
+  String grayMatrix(String key) => switch (key) {
+        'ferrite_pearlite' => grayMatrixFerritePearlite,
+        'martensite' => grayMatrixMartensite,
+        'tempered_martensite' => grayMatrixTempered,
+        'ausferrite' => grayMatrixAusferrite,
+        _ => grayMatrixPearlite,
+      };
+
+  String medium(String code) => switch (code) {
+        'water' => mediumWater,
+        'oil' => mediumOil,
+        'air' => mediumAir,
+        'furnace' => mediumFurnace,
+        'salt_bath' => mediumSaltBath,
+        _ => code,
+      };
 }

@@ -357,7 +357,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chartPhysical =>
-      'Historial del motor científico (tramos lineales didácticos)';
+      'Historial térmico del motor científico (centro de la probeta)';
 
   @override
   String get chartTimeAxis => 'tiempo';
@@ -944,4 +944,224 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeConfigureServer => 'Configurar servidor';
+
+  @override
+  String get recTitle => 'Práctica recomendada';
+
+  @override
+  String get recUse => 'Usar valores recomendados';
+
+  @override
+  String get recOutsideTemp =>
+      'Esta temperatura está fuera de lo recomendado por la literatura: es una mala práctica. Puedes simularla para ver qué pasa, pero el resultado lo advertirá.';
+
+  @override
+  String get recOutsideHold => 'Este tiempo está fuera de lo recomendado.';
+
+  @override
+  String get recNoNumber => 'la fuente no da cifra';
+
+  @override
+  String get recBath => 'Baño';
+
+  @override
+  String get constFerrite => 'Ferrita proeutectoide';
+
+  @override
+  String get constPearlite => 'Perlita';
+
+  @override
+  String get constBainite => 'Bainita';
+
+  @override
+  String get constMartensite => 'Martensita';
+
+  @override
+  String get constTemperedMartensite => 'Martensita revenida';
+
+  @override
+  String get constRetained => 'Austenita retenida';
+
+  @override
+  String get constGraphite => 'Grafito en láminas (tipo A)';
+
+  @override
+  String get phaseFerrite => 'Ferrita (α)';
+
+  @override
+  String get phaseCementite => 'Cementita (Fe₃C)';
+
+  @override
+  String get phaseAustenite => 'Austenita (γ)';
+
+  @override
+  String get grayMatrixPearlite => 'Matriz perlítica';
+
+  @override
+  String get grayMatrixFerritePearlite => 'Matriz ferrito-perlítica';
+
+  @override
+  String get grayMatrixMartensite => 'Matriz martensítica';
+
+  @override
+  String get grayMatrixTempered => 'Matriz de martensita revenida';
+
+  @override
+  String get grayMatrixAusferrite => 'Matriz ausferrítica';
+
+  @override
+  String get microGeneratedTitle => 'Microestructura generada';
+
+  @override
+  String get microGeneratedNote =>
+      'Ilustración GENERADA por FERROLAB a partir de las fracciones calculadas por el modelo (centro de la probeta). No es una micrografía real: sirve para reconocer los constituyentes.';
+
+  @override
+  String get microGesture =>
+      'Pellizca o usa la rueda del ratón para acercar; arrastra para recorrer la muestra.';
+
+  @override
+  String get microReset => 'Volver al aumento inicial';
+
+  @override
+  String get microRealTitle => 'Micrografía real con licencia';
+
+  @override
+  String get microQualitative =>
+      'Fundición gris: matriz y grafito cualitativos (sin fracciones calculadas).';
+
+  @override
+  String get microUnchanged =>
+      'No hubo austenización: la microestructura de partida no cambia y no se dibuja una nueva.';
+
+  @override
+  String get microOpen => 'Abrir el microscopio';
+
+  @override
+  String get diagTitle => 'Diagramas TTT y CCT de tu práctica';
+
+  @override
+  String get diagTtt => 'TTT';
+
+  @override
+  String get diagCct => 'CCT';
+
+  @override
+  String get diagTttNote =>
+      'TTT: tiempo para empezar (1 %) y terminar (99 %) cada transformación si la temperatura se mantiene constante. Tu curva muestra el enfriamiento real del centro de la probeta.';
+
+  @override
+  String get diagCctNote =>
+      'CCT: inicio de cada transformación en enfriamiento continuo a velocidades constantes. Donde tu curva cruza una zona, se forma ese constituyente.';
+
+  @override
+  String get diagYourPath => 'Tu práctica (centro)';
+
+  @override
+  String get diagAxes =>
+      'Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM 7.';
+
+  @override
+  String get diagTable => 'Ver datos del diagrama';
+
+  @override
+  String get modelTitle => 'Detalles de la estimación';
+
+  @override
+  String get modelLabel =>
+      'Estimación por modelos empíricos publicados; no revisada por un especialista.';
+
+  @override
+  String get modelCritical => 'Temperaturas críticas (calculadas)';
+
+  @override
+  String get modelComposition => 'Composición nominal usada (% en masa)';
+
+  @override
+  String get modelSurface => 'Superficie de la probeta';
+
+  @override
+  String get modelPrior =>
+      'Estado templado de partida (calculado con la práctica recomendada de temple)';
+
+  @override
+  String get modelSpecimen =>
+      'Probeta de referencia: cilindro de 12,7 mm, resultados en el centro.';
+
+  @override
+  String get factBand => 'Banda de incertidumbre';
+
+  @override
+  String recTemperature(String range) {
+    return 'Temperatura: $range';
+  }
+
+  @override
+  String recHold(String range) {
+    return 'Mantenimiento: $range';
+  }
+
+  @override
+  String recMedium(String medium) {
+    return 'Medio de enfriamiento: $medium';
+  }
+
+  @override
+  String recSources(String sources) {
+    return 'Fuentes: $sources';
+  }
+
+  @override
+  String microMagnification(String x) {
+    return '≈ $x× en pantalla';
+  }
+
+  @override
+  String diagPoint(String time, String temp) {
+    return 'Tu práctica: t = $time · $temp °C';
+  }
+
+  @override
+  String diagNose(String time, String temp) {
+    return 'nariz: $time a $temp °C';
+  }
+
+  @override
+  String modelCooling(String rate) {
+    return 'Velocidad de enfriamiento a 700 °C: $rate °C/s';
+  }
+
+  @override
+  String modelBath(String temp) {
+    return 'Temperatura del baño (modelo): $temp °C';
+  }
+
+  @override
+  String modelAustenite(String pct) {
+    return 'Austenita formada en el mantenimiento: $pct %';
+  }
+
+  @override
+  String factBandValue(String lo, String hi) {
+    return '$lo – $hi';
+  }
+
+  @override
+  String get mediumWater => 'agua';
+
+  @override
+  String get mediumOil => 'aceite';
+
+  @override
+  String get mediumAir => 'aire en calma';
+
+  @override
+  String get mediumFurnace => 'horno';
+
+  @override
+  String get mediumSaltBath => 'baño de sales';
+
+  @override
+  String get reviewExpectModel =>
+      'Se calcularán ESTIMACIONES de modelos publicados: fases, constituyentes, dureza y diagramas TTT/CCT de tu práctica. Irán etiquetadas como estimaciones (no mediciones).';
 }
