@@ -80,8 +80,8 @@ def test_constraints_block_unsourced_numbers(engine):
     _exec_fails(engine, base + "('x1','src_callister','measured', 1, null, 'p', 'draft', '{}')")  # sin unidad
     _exec_fails(engine, base + "('x2','src_callister','measured', 1, 'HV', null, 'published', '{}')")  # sin localizador
     _exec_fails(engine, base + "('x3','src_callister','measured', 'NaN', 'HV', 'p', 'draft', '{}')")  # NaN
-    _exec_fails(engine, "update material_treatments set quantitative_outputs_enabled = true "
-                        "where material_id='aisi_1045' and treatment_id='temper'")
+    _exec_fails(engine, "update material_treatments set quantitative_outputs_enabled = true, "
+                        "compatibility_status = 'educational_only' where material_id='aisi_1045' and treatment_id='temper'")
     _exec_fails(engine, "update material_treatments set temperature_min_c = 1 where material_id='aisi_1045' "
                         "and treatment_id='quench'")  # rango sin evidencia
     _exec_fails(engine, "insert into materials(id, family, display_name, body) values ('x', 'aluminum', 'x', '{}')")
@@ -146,12 +146,20 @@ def test_full_review_publish_and_rollback(repo, engine):
         ent = ENTITIES[name]
         for item in repo.list(ent, status="draft", limit=500):
             key = ent.key_of(ent.model.model_validate({k: v for k, v in item.items() if k != "_meta"}))
-            repo.transition(ent, key, "reviewed", item["_meta"]["revision"], ADMIN, False)
+            try:
+                repo.transition(ent, key, "reviewed", item["_meta"]["revision"], ADMIN, False)
+            except RepoError:
+                # Solo los protocolos sin fuente verificada o sin temperatura documentada se rechazan.
+                assert name == "protocols"
     with engine.connect() as c:
         rows = repo.load_rows(c, OFFICIAL)
     snap, report = build_snapshot(rows, version="1.0.0-test", include_drafts=False)
     assert snap.contains_unreviewed_content is False
-    assert all(m.compositions == [] for m in snap.materials)
+    ev_ids = {e.id for e in snap.evidence}
+    assert all(c.evidence_id in ev_ids for m in snap.materials for c in m.compositions)
+    assert all(p.evidence_status == "source_verified" for p in snap.protocols)
+    with engine.connect() as c:
+        assert c.execute(text("select count(*) from scientific_reviews")).scalar() > 0
     repo.create_release("1.0.0-test", snap, ADMIN, "prueba", activate=True, mark_published=True)
     assert repo.get(ENTITIES["materials"], "aisi_1045")["review_status"] == "published"
     active, _ = repo.active_snapshot()

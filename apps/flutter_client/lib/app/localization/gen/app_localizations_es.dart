@@ -1174,4 +1174,210 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get microLabelRetained => 'Austenita retenida (islas blancas)';
+
+  @override
+  String get levelA =>
+      'A · Cálculo con modelos publicados (pendiente de validación por especialista)';
+
+  @override
+  String get levelB => 'B · Interpretación cualitativa fundamentada';
+
+  @override
+  String get levelC => 'C · Demostración educativa ilustrativa';
+
+  @override
+  String get lpLimitations => 'Fundamento científico y limitaciones';
+
+  @override
+  String get groupInput => 'Tus parámetros';
+
+  @override
+  String get groupDependency => 'Estado previo';
+
+  @override
+  String get groupProtocol => 'Protocolo';
+
+  @override
+  String get groupEvidence => 'Evidencia';
+
+  @override
+  String get groupModel => 'Modelo';
+
+  @override
+  String get groupReview => 'Revisión';
+
+  @override
+  String get groupOther => 'Otros';
+
+  @override
+  String get lpReference => 'Referencia';
+
+  @override
+  String get lpVerified => 'Fuente verificada';
+
+  @override
+  String get lpUnverified => 'Fuente no verificada por FERROLAB';
+
+  @override
+  String get lpProtocols => 'Protocolos disponibles';
+
+  @override
+  String get lpUseProtocol => 'Usar protocolo recomendado';
+
+  @override
+  String get lpParams => 'Parámetros del protocolo';
+
+  @override
+  String get pFurnace => 'Temperatura del horno';
+
+  @override
+  String get pHold => 'Tiempo de sostenimiento';
+
+  @override
+  String get pBath => 'Temperatura del baño';
+
+  @override
+  String get pBathTime => 'Tiempo en el baño';
+
+  @override
+  String get pBathEqualize =>
+      'Vacío = hasta igualar la temperatura (calculado)';
+
+  @override
+  String get pOutside => 'Fuera del intervalo documentado para este protocolo.';
+
+  @override
+  String get pMediumLocked => 'Medio de enfriamiento (fijado por el protocolo)';
+
+  @override
+  String get lpSequence => 'Secuencia térmica';
+
+  @override
+  String get lpSheet => 'Ficha científica del protocolo';
+
+  @override
+  String get lpObjective => 'Objetivo';
+
+  @override
+  String get lpCondition => 'Condición del material';
+
+  @override
+  String get lpExpected => 'Resultado esperado';
+
+  @override
+  String get lpRestrictions => 'Condiciones y restricciones';
+
+  @override
+  String get lpAssumptions => 'Supuestos';
+
+  @override
+  String get lpMissing => 'Lo que falta investigar';
+
+  @override
+  String get lpPublished =>
+      'Resultados publicados del caso (medidos, no predichos)';
+
+  @override
+  String get lpSources => 'Fuentes';
+
+  @override
+  String get lpPrior => 'Estado de partida del revenido';
+
+  @override
+  String get priorReference => 'Templada de referencia';
+
+  @override
+  String get priorHistory => 'De mi historial';
+
+  @override
+  String get priorTheory => 'Solo teoría';
+
+  @override
+  String get priorHistoryEmpty =>
+      'Aún no hay temples de este material en tu historial (guárdalos desde Resultados).';
+
+  @override
+  String get seqAmbient => 'ambiente';
+
+  @override
+  String get seqUntilEqualized => 'hasta igualar';
+
+  @override
+  String get seqStart => 'Inicio del conteo';
+
+  @override
+  String get lpMaterialPanel => 'Material';
+
+  @override
+  String get lpComposition => 'Composición de referencia (% en masa)';
+
+  @override
+  String get lpCompositionNone =>
+      'La norma no fija composición: comprueba la de tu pieza.';
+
+  @override
+  String get lpTreatmentPanel => 'Tratamiento';
+
+  @override
+  String get basisSource => 'Dato de la fuente';
+
+  @override
+  String get basisRule => 'Regla publicada aplicada a la probeta de 12,7 mm';
+
+  @override
+  String get basisModel => 'Calculado con el modelo (no publicado)';
+
+  @override
+  String get basisPending => 'la fuente no da cifra';
+
+  @override
+  String get basisComputed => 'Calculado por el modelo térmico';
+
+  @override
+  String get goalReference => 'General';
+
+  @override
+  String get goalHardness => 'Orientado a dureza';
+
+  @override
+  String get goalToughness => 'Orientado a tenacidad';
+
+  @override
+  String get goalSoftening => 'Ablandamiento';
+
+  @override
+  String get goalStressRelief => 'Alivio de tensiones';
+
+  @override
+  String get goalExperimental => 'Caso experimental';
+
+  @override
+  String get goalMachinability => 'Maquinabilidad';
+
+  @override
+  String get goalPending => 'Pendiente';
+
+  @override
+  String get mediumTinBath => 'baño de estaño';
+
+  @override
+  String get furnaceBathScene => 'Baño isotérmico';
+
+  @override
+  String lpLimitationsCount(String n) {
+    return '$n avisos agrupados por causa';
+  }
+
+  @override
+  String pRange(String range) {
+    return 'Intervalo documentado: $range';
+  }
+
+  @override
+  String pRef(String v) {
+    return 'Referencia: $v';
+  }
+
+  @override
+  String get lpProtocol => 'Protocolo';
 }

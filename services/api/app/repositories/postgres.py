@@ -83,8 +83,13 @@ class PostgresRepository:
         return cols
 
     def _sync_compositions(self, conn: Connection, obj: BaseModel) -> None:
+        """Copia relacional de las composiciones. Las que citan evidencia aún inexistente se añaden cuando esa
+        evidencia se crea (materiales y evidencia se referencian mutuamente)."""
         conn.execute(text("delete from material_compositions where material_id = :m"), {"m": obj.id})
+        known = {r[0] for r in conn.execute(text("select id from scientific_evidence"))}
         for c in obj.compositions:  # type: ignore[attr-defined]
+            if c.evidence_id not in known:
+                continue
             conn.execute(
                 text("insert into material_compositions(material_id, element, min_wt_pct, max_wt_pct, nominal_wt_pct, "
                      "evidence_id) values (:m, :e, :mi, :ma, :no, :ev)"),
@@ -127,6 +132,13 @@ class PostgresRepository:
                 conn.execute(text(f"insert into {ent.table} ({names}) values ({vals})"), cols)
                 if ent.name == "materials":
                     self._sync_compositions(conn, obj)
+                if ent.name == "evidence":
+                    mat = ENTITIES["materials"]
+                    for row in conn.execute(text("select * from materials where body::text like :p"),
+                                            {"p": f'%"{obj.id}"%'}).mappings():
+                        m = mat.model.model_validate({**row["body"], **{k: row[k] for k in ("id", "family", "display_name")},
+                                                      "review_status": row["review_status"]})
+                        self._sync_compositions(conn, m)
                 self._audit(conn, actor, "create", ent.name, ent.key_of(obj), None, obj.model_dump(mode="json"))
         except IntegrityError as exc:
             raise RepoError("integrity_error", "Conflicto de integridad (clave duplicada o referencia inexistente)",
@@ -183,6 +195,10 @@ class PostgresRepository:
                          {**params, "to": to, "actor": actor})
             self._audit(conn, actor, f"transition:{to}", ent.name, key, {"review_status": current["review_status"]},
                         {"review_status": to})
+            conn.execute(text("insert into scientific_reviews(entity_type, entity_id, revision, from_status, to_status, "
+                              "reviewer_id) values (:t, :i, :r, :f, :to, cast(:a as uuid))"),
+                         {"t": ent.name, "i": key, "r": current["_meta"]["revision"], "f": current["review_status"],
+                          "to": to, "a": actor})
         return self.get(ent, key)
 
     @staticmethod
@@ -190,6 +206,14 @@ class PostgresRepository:
         """Gates mínimos antes de aceptar una revisión (GATE-C1, licencias)."""
         if ent.name == "evidence" and current.get("value") is not None and not current.get("locator"):
             raise RepoError("validation_error", "Una cifra necesita localizador (página/tabla/figura) para revisarse", 422)
+        if ent.name == "protocols":
+            stages = current.get("stages") or []
+            has_temp = any(st.get("end_temperature_mode") in ("user_target", "value") and
+                           (st.get("temperature_min_c") is not None or st.get("temperature_ref_c") is not None
+                            or st.get("end_temperature_c") is not None) for st in stages)
+            if current.get("evidence_status") != "source_verified" or not current.get("source_ids") or not has_temp:
+                raise RepoError("validation_error", "Un protocolo sin fuente verificada o sin temperatura de tratamiento "
+                                "documentada no puede revisarse", 422)
         if ent.name == "micrographs" and not current.get("license_verified"):
             raise RepoError("validation_error", "La micrografía necesita licencia verificada para revisarse", 422)
 

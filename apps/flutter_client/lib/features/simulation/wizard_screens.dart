@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -8,6 +7,7 @@ import '../../app/providers.dart';
 import '../../core/design_system/tokens.dart';
 import '../../shared/models/models.dart';
 import '../../shared/widgets/widgets.dart';
+import 'protocol_panels.dart';
 
 class _WizardScaffold extends StatelessWidget {
   const _WizardScaffold({required this.title, required this.children, this.bottom});
@@ -188,10 +188,9 @@ class TreatmentStepScreen extends ConsumerWidget {
                       selected: sim.treatmentId == tr.id,
                       onTap: () {
                         final n = ref.read(simulationProvider.notifier)..selectTreatment(tr.id);
-                        // Arranca con la práctica recomendada para evitar datos incoherentes.
-                        final rec = ps.byTreatment(tr.id)?.recommendation;
-                        if (rec?.suggestedTemperature != null) n.setTemperature(rec!.suggestedTemperature!);
-                        if (rec?.suggestedHold != null) n.setHold(rec!.suggestedHold!);
+                        // Carga el protocolo de referencia documentado (temperaturas, tiempos y baño).
+                        final ref0 = ps.byTreatment(tr.id)?.referenceProtocol;
+                        if (ref0 != null) n.applyProtocol(ref0);
                       },
                     ),
                   ),
@@ -273,59 +272,25 @@ class _TreatmentCard extends StatelessWidget {
 }
 
 // =================================================================== 3. Parámetros
-class ParamsStepScreen extends ConsumerStatefulWidget {
+class ParamsStepScreen extends ConsumerWidget {
   const ParamsStepScreen({super.key});
-  @override
-  ConsumerState<ParamsStepScreen> createState() => _ParamsStepScreenState();
-}
-
-class _ParamsStepScreenState extends ConsumerState<ParamsStepScreen> {
-  late final TextEditingController _temp;
-  late final TextEditingController _hold;
-  String? _tempErr, _holdErr;
 
   @override
-  void initState() {
-    super.initState();
-    final s = ref.read(simulationProvider);
-    _temp = TextEditingController(text: fmtNum(s.temperatureC));
-    _hold = TextEditingController(text: fmtNum(s.holdMin));
-  }
-
-  @override
-  void dispose() {
-    _temp.dispose();
-    _hold.dispose();
-    super.dispose();
-  }
-
-  void _setTemp(double v, InterfaceConventions ui, {bool fromField = false}) {
-    if (!fromField) _temp.text = fmtNum(v);
-    setState(() => _tempErr = (v < ui.furnaceMinC || v > ui.furnaceMaxC) ? context.t.paramsOutOfUi : null);
-    if (_tempErr == null) ref.read(simulationProvider.notifier).setTemperature(v);
-  }
-
-  void _setHold(double v, InterfaceConventions ui, {bool fromField = false}) {
-    if (!fromField) _hold.text = fmtNum(v);
-    setState(() => _holdErr = (v < 0 || v > ui.holdMaxMin) ? context.t.paramsOutOfUi : null);
-    if (_holdErr == null) ref.read(simulationProvider.notifier).setHold(v);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = context.t;
     final sim = ref.watch(simulationProvider);
     if (!sim.configured) return const _Restart();
     final pairs = ref.watch(pairsProvider(sim.materialId!));
+    final mats = ref.watch(materialsProvider).value ?? const [];
+    final trts = ref.watch(treatmentsProvider).value ?? const [];
+    final n = ref.read(simulationProvider.notifier);
     return _WizardScaffold(
       title: t.homeLabTitle,
       bottom: FilledButton(
-        onPressed: _tempErr != null || _holdErr != null
-            ? null
-            : () {
-                ref.read(simulationProvider.notifier).validate();
-                context.push('/lab/review');
-              },
+        onPressed: () {
+          n.validate();
+          context.push('/lab/review');
+        },
         child: Text(t.paramsReview),
       ),
       children: [
@@ -336,121 +301,126 @@ class _ParamsStepScreenState extends ConsumerState<ParamsStepScreen> {
           data: (ps) {
             final pair = ps.byTreatment(sim.treatmentId!)!;
             final ui = ps.interface;
-            final dom = pair.temperatureDomain;
-            final holdLabel = pair.protocol?.stages.where((s) => s.userHold).firstOrNull?.label;
-            final rec = pair.recommendation;
+            final m = mats.where((x) => x.id == sim.materialId).firstOrNull;
+            final tr = trts.where((x) => x.id == sim.treatmentId).firstOrNull;
+            final proto = pair.protocolById(sim.protocolId);
+            if (proto == null) {
+              return Notice(t.paramsRangeUnpublished, kind: 'limitation');
+            }
+            final pf = proto.param('furnace_temperature');
+            final ph = proto.param('hold_time');
+            final pb = proto.param('bath_temperature');
+            final pbt = proto.param('bath_time');
+            final isRef = proto.params.entries.every((e) {
+              final v = switch (e.key) {
+                'furnace_temperature' => sim.temperatureC,
+                'hold_time' => sim.holdMin,
+                'bath_temperature' => sim.bathTemperatureC,
+                _ => sim.bathTimeMin,
+              };
+              return e.value.ref == null || v == e.value.ref;
+            });
             return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              if (rec != null) ...[
-                _RecommendationCard(
-                  rec: rec,
-                  temperatureC: sim.temperatureC,
-                  holdMin: sim.holdMin,
-                  onUse: () {
-                    final tt = rec.suggestedTemperature;
-                    final hh = rec.suggestedHold;
-                    if (tt != null) _setTemp(tt, ui);
-                    if (hh != null) _setHold(hh, ui);
-                  },
-                ),
-                const Gap(FlSpace.m),
-              ],
-              Text(t.paramsYouControl, style: context.text.titleMedium),
-              const Gap(FlSpace.s),
+              // ----------------------------------------------------- material y tratamiento
               SectionCard(
-                title: t.paramsTemperature,
-                icon: Icons.thermostat,
+                title: t.lpMaterialPanel,
+                icon: Icons.category_outlined,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(children: [
-                    Expanded(
-                      child: Semantics(
-                        label: t.paramsTemperature,
-                        value: '${fmtNum(sim.temperatureC)} °C',
-                        child: Slider(
-                          min: ui.furnaceMinC,
-                          max: ui.furnaceMaxC,
-                          divisions: ((ui.furnaceMaxC - ui.furnaceMinC) / 5).round(),
-                          value: sim.temperatureC.clamp(ui.furnaceMinC, ui.furnaceMaxC),
-                          label: '${fmtNum(sim.temperatureC)} °C',
-                          onChanged: (v) => _setTemp(v.roundToDouble(), ui),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 112,
-                      child: TextField(
-                        key: const Key('tempField'),
-                        controller: _temp,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
-                        decoration: InputDecoration(labelText: t.reviewTemperature, suffixText: '°C', errorText: _tempErr, isDense: true),
-                        onChanged: (s) {
-                          final v = double.tryParse(s);
-                          if (v == null) {
-                            setState(() => _tempErr = t.paramsInvalidNumber);
-                          } else {
-                            _setTemp(v, ui, fromField: true);
-                          }
-                        },
-                      ),
-                    ),
-                  ]),
-                  Text(t.paramsFurnaceRange(fmtNum(ui.furnaceMinC), fmtNum(ui.furnaceMaxC)), style: context.text.bodySmall),
-                  const Gap(FlSpace.s),
-                  Tooltip(
-                    message: t.paramsRangeTooltip,
-                    child: Notice(
-                      dom.usable
-                          ? '${t.paramsThermalLimit}: ${fmtNum(dom.min!)}–${fmtNum(dom.max!)} °C'
-                          : t.paramsRangeUnpublished,
-                      kind: dom.usable ? 'info' : 'limitation',
-                    ),
-                  ),
-                  if (pair.physicalLimitC != null) ...[
-                    const Gap(FlSpace.s),
-                    Text(t.paramsPhysicalLimit(fmtNum(pair.physicalLimitC!)), style: context.text.bodySmall),
-                  ],
+                  Text(m?.displayName ?? sim.materialId!, style: context.text.titleMedium),
+                  const Gap(FlSpace.xs),
+                  Text(t.lpComposition, style: context.text.labelLarge),
+                  Text(
+                    (m?.compositions.isEmpty ?? true)
+                        ? t.lpCompositionNone
+                        : m!.compositions.map((c) => '${c['element']} ${(c['min_wt_pct'] as num).toStringAsFixed(2)}'
+                            '–${(c['max_wt_pct'] as num).toStringAsFixed(2)}').join(' · '),
+                    style: context.text.bodySmall),
+                  if (proto.materialCondition != null) KeyValue(t.lpCondition, proto.materialCondition!),
                 ]),
               ),
               const Gap(FlSpace.m),
               SectionCard(
-                title: t.paramsHold,
-                icon: Icons.timer_outlined,
+                title: t.lpTreatmentPanel,
+                icon: Icons.local_fire_department_outlined,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(children: [
-                    SizedBox(
-                      width: 140,
-                      child: TextField(
-                        key: const Key('holdField'),
-                        controller: _hold,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
-                        decoration: InputDecoration(labelText: t.reviewTime, suffixText: t.paramsMinutes, errorText: _holdErr, isDense: true),
-                        onChanged: (s) {
-                          final v = double.tryParse(s);
-                          if (v == null) {
-                            setState(() => _holdErr = t.paramsInvalidNumber);
-                          } else {
-                            _setHold(v, ui, fromField: true);
-                          }
-                        },
-                      ),
-                    ),
-                    const Gap(FlSpace.m),
-                    for (final d in const [-5.0, 5.0])
-                      IconButton(
-                        tooltip: '${d > 0 ? '+' : ''}${fmtNum(d)} ${t.paramsMinutes}',
-                        onPressed: () => _setHold((sim.holdMin + d).clamp(0, ui.holdMaxMin).toDouble(), ui),
-                        icon: Icon(d > 0 ? Icons.add_circle_outline : Icons.remove_circle_outline),
-                      ),
+                  Text(tr?.name ?? sim.treatmentId!, style: context.text.titleMedium),
+                  if (proto.objective != null) Text(proto.objective!, style: context.text.bodyMedium),
+                  const Gap(FlSpace.s),
+                  Wrap(spacing: FlSpace.s, runSpacing: FlSpace.s, children: [
+                    CompatBadge(pair.compatibility),
+                    LevelBadge(pair.resultLevel),
                   ]),
-                  if (holdLabel != null) ...[const Gap(FlSpace.s), Text(t.paramsHoldStage(holdLabel))],
-                  if (!pair.holdDomain.usable) ...[const Gap(FlSpace.s), Notice(t.paramsRangeUnpublished, kind: 'limitation')],
+                  if (pair.headline != null) ...[const Gap(FlSpace.s), HeadlineNotice(pair.headline!)],
                 ]),
               ),
-              const Gap(FlSpace.xl),
-              Text(t.paramsProtocolDefines, style: context.text.titleMedium),
-              const Gap(FlSpace.s),
-              _ProtocolCard(pair: pair),
+              const Gap(FlSpace.m),
+              // ----------------------------------------------------- protocolo
+              SectionCard(
+                key: const Key('protocolsCard'),
+                title: t.lpProtocols,
+                icon: Icons.library_books_outlined,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  ProtocolPicker(protocols: pair.protocols, selectedId: proto.id, onSelect: n.applyProtocol),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: FilledButton.tonalIcon(
+                      key: const Key('useRecommended'),
+                      onPressed: isRef && proto.isReference ? null : () => n.applyProtocol(pair.referenceProtocol ?? proto),
+                      icon: const Icon(Icons.auto_fix_high),
+                      label: Text(t.lpUseProtocol),
+                    ),
+                  ),
+                ]),
+              ),
+              const Gap(FlSpace.m),
+              if (sim.treatmentId == 'temper') ...[
+                SectionCard(title: t.lpPrior, icon: Icons.history_edu, child: PriorStatePanel(materialId: sim.materialId!)),
+                const Gap(FlSpace.m),
+              ],
+              // ----------------------------------------------------- parámetros
+              SectionCard(
+                title: t.lpParams,
+                icon: Icons.tune,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  Text(t.paramsYouControl, style: context.text.bodySmall),
+                  const Gap(FlSpace.m),
+                  if (pf != null)
+                    ParamField(fieldKey: 'tempField', label: t.pFurnace, icon: Icons.thermostat, param: pf,
+                        value: sim.temperatureC, unit: '°C', uiMin: ui.furnaceMinC, uiMax: ui.furnaceMaxC,
+                        onChanged: (v) => n.setTemperature(v ?? sim.temperatureC)),
+                  if (ph != null) ...[
+                    const Gap(FlSpace.l),
+                    ParamField(fieldKey: 'holdField', label: t.pHold, icon: Icons.timer_outlined, param: ph,
+                        value: sim.holdMin, unit: t.paramsMinutes, uiMax: ui.holdMaxMin,
+                        onChanged: (v) => n.setHold(v ?? 0)),
+                  ],
+                  if (pb != null) ...[
+                    const Gap(FlSpace.l),
+                    ParamField(fieldKey: 'bathField', label: t.pBath, icon: Icons.hot_tub_outlined, param: pb,
+                        value: sim.bathTemperatureC ?? pb.ref, unit: '°C', uiMax: ui.furnaceMaxC,
+                        onChanged: (v) => n.setBathTemperature(v ?? pb.ref ?? 0)),
+                  ],
+                  if (pbt != null) ...[
+                    const Gap(FlSpace.l),
+                    ParamField(fieldKey: 'bathTimeField', label: t.pBathTime, icon: Icons.hourglass_bottom, param: pbt,
+                        value: sim.bathTimeMin, unit: t.paramsMinutes, uiMax: ui.holdMaxMin, allowEmpty: true,
+                        emptyLabel: t.pBathEqualize, onChanged: n.setBathTime),
+                  ],
+                  const Gap(FlSpace.l),
+                  KeyValue(t.pMediumLocked, '${proto.medium} 🔒'),
+                  if (pair.physicalLimitC != null)
+                    Text(t.paramsPhysicalLimit(fmtNum(pair.physicalLimitC!)), style: context.text.bodySmall),
+                ]),
+              ),
+              const Gap(FlSpace.m),
+              SectionCard(
+                key: const Key('sequenceCard'),
+                title: t.lpSequence,
+                icon: Icons.timeline,
+                child: ThermalSequence(protocol: proto, sim: sim),
+              ),
+              const Gap(FlSpace.m),
+              ProtocolSheet(p: proto),
             ]);
           },
         ),
@@ -459,78 +429,7 @@ class _ParamsStepScreenState extends ConsumerState<ParamsStepScreen> {
   }
 }
 
-String _range(double? lo, double? hi, String unit, String none) {
-  if (lo == null && hi == null) return none;
-  if (lo != null && hi != null) return lo == hi ? '${fmtNum(lo)} $unit' : '${fmtNum(lo)}–${fmtNum(hi)} $unit';
-  return lo != null ? '≥ ${fmtNum(lo)} $unit' : '≤ ${fmtNum(hi!)} $unit';
-}
 
-/// Rango de práctica recomendado por la literatura, con un botón para aplicarlo.
-class _RecommendationCard extends StatelessWidget {
-  const _RecommendationCard({required this.rec, required this.temperatureC, required this.holdMin, required this.onUse});
-  final RecommendationDto rec;
-  final double temperatureC, holdMin;
-  final VoidCallback onUse;
-  @override
-  Widget build(BuildContext context) {
-    final t = context.t;
-    final tOk = rec.temperatureOk(temperatureC);
-    final hOk = rec.holdOk(holdMin);
-    return SectionCard(
-      key: const Key('recommendationCard'),
-      title: t.recTitle,
-      icon: Icons.verified_outlined,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(t.recTemperature(_range(rec.tMin, rec.tMax, '°C', t.recNoNumber)), style: context.text.titleMedium),
-        Text(t.recHold(_range(rec.holdMin, rec.holdMax, t.paramsMinutes, t.recNoNumber)), style: context.text.titleMedium),
-        Text(t.recMedium(t.medium(rec.medium))),
-        const Gap(FlSpace.s),
-        Text(rec.note, style: context.text.bodyMedium),
-        if (rec.bathRule != null) ...[const Gap(FlSpace.xs), Text('${t.recBath}: ${rec.bathRule}', style: context.text.bodySmall)],
-        const Gap(FlSpace.xs),
-        Text(t.recSources((rec.sourceNames.isEmpty ? rec.sourceIds : rec.sourceNames).join('; ')), style: context.text.bodySmall),
-        const Gap(FlSpace.s),
-        if (!tOk) ...[Notice(t.recOutsideTemp, kind: 'warning'), const Gap(FlSpace.xs)],
-        if (!hOk) ...[Notice(t.recOutsideHold, kind: 'limitation'), const Gap(FlSpace.xs)],
-        if (rec.suggestedTemperature != null || rec.suggestedHold != null)
-          FilledButton.tonalIcon(
-            key: const Key('useRecommended'),
-            onPressed: onUse,
-            icon: const Icon(Icons.auto_fix_high),
-            label: Text(t.recUse),
-          ),
-      ]),
-    );
-  }
-}
-
-class _ProtocolCard extends StatelessWidget {
-  const _ProtocolCard({required this.pair});
-  final PairDto pair;
-  @override
-  Widget build(BuildContext context) {
-    final t = context.t;
-    final p = pair.protocol;
-    return SectionCard(
-      title: t.protocolLocked,
-      icon: Icons.lock_outline,
-      color: context.fl.accentSoft.withValues(alpha: .35),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(t.protocolLockedWhy, style: context.text.bodySmall),
-        const Gap(FlSpace.m),
-        if (p == null)
-          Notice(t.protocolPending, kind: 'limitation')
-        else ...[
-          KeyValue(t.protocolMedium, p.medium),
-          for (final (i, s) in p.stages.indexed) Text('${i + 1}. ${s.label}${s.userHold ? '  ←' : ''}'),
-          if (p.reviewStatus != 'published') ...[const Gap(FlSpace.s), Notice(t.protocolPending, kind: 'limitation')],
-        ],
-      ]),
-    );
-  }
-}
-
-// =================================================================== 4. Revisión
 class ReviewStepScreen extends ConsumerWidget {
   const ReviewStepScreen({super.key});
   @override
@@ -572,8 +471,12 @@ class ReviewStepScreen extends ConsumerWidget {
             KeyValue(t.reviewTreatment, tr?.name ?? sim.treatmentId!, trailing: CompatBadge(pair?.compatibility)),
             KeyValue(t.reviewTemperature, '${fmtNum(sim.temperatureC)} °C'),
             KeyValue(t.reviewTime, '${fmtNum(sim.holdMin)} ${t.paramsMinutes}'),
-            KeyValue(t.reviewInitial, m?.initialConditions.firstOrNull?.name ?? '—'),
-            KeyValue(t.reviewCooling, '${t.reviewAutomatic} 🔒 · ${pair?.protocol?.medium ?? (pair?.recommendation != null ? t.medium(pair!.recommendation!.medium) : '—')}'),
+            if (sim.bathTemperatureC != null) KeyValue(t.pBath, '${fmtNum(sim.bathTemperatureC!)} °C'),
+            if (sim.bathTimeMin != null) KeyValue(t.pBathTime, '${fmtNum(sim.bathTimeMin!)} ${t.paramsMinutes}'),
+            KeyValue(t.reviewInitial, m?.initialConditions.where((c) => c.id == v?.initialConditionId).firstOrNull?.name
+                ?? m?.initialConditions.firstOrNull?.name ?? '—'),
+            KeyValue(t.reviewCooling, '${t.reviewAutomatic} 🔒 · ${v?.protocol?.medium ?? '—'}'),
+            if (v?.protocol != null) KeyValue(t.lpProtocol, v!.protocol!.name),
           ]),
         ),
         const Gap(FlSpace.l),
@@ -585,15 +488,14 @@ class ReviewStepScreen extends ConsumerWidget {
         if (v != null) ...[
           Text(canRun ? t.reviewHeadsUp : t.reviewBlocked, style: context.text.titleMedium),
           const Gap(FlSpace.s),
-          if (canRun && v.predictedStatus == SimulationStatus.partialResult && !v.quantitativeEligible)
+          if (v.headline != null) ...[HeadlineNotice(v.headline!), const Gap(FlSpace.s)],
+          Wrap(children: [LevelBadge(v.resultLevel)]),
+          const Gap(FlSpace.s),
+          if (canRun && v.resultLevel == 'A')
             ...[Notice(t.reviewExpectModel, kind: 'info', icon: Icons.functions), const Gap(FlSpace.s)]
-          else if (canRun && !v.quantitativeEligible)
+          else if (canRun)
             ...[Notice(t.reviewExpectInsufficient, kind: 'limitation'), const Gap(FlSpace.s)],
-          for (final w in v.warnings.where((w) => w.severity != 'info'))
-            Padding(
-              padding: const EdgeInsets.only(bottom: FlSpace.s),
-              child: Notice(w.message, kind: w.blocking ? 'warning' : 'limitation'),
-            ),
+          LimitationsPanel(warnings: v.warnings),
         ],
       ],
     );

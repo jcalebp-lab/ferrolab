@@ -116,6 +116,32 @@
       "SimulationCreate": {
         "additionalProperties": false,
         "properties": {
+          "bath_temperature_c": {
+            "anyOf": [
+              {
+                "maximum": 1600.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bath Temperature C"
+          },
+          "bath_time_min": {
+            "anyOf": [
+              {
+                "maximum": 1440.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bath Time Min"
+          },
           "hold_time_min": {
             "maximum": 1440.0,
             "minimum": 0.0,
@@ -152,6 +178,68 @@
             ],
             "title": "Material Id",
             "type": "string"
+          },
+          "prior_hold_min": {
+            "anyOf": [
+              {
+                "maximum": 1440.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prior Hold Min"
+          },
+          "prior_mode": {
+            "default": "reference",
+            "enum": [
+              "reference",
+              "history",
+              "theory"
+            ],
+            "title": "Prior Mode",
+            "type": "string"
+          },
+          "prior_protocol_id": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "pattern": "^[a-z0-9_]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prior Protocol Id"
+          },
+          "prior_temperature_c": {
+            "anyOf": [
+              {
+                "maximum": 1600.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prior Temperature C"
+          },
+          "protocol_id": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "pattern": "^[a-z0-9_]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protocol Id"
           },
           "target_temperature_c": {
             "maximum": 1600.0,

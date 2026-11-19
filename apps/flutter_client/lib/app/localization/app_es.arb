@@ -511,5 +511,91 @@
   "reviewExpectModel": "Se calcularán ESTIMACIONES de modelos publicados: fases, constituyentes, dureza y diagramas TTT/CCT de tu práctica. Irán etiquetadas como estimaciones (no mediciones).",
   "microLabelsToggle": "Señalar microconstituyentes",
   "microLabelsZoomHint": "Las flechas se muestran en el aumento base: pulsa «Volver al aumento inicial».",
-  "microLabelRetained": "Austenita retenida (islas blancas)"
+  "microLabelRetained": "Austenita retenida (islas blancas)",
+  "levelA": "A · Cálculo con modelos publicados (pendiente de validación por especialista)",
+  "levelB": "B · Interpretación cualitativa fundamentada",
+  "levelC": "C · Demostración educativa ilustrativa",
+  "lpLimitations": "Fundamento científico y limitaciones",
+  "groupInput": "Tus parámetros",
+  "groupDependency": "Estado previo",
+  "groupProtocol": "Protocolo",
+  "groupEvidence": "Evidencia",
+  "groupModel": "Modelo",
+  "groupReview": "Revisión",
+  "groupOther": "Otros",
+  "lpReference": "Referencia",
+  "lpVerified": "Fuente verificada",
+  "lpUnverified": "Fuente no verificada por FERROLAB",
+  "lpProtocols": "Protocolos disponibles",
+  "lpUseProtocol": "Usar protocolo recomendado",
+  "lpParams": "Parámetros del protocolo",
+  "pFurnace": "Temperatura del horno",
+  "pHold": "Tiempo de sostenimiento",
+  "pBath": "Temperatura del baño",
+  "pBathTime": "Tiempo en el baño",
+  "pBathEqualize": "Vacío = hasta igualar la temperatura (calculado)",
+  "pOutside": "Fuera del intervalo documentado para este protocolo.",
+  "pMediumLocked": "Medio de enfriamiento (fijado por el protocolo)",
+  "lpSequence": "Secuencia térmica",
+  "lpSheet": "Ficha científica del protocolo",
+  "lpObjective": "Objetivo",
+  "lpCondition": "Condición del material",
+  "lpExpected": "Resultado esperado",
+  "lpRestrictions": "Condiciones y restricciones",
+  "lpAssumptions": "Supuestos",
+  "lpMissing": "Lo que falta investigar",
+  "lpPublished": "Resultados publicados del caso (medidos, no predichos)",
+  "lpSources": "Fuentes",
+  "lpPrior": "Estado de partida del revenido",
+  "priorReference": "Templada de referencia",
+  "priorHistory": "De mi historial",
+  "priorTheory": "Solo teoría",
+  "priorHistoryEmpty": "Aún no hay temples de este material en tu historial (guárdalos desde Resultados).",
+  "seqAmbient": "ambiente",
+  "seqUntilEqualized": "hasta igualar",
+  "seqStart": "Inicio del conteo",
+  "lpMaterialPanel": "Material",
+  "lpComposition": "Composición de referencia (% en masa)",
+  "lpCompositionNone": "La norma no fija composición: comprueba la de tu pieza.",
+  "lpTreatmentPanel": "Tratamiento",
+  "basisSource": "Dato de la fuente",
+  "basisRule": "Regla publicada aplicada a la probeta de 12,7 mm",
+  "basisModel": "Calculado con el modelo (no publicado)",
+  "basisPending": "la fuente no da cifra",
+  "basisComputed": "Calculado por el modelo térmico",
+  "goalReference": "General",
+  "goalHardness": "Orientado a dureza",
+  "goalToughness": "Orientado a tenacidad",
+  "goalSoftening": "Ablandamiento",
+  "goalStressRelief": "Alivio de tensiones",
+  "goalExperimental": "Caso experimental",
+  "goalMachinability": "Maquinabilidad",
+  "goalPending": "Pendiente",
+  "mediumTinBath": "baño de estaño",
+  "furnaceBathScene": "Baño isotérmico",
+  "lpLimitationsCount": "{n} avisos agrupados por causa",
+  "@lpLimitationsCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "pRange": "Intervalo documentado: {range}",
+  "@pRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "pRef": "Referencia: {v}",
+  "@pRef": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "lpProtocol": "Protocolo"
 }

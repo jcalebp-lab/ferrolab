@@ -438,5 +438,91 @@
   "reviewExpectModel": "Model ESTIMATES will be computed from published models: phases, constituents, hardness and TTT/CCT diagrams of your practice. They will be labeled as estimates (not measurements).",
   "microLabelsToggle": "Point out microconstituents",
   "microLabelsZoomHint": "Arrows are shown at base magnification: tap “Back to initial magnification”.",
-  "microLabelRetained": "Retained austenite (white islands)"
+  "microLabelRetained": "Retained austenite (white islands)",
+  "levelA": "A · Computed with published models (pending specialist validation)",
+  "levelB": "B · Grounded qualitative interpretation",
+  "levelC": "C · Illustrative educational demonstration",
+  "lpLimitations": "Scientific basis and limitations",
+  "groupInput": "Your parameters",
+  "groupDependency": "Prior state",
+  "groupProtocol": "Protocol",
+  "groupEvidence": "Evidence",
+  "groupModel": "Model",
+  "groupReview": "Review",
+  "groupOther": "Other",
+  "lpReference": "Reference",
+  "lpVerified": "Verified source",
+  "lpUnverified": "Source not verified by FERROLAB",
+  "lpProtocols": "Available protocols",
+  "lpUseProtocol": "Use recommended protocol",
+  "lpParams": "Protocol parameters",
+  "pFurnace": "Furnace temperature",
+  "pHold": "Holding time",
+  "pBath": "Bath temperature",
+  "pBathTime": "Bath time",
+  "pBathEqualize": "Empty = until temperature equalizes (computed)",
+  "pOutside": "Outside the documented interval for this protocol.",
+  "pMediumLocked": "Cooling medium (set by the protocol)",
+  "lpSequence": "Thermal sequence",
+  "lpSheet": "Protocol scientific sheet",
+  "lpObjective": "Objective",
+  "lpCondition": "Material condition",
+  "lpExpected": "Expected outcome",
+  "lpRestrictions": "Conditions and restrictions",
+  "lpAssumptions": "Assumptions",
+  "lpMissing": "What still needs research",
+  "lpPublished": "Published results of the case (measured, not predicted)",
+  "lpSources": "Sources",
+  "lpPrior": "Tempering starting state",
+  "priorReference": "Reference hardened",
+  "priorHistory": "From my history",
+  "priorTheory": "Theory only",
+  "priorHistoryEmpty": "No quenches of this material in your history yet (save them from Results).",
+  "seqAmbient": "room temperature",
+  "seqUntilEqualized": "until equalized",
+  "seqStart": "Count starts",
+  "lpMaterialPanel": "Material",
+  "lpComposition": "Reference composition (wt%)",
+  "lpCompositionNone": "The standard sets no composition: check your part's.",
+  "lpTreatmentPanel": "Treatment",
+  "basisSource": "Value from the source",
+  "basisRule": "Published rule applied to the 12.7 mm specimen",
+  "basisModel": "Computed with the model (not published)",
+  "basisPending": "the source gives no number",
+  "basisComputed": "Computed by the thermal model",
+  "goalReference": "General",
+  "goalHardness": "Hardness-oriented",
+  "goalToughness": "Toughness-oriented",
+  "goalSoftening": "Softening",
+  "goalStressRelief": "Stress relief",
+  "goalExperimental": "Experimental case",
+  "goalMachinability": "Machinability",
+  "goalPending": "Pending",
+  "mediumTinBath": "tin bath",
+  "furnaceBathScene": "Isothermal bath",
+  "lpLimitationsCount": "{n} notices grouped by cause",
+  "@lpLimitationsCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "pRange": "Documented interval: {range}",
+  "@pRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "pRef": "Reference: {v}",
+  "@pRef": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "lpProtocol": "Protocol"
 }

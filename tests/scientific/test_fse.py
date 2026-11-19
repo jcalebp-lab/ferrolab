@@ -32,20 +32,27 @@ def req(m="aisi_1045", t="quench", temp=850.0, hold=30.0, **kw) -> SimulationReq
 
 
 # SCI-01 ---------------------------------------------------------------------
-def test_sci01_matrix_has_18_pairs_none_supported(seed_snapshot):
+def test_sci01_matrix_has_18_pairs_each_with_reference_protocol(seed_snapshot):
     pairs = {(p.material_id, p.treatment_id): p for p in seed_snapshot.material_treatments}
     assert set(pairs) == set(itertools.product(MaterialId, TreatmentId))
     for p in pairs.values():
-        assert p.compatibility_status != CompatibilityStatus.SUPPORTED
+        # Sin evidencia MEDIDA publicada, la ruta experimental sigue apagada (las cifras vienen de modelos).
         assert p.quantitative_outputs_enabled is False
         assert p.review_status == "draft"
         assert p.reason_es and p.reason_en
+        prot = seed_snapshot.protocol(p.protocol_id)
+        assert prot is not None and prot.is_reference and prot.evidence_status == "source_verified"
 
 
 def test_db01_catalog_has_no_invented_numbers(seed_data):
-    """DB-01: el seed no contiene composiciones, durezas, curvas ni micrografías."""
+    """DB-01: toda cifra del seed tiene fuente y localizador; no hay durezas, curvas ni micrografías propias."""
+    ev = {e["id"]: e for e in seed_data["evidence"]}
+    src = {s["id"]: s for s in seed_data["sources"]}
     for m in seed_data["materials"]:
-        assert m["compositions"] == []
+        for c in m["compositions"]:
+            assert ev[c["evidence_id"]]["locator"] and src[ev[c["evidence_id"]]["source_id"]]["verification_status"] == "verified"
+        if m["family"] == "gray_cast_iron":
+            assert m["compositions"] == []  # ASTM A48 no fija composición
     assert seed_data["micrographs"] == [] and seed_data["model_versions"] == []
     numeric = [e for e in seed_data["evidence"] if e.get("value") is not None]
     # Única cifra: el límite de bloqueo (fusión del Fe), en borrador.
@@ -91,7 +98,7 @@ def test_extra_fields_rejected():
 @pytest.mark.parametrize("m,t", list(itertools.product(MaterialId, TreatmentId)))
 def test_sci03_all_seed_pairs_only_modeled_estimates(seed_snapshot, m, t):
     """Sin evidencia revisada, las únicas cifras son estimaciones de modelo (D-26), siempre etiquetadas."""
-    r = ScientificEngine(seed_snapshot).simulate(req(m=m, t=t, temp=500))
+    r = ScientificEngine(seed_snapshot).simulate(req(m=m, t=t, temp=500, hold=30))
     res = r.results
     assert res.grain_size is None and res.mechanical_properties is None
     assert r.protocol_version is None
@@ -102,13 +109,14 @@ def test_sci03_all_seed_pairs_only_modeled_estimates(seed_snapshot, m, t):
         assert f.evidence_kind == "modeled" and f.evidence_level == "bounded_estimate"
         assert f.model_version and f.source_ids and f.validity["review"] == "not_reviewed_by_specialist"
     if m == "astm_a48_class_30":
-        assert not facts and r.simulation_status == SimulationStatus.INSUFFICIENT_EVIDENCE
+        assert not facts and r.result_level in ("B", "C")
     elif t != "temper":
-        # 500 °C < Ae1: no hay austenización, el modelo no inventa una microestructura nueva.
-        assert res.microconstituent_fractions is None
-        assert any(w.code == "MODEL_NO_AUSTENITIZATION" for w in r.warnings)
-    if t == "temper" and m != "astm_a48_class_30":
+        # 500 °C queda fuera de todo rango de austenización: exploración cualitativa, sin cifras.
+        assert not facts and r.result_level == "B"
+        assert any(w.code == "OUTSIDE_PROTOCOL_RANGE" for w in r.warnings)
+    else:  # 500 °C está dentro del revenido documentado del 1045 (400–650) y del 8620 (200–650)
         assert res.hardness is not None and res.hardness.method == "kang_lee_2014_tempering"
+        assert r.result_level == "A"
 
 
 def test_kang_lee_2014_reproduces_paper_examples():
@@ -124,14 +132,20 @@ def test_kang_lee_2014_reproduces_paper_examples():
 
 def test_temper_outside_model_validity_has_no_hardness(seed_snapshot):
     r = ScientificEngine(seed_snapshot).simulate(req(m="aisi_1045", t="temper", temp=100, hold=60))
-    assert r.results.hardness is None
-    assert any(w.code == "MODEL_TEMPER_OUTSIDE_VALIDITY" for w in r.warnings)
+    assert r.results.hardness is None and r.result_level == "B"
+    assert any(w.code == "OUTSIDE_PROTOCOL_RANGE" for w in r.warnings)
+    # Variante voestalpine (150–200 °C) sin tiempo documentado: sin tiempo no hay dureza de revenido.
+    v = ScientificEngine(seed_snapshot).simulate(req(m="aisi_1045", t="temper", temp=180, hold=0,
+                                                     protocol_id="prot_1045_temper_voest"))
+    assert v.results.hardness is None
+    assert any(w.code == "MODEL_TEMPER_OUTSIDE_VALIDITY" for w in v.warnings)
 
 
 def test_model_estimates_at_recommended_practice(seed_snapshot):
     eng = ScientificEngine(seed_snapshot)
-    r = eng.simulate(req(m="aisi_1045", t="quench", temp=845, hold=15))
+    r = eng.simulate(req(m="aisi_1045", t="quench", temp=845, hold=7.5))
     assert r.simulation_status == SimulationStatus.PARTIAL_RESULT
+    assert r.headline["code"] == "HEADLINE_VALID" and r.result_level == "A"
     micro = r.results.microconstituent_fractions
     assert micro and abs(sum(f.value for f in micro.values()) - 1) < 2e-3
     assert "martensite" in micro and r.results.hardness.unit == "HV"
@@ -140,10 +154,11 @@ def test_model_estimates_at_recommended_practice(seed_snapshot):
     assert {d["kind"] for d in r.diagrams} == {"TTT", "CCT"}
     assert all(d["user_path"] for d in r.diagrams)
     assert r.thermal_history and r.microstructure_illustration["kind"] == "generated_illustration"
-    assert not any(w.code == "OUTSIDE_RECOMMENDED_TEMPERATURE" for w in r.warnings)
-    bad = eng.simulate(req(m="aisi_1045", t="quench", temp=1100, hold=15))
-    assert any(w.code == "OUTSIDE_RECOMMENDED_TEMPERATURE" for w in bad.warnings)
-    assert eng.validate(req(m="aisi_1045", t="quench", temp=845, hold=15)).recommendation["temperature_min_c"] == 820
+    assert not any(w.severity == "limitation" for w in r.warnings)
+    bad = eng.simulate(req(m="aisi_1045", t="quench", temp=1100, hold=7.5))
+    assert any(w.code == "OUTSIDE_PROTOCOL_RANGE" for w in bad.warnings) and bad.results.hardness is None
+    v = eng.validate(req(m="aisi_1045", t="quench", temp=845, hold=7.5))
+    assert v.protocol["params"]["furnace_temperature"]["min"] == 820
 
 
 def test_sci03_fraction_balance_and_taxonomy():
@@ -176,14 +191,24 @@ def test_gate_c1_number_without_source_rejected():
 
 
 # SCI-05 revenido -----------------------------------------------------------------
-def test_sci05_temper_requires_hardened_state(seed_snapshot):
+def test_sci05_temper_dependency_on_prior_state(seed_snapshot):
+    eng = ScientificEngine(seed_snapshot)
     for m in ("aisi_1045", "aisi_8620"):
-        r = ScientificEngine(seed_snapshot).simulate(req(m=m, t="temper", temp=400))
-        assert r.compatibility_status == CompatibilityStatus.EDUCATIONAL_ONLY
-        assert any(w.code == "TEMPER_REQUIRES_HARDENED_STATE" for w in r.warnings)
-        # Solo hay cifra si el modelo declara el temple previo que supone (D-29).
-        assert any(w.code == "MODEL_TEMPER_ASSUMED_PRIOR_QUENCH" for w in r.warnings)
+        r = eng.simulate(req(m=m, t="temper", temp=450, hold=30))
+        assert r.compatibility_status == CompatibilityStatus.CONDITIONAL
+        assert r.headline["code"] == "HEADLINE_DEPENDENCY"
+        assert any(w.code == "DEPENDENCY_REFERENCE" for w in r.warnings)
+        assert r.initial_condition.hardened is True
+        assert r.model_estimate["prior_state"]["source"] == "reference"
         assert r.results.hardness.evidence_kind == "modeled"
+        # Demostración teórica: sin estado de partida no hay cifras.
+        t = eng.simulate(req(m=m, t="temper", temp=450, hold=30, prior_mode="theory"))
+        assert t.results.hardness is None and t.result_level == "C"
+        # Muestra del historial: austenizada a otra temperatura => otro estado de partida.
+        h = eng.simulate(req(m=m, t="temper", temp=450, hold=30, prior_mode="history", prior_temperature_c=760,
+                             prior_hold_min=10))
+        assert any(w.code == "DEPENDENCY_HISTORY" for w in h.warnings)
+        assert h.model_estimate["prior_state"]["quench_temperature_c"] == 760
 
 
 # SCI-06 8620 ---------------------------------------------------------------------
@@ -200,9 +225,10 @@ def test_sci07_a48_is_cast_iron_without_steel_models(seed_snapshot):
     assert mat.family == "gray_cast_iron" and mat.compositions == []
     for t in TreatmentId:
         r = ScientificEngine(seed_snapshot).simulate(req(m="astm_a48_class_30", t=t, temp=500))
-        assert r.compatibility_status == CompatibilityStatus.EDUCATIONAL_ONLY
+        assert r.compatibility_status in (CompatibilityStatus.CONDITIONAL, CompatibilityStatus.SUPPORTED)
         assert any(w.code == "CAST_IRON_NO_STEEL_MODELS" for w in r.warnings)
-        assert r.diagrams == []
+        assert r.diagrams == [] and r.results.hardness is None and r.results.microconstituent_fractions is None
+        assert r.microstructure_illustration["graphite"] == "type_a_flakes"
 
 
 # SCI-08 determinismo ------------------------------------------------------------
@@ -299,9 +325,9 @@ def test_sci10_validator_rejects_bad_stages():
         validate_stages([ThermalStage("heat", "a", 0, 0, 20, 100, "x", ())])  # duración nula
 
 
-def test_schematic_cycle_has_only_user_numbers(seed_snapshot):
+def test_schematic_cycle_has_only_user_numbers(no_library_snapshot):
     for t in TreatmentId:
-        r = ScientificEngine(seed_snapshot).simulate(req(m="astm_a48_class_30", t=t, temp=777, hold=13))
+        r = ScientificEngine(no_library_snapshot).simulate(req(m="astm_a48_class_30", t=t, temp=777, hold=13))
         cyc = r.schematic_cycle
         assert cyc is not None and cyc.time_basis == "schematic_not_to_scale"
         for s in cyc.segments:
@@ -309,11 +335,11 @@ def test_schematic_cycle_has_only_user_numbers(seed_snapshot):
             assert s.duration_s in (None, 13 * 60)
         if t in ("austemper", "martemper"):
             assert any(s.kind == "isothermal_hold" and s.end_temperature_c is None for s in cyc.segments)
-            assert any(w.code == "STAGED_PROTOCOL_PENDING" for w in r.warnings)
+            assert any(w.code == "NO_PROTOCOL" for w in r.warnings)
 
 
-def test_hold_zero_omits_stage(seed_snapshot):
-    r = ScientificEngine(seed_snapshot).simulate(req(m="astm_a48_class_30", hold=0))
+def test_hold_zero_omits_stage(no_library_snapshot):
+    r = ScientificEngine(no_library_snapshot).simulate(req(m="astm_a48_class_30", hold=0))
     assert not any(s.is_user_hold for s in r.schematic_cycle.segments)
     assert any(w.code == "HOLD_ZERO" for w in r.warnings)
 
@@ -358,7 +384,8 @@ def test_educational_pair_cannot_enable_numbers(seed_data):
     from ferrolab_fse import DatasetSnapshot
 
     d = json.loads(json.dumps(seed_data))
-    d["material_treatments"][1]["quantitative_outputs_enabled"] = True  # 1045 temper (educational_only)
+    d["material_treatments"][1]["compatibility_status"] = "educational_only"
+    d["material_treatments"][1]["quantitative_outputs_enabled"] = True
     with pytest.raises(ValidationError):
         DatasetSnapshot.model_validate(d)
 

@@ -225,13 +225,36 @@ class ProtocolStage(_Frozen):
     kind: StageKind
     label_key: str
     end_level: SchematicLevel
-    end_temperature_mode: Literal["user_target", "ambient", "value", "unpublished"]
+    # user_target = temperatura principal del horno; user_bath = temperatura del baño (parámetro propio).
+    # model_window = el baño se acota con temperaturas calculadas por el modelo (p. ej. Ms–Bs) y se declara.
+    end_temperature_mode: Literal["user_target", "user_bath", "model_window", "ambient", "value", "unpublished"]
     end_temperature_c: float | None = None
     end_temperature_evidence_id: str | None = None
-    duration_mode: Literal["user_hold", "value", "rate", "unpublished"]
+    # user_hold = sostenimiento en horno; user_bath_time = tiempo en baño; until_equalized = hasta igualar la
+    # temperatura de la pieza con el baño (modelo térmico); until_ambient = hasta temperatura ambiente.
+    duration_mode: Literal["user_hold", "user_bath_time", "until_equalized", "until_ambient", "value", "rate",
+                           "unpublished"]
     duration_s: float | None = None
     rate_c_per_s: float | None = None
     duration_evidence_id: str | None = None
+    # --- protocolo de referencia (D-30) -----------------------------------------
+    role: str | None = None  # preheat, austenitize, soak, transfer, quench, bath, equalize, furnace_cool, ...
+    medium: str | None = None  # water | oil | air | furnace | salt_bath | ...
+    medium_note_es: str | None = None
+    medium_note_en: str | None = None
+    temperature_min_c: float | None = None
+    temperature_max_c: float | None = None
+    temperature_ref_c: float | None = None
+    duration_min_s: float | None = None
+    duration_max_s: float | None = None
+    duration_ref_s: float | None = None
+    until_c: float | None = None  # fin de un enfriamiento controlado (p. ej. horno hasta 650 °C)
+    rule_es: str | None = None  # regla publicada (p. ej. «1 h por pulgada de sección») y cómo se aplica
+    rule_en: str | None = None
+    start_condition_es: str | None = None  # cuándo empieza a contar el tiempo
+    start_condition_en: str | None = None
+    purpose_es: str | None = None  # qué le pasa al material en esta etapa
+    purpose_en: str | None = None
 
     @model_validator(mode="after")
     def _consistency(self) -> ProtocolStage:
@@ -249,11 +272,36 @@ class ProtocolStage(_Frozen):
                 raise ValueError(f"etapa {self.ordinal}: velocidad sin valor positivo o evidencia")
         if self.kind in (StageKind.HOLD, StageKind.ISOTHERMAL_HOLD) and self.duration_mode == "rate":
             raise ValueError("una meseta no se define por velocidad")
+        for v in (self.temperature_min_c, self.temperature_max_c, self.temperature_ref_c, self.duration_min_s,
+                  self.duration_max_s, self.duration_ref_s, self.until_c):
+            _finite(v)
+        # Toda cifra de rango necesita evidencia (GATE-C1 aplicado al protocolo).
+        if any(v is not None for v in (self.temperature_min_c, self.temperature_max_c, self.temperature_ref_c)) \
+                and not self.end_temperature_evidence_id:
+            raise ValueError(f"etapa {self.ordinal}: rango de temperatura sin evidencia")
+        if any(v is not None for v in (self.duration_min_s, self.duration_max_s, self.duration_ref_s)) \
+                and not self.duration_evidence_id:
+            raise ValueError(f"etapa {self.ordinal}: rango de tiempo sin evidencia")
+        for lo, hi, ref, what in ((self.temperature_min_c, self.temperature_max_c, self.temperature_ref_c, "temperatura"),
+                                  (self.duration_min_s, self.duration_max_s, self.duration_ref_s, "tiempo")):
+            if lo is not None and hi is not None and lo > hi:
+                raise ValueError(f"etapa {self.ordinal}: {what} mínima > máxima")
+            if ref is not None and ((lo is not None and ref < lo) or (hi is not None and ref > hi)):
+                raise ValueError(f"etapa {self.ordinal}: {what} de referencia fuera de su rango")
         return self
 
     @property
     def is_fully_specified(self) -> bool:
         return self.end_temperature_mode != "unpublished" and self.duration_mode != "unpublished"
+
+    @property
+    def user_param(self) -> str | None:
+        return {"user_target": "furnace_temperature", "user_bath": "bath_temperature",
+                "model_window": "bath_temperature"}.get(self.end_temperature_mode)
+
+    @property
+    def user_time_param(self) -> str | None:
+        return {"user_hold": "hold_time", "user_bath_time": "bath_time"}.get(self.duration_mode)
 
 
 class Protocol(_Frozen):
@@ -268,6 +316,34 @@ class Protocol(_Frozen):
     medium_evidence_id: str | None = None
     stages: list[ProtocolStage]
     review_status: ReviewStatus = ReviewStatus.DRAFT
+    # --- ficha del protocolo de referencia (D-30) -------------------------------------------
+    variant_code: str | None = None
+    name_es: str | None = None
+    name_en: str | None = None
+    goal: Literal["reference", "hardness", "toughness", "softening", "stress_relief", "experimental",
+                  "machinability", "pending"] = "reference"
+    is_reference: bool = False  # el que se carga por defecto al elegir el tratamiento
+    objective_es: str | None = None
+    objective_en: str | None = None
+    material_condition_es: str | None = None
+    material_condition_en: str | None = None
+    required_initial_state: dict[str, Any] = Field(default_factory=dict)
+    default_initial_condition_id: str | None = None
+    prior_protocol_id: str | None = None  # p. ej. el temple de referencia que precede a un revenido
+    evidence_status: Literal["source_verified", "source_unverified", "pending_research"] = "pending_research"
+    source_ids: list[str] = Field(default_factory=list)
+    validity: dict[str, Any] = Field(default_factory=dict)
+    expected_es: str | None = None
+    expected_en: str | None = None
+    restrictions_es: list[str] = Field(default_factory=list)
+    restrictions_en: list[str] = Field(default_factory=list)
+    assumptions_es: list[str] = Field(default_factory=list)
+    assumptions_en: list[str] = Field(default_factory=list)
+    missing_es: list[str] = Field(default_factory=list)  # qué falta investigar (tarea documentada)
+    missing_en: list[str] = Field(default_factory=list)
+    published_results: list[dict[str, Any]] = Field(default_factory=list)  # resultados medidos del caso citado
+    model_applicable: bool = False  # el FSE tiene modelo cinético para esta condición
+    published_on: str | None = None
 
     @model_validator(mode="after")
     def _ordered(self) -> Protocol:
@@ -447,6 +523,21 @@ class DatasetSnapshot(_Frozen):
                 for eid in (s.end_temperature_evidence_id, s.duration_evidence_id):
                     if eid and eid not in ev:
                         raise ValueError(f"protocolo {p.id}: evidencia inexistente {eid}")
+            for sid in p.source_ids:
+                if sid not in src:
+                    raise ValueError(f"protocolo {p.id}: fuente inexistente {sid}")
+            if p.prior_protocol_id and p.prior_protocol_id not in prots:
+                raise ValueError(f"protocolo {p.id}: protocolo previo inexistente")
+            if p.default_initial_condition_id and p.default_initial_condition_id not in ics:
+                raise ValueError(f"protocolo {p.id}: condición inicial inexistente")
+        refs: dict[tuple[str, str], int] = {}
+        for p in self.protocols:
+            if p.is_reference:
+                k = (p.material_id.value, p.treatment_id.value)
+                refs[k] = refs.get(k, 0) + 1
+        dup = [k for k, n in refs.items() if n > 1]
+        if dup:
+            raise ValueError(f"más de un protocolo de referencia para {dup}")
         for g in self.physical_guards:
             if g.evidence_id not in ev:
                 raise ValueError(f"guardia {g.id}: evidencia inexistente")
@@ -481,6 +572,11 @@ class DatasetSnapshot(_Frozen):
 
     def protocol(self, pid: str | None) -> Protocol | None:
         return next((p for p in self.protocols if p.id == pid), None) if pid else None
+
+    def protocols_for(self, mid: str, tid: str) -> list[Protocol]:
+        """Biblioteca de protocolos del par, con el de referencia primero."""
+        ps = [p for p in self.protocols if p.material_id == mid and p.treatment_id == tid]
+        return sorted(ps, key=lambda p: (not p.is_reference, p.id))
 
     def conditions_for(self, mid: str) -> list[InitialCondition]:
         return [c for c in self.initial_conditions if c.material_id == mid]

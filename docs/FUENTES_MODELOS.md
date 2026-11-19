@@ -33,5 +33,5 @@ Conclusión honesta: las tendencias (qué constituyentes aparecen y cómo cambia
 - **Fundición gris ASTM A48**: sin modelo cinético validado; solo rangos recomendados e ilustración cualitativa.
 - Tamaño de grano final y propiedades de tracción.
 
-## Fuentes de los rangos recomendados
-AZoM «AISI 1045» (ArticleID 6130); Compraco (fichas 1045, 8620 y guía de fundición gris, datos tipo ASM); Wikipedia «Austempering» y «Martempering».
+## Protocolos térmicos
+Los protocolos (temperaturas, tiempos, medios, baños) y sus fuentes están en `docs/PROTOCOLOS.md`, generado desde el catálogo con `scripts/gen_protocol_matrix.py`. Fuentes consultadas: voestalpine (1045), Vanguard Steel (8620), AZoM, Compraco, Total Materia (fundición gris, partes 1 y 2), Wikipedia (austempering, martempering), MRS-México 2024 (carbo-austempering 8620). No consultables desde el entorno (variantes «no verificadas»): MatWeb 8620 cementado, ASM «Heat Treating of Gray Irons», J. Mater. Res. Technol. 2022 (fundición gris austemperizada), Bodycote.

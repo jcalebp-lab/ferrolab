@@ -198,6 +198,138 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "Fundición gris: no hay modelo cinético validado; la microestructura se muestra como ilustración cualitativa.",
         "Gray cast iron: no validated kinetic model; the microstructure is shown as a qualitative illustration.",
     ),
+    # --- biblioteca de protocolos y avisos agrupados (D-30) ------------------------------
+    "REVIEW_PENDING": (
+        "Contenido pendiente de revisión por una persona con formación metalúrgica. Las cifras vienen de las fuentes "
+        "citadas o de modelos publicados.",
+        "Content pending review by a person with metallurgical training. Figures come from the cited sources or from "
+        "published models.",
+    ),
+    "NO_PROTOCOL": (
+        "Esta combinación todavía no tiene un protocolo en la biblioteca: solo se muestra el esquema del ciclo.",
+        "This combination has no protocol in the library yet: only the cycle outline is shown.",
+    ),
+    "OUTSIDE_PROTOCOL_RANGE": (
+        "{param_name} ({value} {unit}) está fuera del intervalo documentado para este protocolo ({min}–{max} {unit}). "
+        "Puedes volver al valor de referencia ({ref} {unit}) o continuar en modo exploración cualitativa.",
+        "{param_name} ({value} {unit}) is outside the documented interval for this protocol ({min}–{max} {unit}). "
+        "You can go back to the reference value ({ref} {unit}) or continue in qualitative exploration mode.",
+    ),
+    "PARAM_UNDOCUMENTED": (
+        "{param_name}: la fuente de este protocolo no da una cifra. {extra}",
+        "{param_name}: this protocol's source gives no number. {extra}",
+    ),
+    "PARAM_UNDOCUMENTED_STEEL_HOLD": (
+        "El tiempo cuenta desde que el centro alcanza la temperatura; el modelo cinético supone austenización "
+        "completa, así que este tiempo no cambia las fracciones calculadas.",
+        "Time counts from when the center reaches temperature; the kinetic model assumes complete austenitization, "
+        "so this time does not change the computed fractions.",
+    ),
+    "PARAM_UNDOCUMENTED_DRAW": (
+        "Se usa el valor que elijas solo para dibujar el ciclo; no se predice su efecto.",
+        "The value you choose is only used to draw the cycle; its effect is not predicted.",
+    ),
+    "BATH_TIME_UNDOCUMENTED": (
+        "La fuente no fija el tiempo en el baño (depende de la composición): el ciclo se dibuja hasta igualar la "
+        "temperatura, salvo que indiques un tiempo.",
+        "The source does not set the bath time (it depends on composition): the cycle is drawn until temperature "
+        "equalizes, unless you give a time.",
+    ),
+    "PROTOCOL_SOURCE_UNVERIFIED": (
+        "Variante con fuente NO verificada por FERROLAB (no se pudo consultar el texto): el ciclo es ilustrativo y no "
+        "se calculan cifras.",
+        "Variant with a source NOT verified by FERROLAB (the text could not be consulted): the cycle is illustrative "
+        "and no figures are computed.",
+    ),
+    "DEPENDENCY_REFERENCE": (
+        "El revenido requiere una microestructura inicial apropiada. Se utiliza una muestra previamente templada de "
+        "referencia ({prior}), calculada y mostrada en los resultados.",
+        "Tempering requires an appropriate initial microstructure. A previously hardened reference sample ({prior}) is "
+        "used, computed and shown in the results.",
+    ),
+    "DEPENDENCY_HISTORY": (
+        "El revenido parte de una muestra templada de tu historial (austenizada a {temperature_c} °C).",
+        "Tempering starts from a hardened sample from your history (austenitized at {temperature_c} °C).",
+    ),
+    "DEPENDENCY_THEORY": (
+        "Demostración teórica: sin estado templado de partida no se predicen dureza ni fracciones.",
+        "Theoretical demonstration: without a hardened starting state, hardness and fractions are not predicted.",
+    ),
+    "CARBURIZED_CASE_NOT_MODELED": (
+        "Pieza cementada: la capa de alto carbono no se modela; no se atribuyen al núcleo las propiedades de la capa "
+        "ni al revés.",
+        "Carburized part: the high-carbon case is not modeled; case properties are not attributed to the core or "
+        "vice versa.",
+    ),
+    "MARTEMPER_EXCESSIVE_HOLD": (
+        "Sostenimiento excesivo en el baño ({time_min} min): según el modelo TTT la bainita empieza a los {limit_min} min. "
+        "En el martemperizado la pieza debe salir al igualar la temperatura.",
+        "Excessive bath hold ({time_min} min): per the TTT model bainite starts at {limit_min} min. In martempering the "
+        "part must leave once its temperature equalizes.",
+    ),
+    "MARTEMPER_BAINITE_FORMED": (
+        "El modelo indica {pct} % de bainita: este acero no alcanza a igualarse en el baño sin transformarse. "
+        "El resultado ya no es un martemperizado puro.",
+        "The model indicates {pct}% bainite: this steel cannot equalize in the bath without transforming. The result is "
+        "no longer pure martempering.",
+    ),
+    "AUSTEMPER_INCOMPLETE_BAINITE": (
+        "Con {time_min} min en el baño la bainita no se completa (el modelo TTT necesita ~{needed_min} min); la "
+        "austenita restante puede formar martensita al enfriar.",
+        "With {time_min} min in the bath, bainite is not completed (the TTT model needs ~{needed_min} min); remaining "
+        "austenite may form martensite on cooling.",
+    ),
+    "THERMAL_CURVE_ILLUSTRATIVE": (
+        "Curva térmica ilustrativa (propiedades térmicas del acero): no predice la temperatura real del núcleo.",
+        "Illustrative thermal curve (steel thermal properties): it does not predict the real core temperature.",
+    ),
+    "EXPLORATION_NO_NUMBERS": (
+        "Modo exploración: fuera del protocolo documentado se muestra la curva y los diagramas, sin cifras de "
+        "dureza ni fracciones.",
+        "Exploration mode: outside the documented protocol, the curve and diagrams are shown without hardness or "
+        "fraction figures.",
+    ),
+    "HEADLINE_VALID": (
+        "Protocolo de referencia cargado. Puedes iniciar la simulación. Consulta las condiciones de aplicación y las "
+        "fuentes científicas.",
+        "Reference protocol loaded. You can start the simulation. Check the application conditions and scientific "
+        "sources.",
+    ),
+    "HEADLINE_VALID_VARIANT": (
+        "Protocolo «{name}» cargado. Puedes iniciar la simulación. Consulta sus condiciones y fuentes.",
+        "Protocol «{name}» loaded. You can start the simulation. Check its conditions and sources.",
+    ),
+    "HEADLINE_OUT_OF_RANGE": (
+        "{param_name} está fuera del intervalo documentado para este protocolo. Puedes volver al valor de referencia o "
+        "continuar en modo exploración cualitativa.",
+        "{param_name} is outside the documented interval for this protocol. You can go back to the reference value or "
+        "continue in qualitative exploration mode.",
+    ),
+    "HEADLINE_OUT_OF_RANGE_SOFT": (
+        "{param_name} está fuera del intervalo documentado. El modelo sigue siendo aplicable, pero tu práctica no "
+        "coincide con la fuente: revisa el valor de referencia.",
+        "{param_name} is outside the documented interval. The model still applies, but your practice does not match "
+        "the source: check the reference value.",
+    ),
+    "HEADLINE_PARTIAL": (
+        "Este tratamiento puede estudiarse de forma educativa. Sin embargo, todavía no hay datos suficientes para "
+        "calcular su dureza o fracciones microestructurales con rigor.",
+        "This treatment can be studied educationally. However, there is not yet enough data to compute its hardness or "
+        "microstructural fractions rigorously.",
+    ),
+    "HEADLINE_DEPENDENCY": (
+        "El revenido requiere una microestructura inicial apropiada. Se utilizará una muestra previamente templada de "
+        "referencia.",
+        "Tempering requires an appropriate initial microstructure. A previously hardened reference sample will be used.",
+    ),
+    "HEADLINE_UNVERIFIED": (
+        "Variante con fuente no verificada: el ciclo se muestra como demostración ilustrativa, sin predicciones.",
+        "Variant with an unverified source: the cycle is shown as an illustrative demonstration, without predictions.",
+    ),
+    "HEADLINE_ILLUSTRATIVE": (
+        "Demostración educativa ilustrativa: no se trata de una predicción experimental.",
+        "Illustrative educational demonstration: this is not an experimental prediction.",
+    ),
 }
 
 ASSUMPTIONS: dict[str, tuple[str, str]] = {
@@ -236,6 +368,7 @@ STAGE_LABELS: dict[str, tuple[str, str]] = {
     "isothermal_bath_hold": ("Mantenimiento isotérmico en el baño", "Isothermal bath hold"),
     "equalization_hold": ("Igualación en el baño (cerca de Ms)", "Equalization in bath (near Ms)"),
     "final_cool": ("Enfriamiento final", "Final cooling"),
+    "preheat": ("Precalentamiento lento", "Slow preheating"),
     "heat_to_austenitizing_model": ("Calentamiento en horno", "Furnace heating"),
 }
 

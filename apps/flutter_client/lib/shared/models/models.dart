@@ -128,44 +128,133 @@ class ProtocolSummary {
       );
 }
 
-/// Práctica recomendada por la literatura (cada rango con su fuente).
-class RecommendationDto {
-  RecommendationDto({this.tMin, this.tMax, this.tTypical, this.holdMin, this.holdMax, this.holdTypical,
-      required this.medium, required this.sourceIds, required this.note, this.bathRule, this.sourceNames = const []});
-  final double? tMin, tMax, tTypical, holdMin, holdMax, holdTypical;
-  final String medium, note;
-  final String? bathRule;
-  final List<String> sourceIds;
-  final List<String> sourceNames;
+/// Parámetro editable de un protocolo, con su rango y el fundamento de cada cifra.
+class ProtocolParam {
+  ProtocolParam({required this.key, required this.unit, this.value, this.min, this.max, this.ref, required this.basis,
+      this.rule, required this.editable, required this.outside});
+  final String key, unit, basis; // basis: source | rule | model | pending | computed
+  final double? value, min, max, ref;
+  final String? rule;
+  final bool editable, outside;
+  bool inRange(double v) => (min == null || v >= min! - 1e-6) && (max == null || v <= max! + 1e-6);
+  factory ProtocolParam.fromJson(Json j) => ProtocolParam(
+        key: j['key'] as String,
+        unit: j['unit'] as String,
+        value: _d(j['value']),
+        min: _d(j['min']),
+        max: _d(j['max']),
+        ref: _d(j['ref']),
+        basis: j['basis'] as String,
+        rule: j['rule'] as String?,
+        editable: j['editable'] as bool? ?? true,
+        outside: j['outside'] as bool? ?? false,
+      );
+}
 
-  /// Temperatura sugerida: la típica de la fuente o, si no la hay, el centro del rango.
-  double? get suggestedTemperature =>
-      tTypical ?? (tMin != null && tMax != null ? ((tMin! + tMax!) / 2).roundToDouble() : (tMax ?? tMin));
-  double? get suggestedHold => holdTypical ?? holdMin;
-  bool temperatureOk(double v) => (tMin == null || v >= tMin!) && (tMax == null || v <= tMax!);
-  bool holdOk(double v) => (holdMin == null || v >= holdMin!) && (holdMax == null || v <= holdMax!);
-
-  factory RecommendationDto.fromJson(Json j) => RecommendationDto(
+class ProtocolStageCard {
+  ProtocolStageCard({required this.ordinal, required this.kind, this.role, required this.label, this.medium,
+      this.mediumNote, this.temperatureC, this.tMin, this.tMax, this.tRef, this.durationS, this.dMin, this.dMax,
+      this.dRef, this.rateCPerH, this.untilC, this.param, this.timeParam, this.rule, this.startCondition, this.purpose,
+      required this.temperatureMode, required this.durationMode});
+  final int ordinal;
+  final String kind, label, temperatureMode, durationMode;
+  final String? role, medium, mediumNote, param, timeParam, rule, startCondition, purpose;
+  final double? temperatureC, tMin, tMax, tRef, durationS, dMin, dMax, dRef, rateCPerH, untilC;
+  bool get isBath => kind == 'isothermal_hold';
+  factory ProtocolStageCard.fromJson(Json j) => ProtocolStageCard(
+        ordinal: j['ordinal'] as int,
+        kind: j['kind'] as String,
+        role: j['role'] as String?,
+        label: j['label'] as String? ?? j['label_key'] as String,
+        medium: j['medium'] as String?,
+        mediumNote: j['medium_note'] as String?,
+        temperatureC: _d(j['temperature_c']),
         tMin: _d(j['temperature_min_c']),
         tMax: _d(j['temperature_max_c']),
-        tTypical: _d(j['temperature_typical_c']),
-        holdMin: _d(j['hold_min_min']),
-        holdMax: _d(j['hold_max_min']),
-        holdTypical: _d(j['hold_typical_min']),
-        medium: j['medium'] as String,
-        sourceIds: _ls(j['source_ids']),
-        note: j['note'] as String,
-        bathRule: j['bath_rule'] as String?,
-        sourceNames: ((j['sources'] as List?) ?? const [])
-            .map((e) => '${(e as Json)['authors']} — ${e['title']}')
-            .toList(),
+        tRef: _d(j['temperature_ref_c']),
+        durationS: _d(j['duration_s']),
+        dMin: _d(j['duration_min_s']),
+        dMax: _d(j['duration_max_s']),
+        dRef: _d(j['duration_ref_s']),
+        rateCPerH: _d(j['rate_c_per_h']),
+        untilC: _d(j['until_c']),
+        param: j['param'] as String?,
+        timeParam: j['time_param'] as String?,
+        rule: j['rule'] as String?,
+        startCondition: j['start_condition'] as String?,
+        purpose: j['purpose'] as String?,
+        temperatureMode: j['temperature_mode'] as String? ?? '',
+        durationMode: j['duration_mode'] as String? ?? '',
       );
+}
+
+class ProtocolSourceCard {
+  ProtocolSourceCard({required this.id, required this.title, this.authors, this.year, this.url, required this.verified});
+  final String id, title;
+  final String? authors, url;
+  final int? year;
+  final bool verified;
+  factory ProtocolSourceCard.fromJson(Json j) => ProtocolSourceCard(
+        id: j['id'] as String,
+        title: j['title'] as String,
+        authors: j['authors'] as String?,
+        year: j['year'] as int?,
+        url: j['url'] as String?,
+        verified: j['verification_status'] == 'verified',
+      );
+}
+
+/// Ficha científica de un protocolo de la biblioteca (D-30).
+class ProtocolCard {
+  ProtocolCard({required this.id, required this.name, this.objective, required this.goal, required this.isReference,
+      required this.evidenceStatus, required this.medium, this.materialCondition, this.expected,
+      required this.restrictions, required this.assumptions, required this.missing, required this.publishedResults,
+      required this.stages, required this.sources, required this.params, required this.modelApplicable,
+      this.priorProtocolId, this.modelWindow});
+  final String id, name, goal, evidenceStatus, medium;
+  final String? objective, materialCondition, expected, priorProtocolId;
+  final bool isReference, modelApplicable;
+  final List<String> restrictions, assumptions, missing, publishedResults;
+  final List<ProtocolStageCard> stages;
+  final List<ProtocolSourceCard> sources;
+  final Map<String, ProtocolParam> params;
+  final Json? modelWindow;
+  bool get verified => evidenceStatus == 'source_verified';
+  ProtocolParam? param(String k) => params[k];
+  factory ProtocolCard.fromJson(Json j) => ProtocolCard(
+        id: j['id'] as String,
+        name: j['name'] as String? ?? j['id'] as String,
+        objective: j['objective'] as String?,
+        goal: j['goal'] as String? ?? 'reference',
+        isReference: j['is_reference'] as bool? ?? false,
+        evidenceStatus: j['evidence_status'] as String? ?? 'pending_research',
+        medium: j['medium'] as String? ?? '—',
+        materialCondition: j['material_condition'] as String?,
+        expected: j['expected'] as String?,
+        restrictions: _ls(j['restrictions']),
+        assumptions: _ls(j['assumptions']),
+        missing: _ls(j['missing']),
+        publishedResults: ((j['published_results'] as List?) ?? const []).map((e) => (e as Json)['text'].toString()).toList(),
+        stages: _l(j['stages'], ProtocolStageCard.fromJson),
+        sources: _l(j['sources'], ProtocolSourceCard.fromJson),
+        params: ((j['params'] as Json?) ?? const {}).map((k, v) => MapEntry(k, ProtocolParam.fromJson(v as Json))),
+        modelApplicable: j['model_applicable'] as bool? ?? false,
+        priorProtocolId: j['prior_protocol_id'] as String?,
+        modelWindow: j['model_window'] as Json?,
+      );
+}
+
+class Headline {
+  Headline({required this.code, required this.kind, required this.message});
+  final String code, kind, message;
+  factory Headline.fromJson(Json j) =>
+      Headline(code: j['code'] as String, kind: j['kind'] as String, message: j['message'] as String);
 }
 
 class PairDto {
   PairDto({required this.treatmentId, required this.name, required this.compatibility, this.reason,
       required this.quantitative, required this.temperatureDomain, required this.holdDomain, this.physicalLimitC,
-      this.protocol, this.recommendation});
+      this.protocol, this.referenceProtocol, this.protocols = const [], this.resultLevel, this.headline});
   final String treatmentId, name;
   final CompatibilityStatus compatibility;
   final String? reason;
@@ -173,7 +262,11 @@ class PairDto {
   final DomainDto temperatureDomain, holdDomain;
   final double? physicalLimitC;
   final ProtocolSummary? protocol;
-  final RecommendationDto? recommendation;
+  final ProtocolCard? referenceProtocol;
+  final List<ProtocolCard> protocols;
+  final String? resultLevel;
+  final Headline? headline;
+  ProtocolCard? protocolById(String? id) => protocols.where((p) => p.id == id).firstOrNull ?? referenceProtocol;
 
   factory PairDto.fromJson(Json j) => PairDto(
         treatmentId: j['treatment_id'] as String,
@@ -185,8 +278,11 @@ class PairDto {
         holdDomain: DomainDto.fromJson(j['hold_domain'] as Json),
         physicalLimitC: _d(j['physical_limit_c']),
         protocol: j['protocol'] == null ? null : ProtocolSummary.fromJson(j['protocol'] as Json),
-        recommendation:
-            j['recommendation'] == null ? null : RecommendationDto.fromJson(j['recommendation'] as Json),
+        referenceProtocol:
+            j['reference_protocol'] == null ? null : ProtocolCard.fromJson(j['reference_protocol'] as Json),
+        protocols: _l(j['protocols'], ProtocolCard.fromJson),
+        resultLevel: j['result_level'] as String?,
+        headline: j['headline'] == null ? null : Headline.fromJson(j['headline'] as Json),
       );
 }
 
@@ -210,29 +306,37 @@ class PairsDto {
 }
 
 class WarningDto {
-  WarningDto({required this.code, required this.severity, required this.message, this.field});
+  WarningDto({required this.code, required this.severity, required this.message, this.field, this.group});
   final String code, severity, message;
-  final String? field;
+  final String? field, group;
   bool get blocking => severity == 'blocking';
   factory WarningDto.fromJson(Json j) => WarningDto(
         code: j['code'] as String,
         severity: j['severity'] as String,
         message: j['message'] as String,
         field: j['field'] as String?,
+        group: j['group'] as String?,
       );
 }
 
 class ValidationReportDto {
   ValidationReportDto({required this.canRun, required this.predictedStatus, required this.quantitativeEligible,
-      required this.warnings});
+      required this.warnings, this.resultLevel, this.headline, this.protocol, this.initialConditionId});
   final bool canRun, quantitativeEligible;
   final SimulationStatus predictedStatus;
   final List<WarningDto> warnings;
+  final String? resultLevel, initialConditionId;
+  final Headline? headline;
+  final ProtocolCard? protocol;
   factory ValidationReportDto.fromJson(Json j) => ValidationReportDto(
         canRun: j['can_run'] as bool,
         predictedStatus: SimulationStatus.fromWire(j['predicted_status'] as String)!,
         quantitativeEligible: j['quantitative_eligible'] as bool,
         warnings: _l(j['warnings'], WarningDto.fromJson),
+        resultLevel: j['result_level'] as String?,
+        headline: j['headline'] == null ? null : Headline.fromJson(j['headline'] as Json),
+        protocol: j['protocol'] == null ? null : ProtocolCard.fromJson(j['protocol'] as Json),
+        initialConditionId: j['initial_condition_id'] as String?,
       );
 }
 
@@ -284,9 +388,10 @@ class ThermalPoint {
 
 class ThermalStageDto {
   ThermalStageDto({required this.index, required this.kind, required this.labelKey, required this.tStart,
-      required this.tEnd, required this.startC, required this.endC});
+      required this.tEnd, required this.startC, required this.endC, this.medium});
   final int index;
   final String kind, labelKey;
+  final String? medium;
   final double tStart, tEnd, startC, endC;
   factory ThermalStageDto.fromJson(Json j) => ThermalStageDto(
         index: j['index'] as int,
@@ -296,6 +401,7 @@ class ThermalStageDto {
         tEnd: _d(j['t_end_s'])!,
         startC: _d(j['start_temperature_c'])!,
         endC: _d(j['end_temperature_c'])!,
+        medium: j['medium'] as String?,
       );
 }
 
@@ -401,16 +507,25 @@ class ExplanationDto {
 
 class SimulationInput {
   SimulationInput({required this.materialId, required this.treatmentId, this.initialConditionId,
-      required this.targetTemperatureC, required this.holdTimeMin});
-  final String materialId, treatmentId;
-  final String? initialConditionId;
+      required this.targetTemperatureC, required this.holdTimeMin, this.protocolId, this.bathTemperatureC,
+      this.bathTimeMin, this.priorMode = 'reference', this.priorProtocolId, this.priorTemperatureC, this.priorHoldMin});
+  final String materialId, treatmentId, priorMode;
+  final String? initialConditionId, protocolId, priorProtocolId;
   final double targetTemperatureC, holdTimeMin;
+  final double? bathTemperatureC, bathTimeMin, priorTemperatureC, priorHoldMin;
   Json toJson(String locale) => {
         'material_id': materialId,
         'treatment_id': treatmentId,
         if (initialConditionId != null) 'initial_condition_id': initialConditionId,
         'target_temperature_c': targetTemperatureC,
         'hold_time_min': holdTimeMin,
+        if (protocolId != null) 'protocol_id': protocolId,
+        if (bathTemperatureC != null) 'bath_temperature_c': bathTemperatureC,
+        if (bathTimeMin != null) 'bath_time_min': bathTimeMin,
+        if (treatmentId == 'temper') 'prior_mode': priorMode,
+        if (treatmentId == 'temper' && priorProtocolId != null) 'prior_protocol_id': priorProtocolId,
+        if (treatmentId == 'temper' && priorTemperatureC != null) 'prior_temperature_c': priorTemperatureC,
+        if (treatmentId == 'temper' && priorHoldMin != null) 'prior_hold_min': priorHoldMin,
         'locale': locale,
       };
   factory SimulationInput.fromJson(Json j) => SimulationInput(
@@ -419,6 +534,10 @@ class SimulationInput {
         initialConditionId: j['initial_condition_id'] as String?,
         targetTemperatureC: _d(j['target_temperature_c'])!,
         holdTimeMin: _d(j['hold_time_min'])!,
+        protocolId: j['protocol_id'] as String?,
+        bathTemperatureC: _d(j['bath_temperature_c']),
+        bathTimeMin: _d(j['bath_time_min']),
+        priorMode: j['prior_mode'] as String? ?? 'reference',
       );
 }
 
@@ -455,6 +574,9 @@ class SimulationResultDto {
   List<DiagramDto> get diagrams => ((raw['diagrams'] as List?) ?? const []).map((d) => DiagramDto.fromJson(d as Json)).toList();
   Json? get illustration => raw['microstructure_illustration'] as Json?;
   Json? get modelEstimate => raw['model_estimate'] as Json?;
+  ProtocolCard? get protocolCard => raw['protocol_card'] == null ? null : ProtocolCard.fromJson(raw['protocol_card'] as Json);
+  String? get resultLevel => raw['result_level'] as String?;
+  Headline? get headline => raw['headline'] == null ? null : Headline.fromJson(raw['headline'] as Json);
   bool get playable => hasPhysicalHistory || (schematic?.isNotEmpty ?? false);
 
   factory SimulationResultDto.fromJson(Json j) {

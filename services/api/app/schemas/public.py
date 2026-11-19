@@ -19,6 +19,15 @@ class SimulationCreate(BaseModel):
     # Validación ESTRUCTURAL de interfaz; el dominio científico lo valida el FSE.
     target_temperature_c: float = Field(ge=0, le=1600, allow_inf_nan=False)
     hold_time_min: float = Field(ge=0, le=1440, allow_inf_nan=False)
+    # Biblioteca de protocolos (D-30): variante elegida y parámetros del baño (independientes del horno).
+    protocol_id: str | None = Field(default=None, max_length=80, pattern=r"^[a-z0-9_]+$")
+    bath_temperature_c: float | None = Field(default=None, ge=0, le=1600, allow_inf_nan=False)
+    bath_time_min: float | None = Field(default=None, ge=0, le=1440, allow_inf_nan=False)
+    # Revenido: origen del estado templado de partida.
+    prior_mode: Literal["reference", "history", "theory"] = "reference"
+    prior_protocol_id: str | None = Field(default=None, max_length=80, pattern=r"^[a-z0-9_]+$")
+    prior_temperature_c: float | None = Field(default=None, ge=0, le=1600, allow_inf_nan=False)
+    prior_hold_min: float | None = Field(default=None, ge=0, le=1440, allow_inf_nan=False)
     locale: Locale = "es"
 
 

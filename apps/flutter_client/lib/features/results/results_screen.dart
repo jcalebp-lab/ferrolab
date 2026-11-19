@@ -13,6 +13,7 @@ import '../simulation/playback.dart';
 import '../microscope/microstructure_view.dart';
 import '../simulation/thermal_chart.dart';
 import 'diagrams.dart';
+import '../simulation/protocol_panels.dart';
 
 class ResultsScreen extends ConsumerWidget {
   const ResultsScreen({super.key, this.fromHistory});
@@ -64,7 +65,11 @@ class ResultsBody extends ConsumerWidget {
           const Gap(FlSpace.s),
           Text(r.explanation.treatmentPurpose),
           const Gap(FlSpace.s),
-          Text(r.explanation.qualitativeOutcome, style: context.text.bodyMedium),
+          Text(r.protocolCard?.expected ?? r.explanation.qualitativeOutcome, style: context.text.bodyMedium),
+          if (r.protocolCard != null) ...[
+            const Gap(FlSpace.s),
+            Text('${t.lpProtocol}: ${r.protocolCard!.name}', style: context.text.bodySmall),
+          ],
           const Gap(FlSpace.s),
           Pill(icon: Icons.lightbulb_outline, label: t.evidence_qualitative, background: context.fl.evidenceLimitedBg),
         ]),
@@ -175,8 +180,10 @@ class _StatusHeader extends StatelessWidget {
         Text(t.statusInsufficientBody, style: context.text.bodyLarge),
         const Gap(FlSpace.s),
       ],
+      if (r.headline != null) ...[HeadlineNotice(r.headline!), const Gap(FlSpace.s)],
+      Wrap(spacing: FlSpace.s, runSpacing: FlSpace.s, children: [LevelBadge(r.resultLevel)]),
+      const Gap(FlSpace.s),
       Text(r.explanation.compatibilityReason, style: context.text.bodyMedium),
-      for (final w in r.warnings.where((w) => w.blocking)) ...[const Gap(FlSpace.s), Notice(w.message, kind: 'warning')],
       if (r.unreviewed) ...[const Gap(FlSpace.m), const UnreviewedBanner()],
     ]);
   }
@@ -292,19 +299,9 @@ class _Foundation extends StatelessWidget {
       title: t.resultsFoundation,
       icon: Icons.account_tree_outlined,
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        ExpansionTile(
-          initiallyExpanded: true,
-          tilePadding: EdgeInsets.zero,
-          title: Text(t.resultsWarnings),
-          children: [
-            for (final w in r.warnings)
-              Padding(
-                padding: const EdgeInsets.only(bottom: FlSpace.s),
-                child: Notice(w.message, kind: w.blocking ? 'warning' : (w.severity == 'info' ? 'info' : 'limitation')),
-              ),
-          ],
-        ),
-        if (p != null)
+        LimitationsPanel(warnings: r.warnings, initiallyExpanded: true),
+        if (r.protocolCard != null) ProtocolSheet(p: r.protocolCard!),
+        if (p != null && r.protocolCard == null)
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
             title: Text(t.resultsProtocol),

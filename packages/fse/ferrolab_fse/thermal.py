@@ -54,6 +54,7 @@ class ThermalStageOut(BaseModel):
     end_temperature_c: float
     profile_kind: str
     evidence_ids: list[str]
+    medium: str | None = None
 
 
 class ThermalHistory(BaseModel):

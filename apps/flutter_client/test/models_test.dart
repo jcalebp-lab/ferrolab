@@ -63,13 +63,14 @@ void main() {
     ];
     final pb = Playback.from(SimulationResultDto.fromJson(j))!;
     expect(pb.physical, isTrue);
-    expect(pb.speedFactor, closeTo(160 / 12, 1e-9));
+    // Ritmo por etapa (logarítmico): el factor medio es tiempo físico / tiempo de pantalla.
+    expect(pb.speedFactor, closeTo(160 / pb.totalDisplay, 1e-9));
     final end = pb.frameAt(pb.totalDisplay);
     expect(end.physicalTimeS, 160);
     expect(end.temperatureC, 120);
     final mid = pb.frameAt(pb.segments.first.displayEnd / 2);
     expect(mid.physicalTimeS, closeTo(50, 1e-6));
-    expect(mid.temperatureC, closeTo(70, 1e-6)); // mismo tramo lineal del FSE
+    expect(mid.temperatureC, closeTo(70, 1e-6)); // interpolado sobre los puntos del historial del FSE
   });
 
   test('código de actividad: ida y vuelta y rechazo de basura', () {

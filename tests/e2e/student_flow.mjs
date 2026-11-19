@@ -78,11 +78,15 @@ async function flow(viewport, tag) {
   await click(page, 'Continuar');
   check(`${tag}: seis tratamientos`, (await waitText(page, 'Martempering')) && (await text(page)).includes('Austempering'));
   const tt = await text(page);
-  check(`${tag}: estados de compatibilidad visibles`, tt.includes('Condicional') && tt.includes('Solo aprendizaje'));
+  check(`${tag}: estados de compatibilidad visibles`, tt.includes('Condicional') && tt.includes('Compatible'));
   await click(page, 'Temple');
   await page.screenshot({ path: `${OUT}${tag}-04-tratamiento.png` });
   await click(page, 'Continuar');
-  check(`${tag}: parámetros + protocolo bloqueado`, await waitText(page, 'Enfriamiento definido por protocolo'));
+  check(`${tag}: protocolo de referencia cargado`, await waitText(page, 'Protocolo de referencia cargado'));
+  const pt = await text(page);
+  check(`${tag}: biblioteca de protocolos + medio fijado`, pt.includes('Protocolos disponibles') &&
+    pt.includes('fijado por el protocolo') && pt.includes('Temple en agua (voestalpine)'));
+  check(`${tag}: secuencia térmica y fuentes`, pt.includes('Secuencia térmica') && pt.includes('Ficha científica del protocolo'));
 
   // 1) Temperatura extrema: debe bloquearse con motivo.
   await fill(page, 'Temperatura', 1600);

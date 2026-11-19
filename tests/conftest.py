@@ -31,6 +31,16 @@ def seed_snapshot(seed_data) -> DatasetSnapshot:
 
 
 @pytest.fixture()
+def no_library_snapshot(seed_data) -> DatasetSnapshot:
+    """Catálogo sin biblioteca de protocolos: comprueba el ciclo esquemático de respaldo."""
+    d = copy.deepcopy(seed_data)
+    d["protocols"] = []
+    for p in d["material_treatments"]:
+        p["protocol_id"] = None
+    return DatasetSnapshot.model_validate(d)
+
+
+@pytest.fixture()
 def synthetic_published_snapshot(seed_data) -> DatasetSnapshot:
     """Snapshot SINTÉTICO para probar la tubería (parsing/álgebra), NO metalurgia.
 
@@ -55,7 +65,7 @@ def synthetic_published_snapshot(seed_data) -> DatasetSnapshot:
     ev("ev_cool", value=60.0, unit="s")
     ev("ev_hv", evidence_kind="measured", evidence_level="validated", method="synthetic_lookup",
        material_id="aisi_1045", treatment_id="quench", initial_condition_id="ic_aisi_1045_unspecified",
-       protocol_id="prot_aisi_1045_quench", quantity_code="hardness", value=222.0, unit="HV",
+       protocol_id="prot_1045_quench_azom", quantity_code="hardness", value=222.0, unit="HV",
        validity={"temperature_min_c": 100.0, "temperature_max_c": 300.0, "hold_min_s": 0.0, "hold_max_s": 3600.0})
     for ic in d["initial_conditions"]:
         if ic["id"] == "ic_aisi_1045_unspecified":
@@ -65,7 +75,7 @@ def synthetic_published_snapshot(seed_data) -> DatasetSnapshot:
             p.update(quantitative_outputs_enabled=True, review_status="published", temperature_min_c=100.0,
                      temperature_max_c=300.0, temperature_evidence_id="ev_t_range")
     for pr in d["protocols"]:
-        if pr["id"] == "prot_aisi_1045_quench":
+        if pr["id"] == "prot_1045_quench_azom":
             pr["review_status"] = "published"
             pr["version"] = "test-1"
             pr["stages"] = [

@@ -77,7 +77,8 @@ def test_editor_edit_creates_draft_and_audit(c, token):
                     json={"revision": rec["_meta"]["revision"], "changes": {"title_es": "x"}})
     assert stale.status_code == 409
     bad = c.patch("/api/v1/admin/material-treatments/aisi_1045:temper", headers=h(token, EDITOR),
-                  json={"revision": 1, "changes": {"quantitative_outputs_enabled": True}})
+                  json={"revision": 1, "changes": {"compatibility_status": "educational_only",
+                                                   "quantitative_outputs_enabled": True}})
     assert bad.status_code in (409, 422)
     audit = c.get("/api/v1/admin/audit", headers=h(token, REVIEWER)).json()["items"]
     assert any(a["action"] == "update" and a["entity_id"] == "cementita" for a in audit)
@@ -117,6 +118,12 @@ def test_release_gates_then_publish_and_rollback(c, token):
             key = ":".join(str(item[f]) for f in ENTITIES[name].key_fields)
             rr = c.post(f"/api/v1/admin/{name}/{key}/transition", headers=h(token, REVIEWER),
                         json={"to": "reviewed", "revision": item["_meta"]["revision"]})
+            if name == "protocols" and item.get("evidence_status") != "source_verified":
+                # Un protocolo con fuente no verificada no puede revisarse como validado.
+                assert rr.status_code == 422, rr.text
+                continue
+            if name == "protocols" and rr.status_code == 422:
+                continue  # sin temperatura de tratamiento documentada (p. ej. variante cementada a 205 °C)
             assert rr.status_code == 200, rr.text
     created = c.post("/api/v1/admin/releases", headers=h(token, REVIEWER), json={"version": "1.0.0-test"})
     assert created.status_code == 201, created.text

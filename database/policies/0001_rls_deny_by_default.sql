@@ -10,7 +10,7 @@ begin
     'sources','materials','treatments','scientific_evidence','material_compositions','initial_conditions',
     'protocols','material_treatments','physical_guards','models','model_versions','micrographs',
     'micrograph_annotations','media_license_reviews','knowledge_entries','practice_questions','diagram_sets',
-    'diagram_curves','dataset_releases','admin_memberships','audit_log','simulations','simulation_results',
+    'diagram_curves','dataset_releases','admin_memberships','audit_log','scientific_reviews','simulations','simulation_results',
     'result_components','result_evidence','app_events','schema_migrations']
   loop
     execute format('alter table %I enable row level security', t);

@@ -16,6 +16,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "database" / "seeds" / "catalog_seed.json"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import protocol_library as LIB  # noqa: E402  (biblioteca de protocolos de referencia, D-30)
 
 
 def src(id, kind, title, **kw):
@@ -99,11 +101,11 @@ MATERIALS = [
             "of a percent by mass. Used for shafts, bolts and machine parts."
         ),
         "limitations_es": [
-            "La composición real varía entre lotes; aquí no hay rangos composicionales verificados cargados.",
+            "La composición real varía entre lotes; se usa el rango de la norma (AZoM) y su incertidumbre.",
             "La condición de suministro (laminado, normalizado, etc.) no está documentada.",
         ],
         "limitations_en": [
-            "Actual composition varies between heats; no verified composition ranges are loaded here.",
+            "Actual composition varies between heats; the standard range (AZoM) and its uncertainty are used.",
             "The as-supplied condition (rolled, normalized, etc.) is not documented.",
         ],
         "compositions": [],
@@ -126,11 +128,11 @@ MATERIALS = [
         ),
         "limitations_es": [
             "Sin estado cementado documentado no se atribuyen propiedades de capa (dureza superficial, profundidad).",
-            "No hay rangos composicionales verificados cargados.",
+            "Rango composicional de la norma según Vanguard (sección 1, pág. 13).",
         ],
         "limitations_en": [
             "Without a documented carburized state, no case properties (surface hardness, depth) are attributed.",
-            "No verified composition ranges are loaded.",
+            "Standard composition range per Vanguard (section 1, p. 13).",
         ],
         "compositions": [],
         "suggested_source_ids": ["src_asm_1", "src_krauss"],
@@ -385,28 +387,12 @@ R = {  # (estado, razón ES, razón EN)
            "Gray cast iron: requires specific literature; steel models and curves are not extrapolated."),
 }
 
-PAIRS, PROTOCOLS = [], []
-for m in MATERIALS:
-    for t in TREATMENTS:
-        key = "ci" if m["family"] == "gray_cast_iron" else f"steel_{t['id']}"
-        status, res_es, res_en = R[key]
-        if m["id"] == "aisi_8620" and t["id"] in ("quench", "normalize", "anneal"):
-            res_es += " No se presupone cementación."
-            res_en += " Carburizing is not assumed."
-        pid = f"prot_{m['id']}_{t['id']}"
-        PAIRS.append({
-            "material_id": m["id"], "treatment_id": t["id"], "compatibility_status": status,
-            "reason_es": res_es, "reason_en": res_en, "quantitative_outputs_enabled": False,
-            "protocol_id": pid,
-            "required_initial_state": {"hardened": True} if t["id"] == "temper" else {},
-            "review_status": "draft",
-        })
-        med_es, med_en = MEDIUM[t["id"]]
-        PROTOCOLS.append({
-            "id": pid, "version": "0.0.0-draft", "material_id": m["id"], "treatment_id": t["id"],
-            "variant_es": None, "variant_en": None, "medium_es": med_es, "medium_en": med_en,
-            "stages": protocol_stages(t["id"]), "review_status": "draft",
-        })
+PAIRS, PROTOCOLS = LIB.PAIRS, LIB.PROTOCOLS
+SOURCES += LIB.SOURCES
+EVIDENCE += LIB.EVIDENCE
+INITIAL_CONDITIONS += LIB.INITIAL_CONDITIONS
+for _m in MATERIALS:
+    _m["compositions"] = LIB.COMPOSITIONS.get(_m["id"], [])
 
 
 def k(slug, cat, tes, ten, bes, ben, related=(), srcs=("src_callister",)):
@@ -537,7 +523,7 @@ PRACTICE = [
 
 def build() -> dict:
     return {
-        "dataset_version": "0.1.0-dev+unreviewed",
+        "dataset_version": "0.2.0-dev+unreviewed",
         "contains_unreviewed_content": True,
         "interface": {"furnace_ui_min_c": 20.0, "furnace_ui_max_c": 1600.0, "hold_ui_max_min": 1440.0,
                       "ambient_reference_c": 20.0},

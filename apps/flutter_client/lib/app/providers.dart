@@ -86,9 +86,13 @@ enum SimPhase { editing, validating, ready, running, showingResults, networkErro
 @immutable
 class SimState {
   const SimState({this.materialId, this.treatmentId, this.initialConditionId, this.temperatureC = 20,
-      this.holdMin = 0, this.phase = SimPhase.editing, this.validation, this.result, this.error});
-  final String? materialId, treatmentId, initialConditionId;
+      this.holdMin = 0, this.protocolId, this.bathTemperatureC, this.bathTimeMin, this.priorMode = 'reference',
+      this.priorProtocolId, this.priorTemperatureC, this.priorHoldMin, this.phase = SimPhase.editing, this.validation,
+      this.result, this.error});
+  final String? materialId, treatmentId, initialConditionId, protocolId, priorProtocolId;
   final double temperatureC, holdMin;
+  final double? bathTemperatureC, bathTimeMin, priorTemperatureC, priorHoldMin;
+  final String priorMode; // reference | history | theory (revenido)
   final SimPhase phase;
   final ValidationReportDto? validation;
   final SimulationResultDto? result;
@@ -102,18 +106,34 @@ class SimState {
           treatmentId: treatmentId!,
           initialConditionId: initialConditionId,
           targetTemperatureC: temperatureC,
-          holdTimeMin: holdMin)
+          holdTimeMin: holdMin,
+          protocolId: protocolId,
+          bathTemperatureC: bathTemperatureC,
+          bathTimeMin: bathTimeMin,
+          priorMode: priorMode,
+          priorProtocolId: priorProtocolId,
+          priorTemperatureC: priorTemperatureC,
+          priorHoldMin: priorHoldMin)
       : null;
 
   SimState copyWith({String? materialId, String? treatmentId, String? initialConditionId, double? temperatureC,
-          double? holdMin, SimPhase? phase, ValidationReportDto? validation, SimulationResultDto? result,
-          Object? error, bool clearTreatment = false, bool clearOutcome = false}) =>
+          double? holdMin, String? protocolId, double? bathTemperatureC, double? bathTimeMin, String? priorMode,
+          String? priorProtocolId, double? priorTemperatureC, double? priorHoldMin, SimPhase? phase,
+          ValidationReportDto? validation, SimulationResultDto? result, Object? error, bool clearTreatment = false,
+          bool clearOutcome = false, bool clearBath = false, bool clearBathTime = false, bool clearPrior = false}) =>
       SimState(
         materialId: materialId ?? this.materialId,
         treatmentId: clearTreatment ? null : (treatmentId ?? this.treatmentId),
         initialConditionId: initialConditionId ?? this.initialConditionId,
         temperatureC: temperatureC ?? this.temperatureC,
         holdMin: holdMin ?? this.holdMin,
+        protocolId: clearTreatment ? null : (protocolId ?? this.protocolId),
+        bathTemperatureC: clearBath ? null : (bathTemperatureC ?? this.bathTemperatureC),
+        bathTimeMin: clearBath || clearBathTime ? null : (bathTimeMin ?? this.bathTimeMin),
+        priorMode: priorMode ?? this.priorMode,
+        priorProtocolId: clearPrior ? null : (priorProtocolId ?? this.priorProtocolId),
+        priorTemperatureC: clearPrior ? null : (priorTemperatureC ?? this.priorTemperatureC),
+        priorHoldMin: clearPrior ? null : (priorHoldMin ?? this.priorHoldMin),
         phase: phase ?? this.phase,
         validation: clearOutcome ? null : (validation ?? this.validation),
         result: clearOutcome ? null : (result ?? this.result),
@@ -131,17 +151,53 @@ class SimulationController extends Notifier<SimState> {
     state = SimState(materialId: id, temperatureC: state.temperatureC, holdMin: state.holdMin);
   }
 
-  void selectTreatment(String id) => state = state.copyWith(treatmentId: id, phase: SimPhase.editing, clearOutcome: true);
+  void selectTreatment(String id) => state = SimState(materialId: state.materialId, treatmentId: id,
+      temperatureC: state.temperatureC, holdMin: state.holdMin);
+
+  /// Carga un protocolo con sus valores de referencia («Usar protocolo recomendado»).
+  void applyProtocol(ProtocolCard p) {
+    double? ref(String k) => p.param(k)?.ref ?? p.param(k)?.value;
+    final bt = p.param('bath_time');
+    state = SimState(
+      materialId: state.materialId,
+      treatmentId: state.treatmentId,
+      protocolId: p.id,
+      temperatureC: ref('furnace_temperature') ?? p.param('furnace_temperature')?.max ?? state.temperatureC,
+      holdMin: ref('hold_time') ?? 0,
+      bathTemperatureC: ref('bath_temperature'),
+      bathTimeMin: bt == null || bt.basis == 'computed' ? null : bt.ref,
+      priorMode: state.priorMode,
+      priorProtocolId: state.priorProtocolId,
+      priorTemperatureC: state.priorTemperatureC,
+      priorHoldMin: state.priorHoldMin,
+    );
+  }
+
   void setInitialCondition(String id) => state = state.copyWith(initialConditionId: id, clearOutcome: true);
   void setTemperature(double c) => state = state.copyWith(temperatureC: c, phase: SimPhase.editing, clearOutcome: true);
   void setHold(double m) => state = state.copyWith(holdMin: m, phase: SimPhase.editing, clearOutcome: true);
+  void setBathTemperature(double c) =>
+      state = state.copyWith(bathTemperatureC: c, phase: SimPhase.editing, clearOutcome: true);
+  void setBathTime(double? m) => state = m == null
+      ? state.copyWith(clearBathTime: true, phase: SimPhase.editing, clearOutcome: true)
+      : state.copyWith(bathTimeMin: m, phase: SimPhase.editing, clearOutcome: true);
+
+  /// Revenido: origen del estado templado (referencia, una práctica del historial o solo teoría).
+  void setPrior(String mode, {SimulationInput? fromHistory}) => state = fromHistory == null
+      ? state.copyWith(priorMode: mode, clearPrior: true, clearOutcome: true)
+      : state.copyWith(priorMode: mode, priorProtocolId: fromHistory.protocolId,
+          priorTemperatureC: fromHistory.targetTemperatureC, priorHoldMin: fromHistory.holdTimeMin, clearOutcome: true);
 
   void loadConfig(SimulationInput i) => state = SimState(
       materialId: i.materialId,
       treatmentId: i.treatmentId,
       initialConditionId: i.initialConditionId,
       temperatureC: i.targetTemperatureC,
-      holdMin: i.holdTimeMin);
+      holdMin: i.holdTimeMin,
+      protocolId: i.protocolId,
+      bathTemperatureC: i.bathTemperatureC,
+      bathTimeMin: i.bathTimeMin,
+      priorMode: i.priorMode);
 
   Future<void> validate() async {
     final input = state.input;

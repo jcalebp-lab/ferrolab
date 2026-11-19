@@ -15,7 +15,6 @@ from .enums import EvidenceKind, EvidenceLevel, StageKind
 from .metallurgy import practice as P
 from .metallurgy.data import ASSUMPTIONS, COMPOSITION_RANGES
 from .metallurgy.hardness import hv_to_hrc
-from .metallurgy.recommend import recommendation
 from .result import EvidenceRef, ResultFact
 from .thermal import ThermalHistory, ThermalPoint, ThermalStageOut
 
@@ -83,7 +82,7 @@ def source_refs(ids, usage: str = "supports_value") -> list[EvidenceRef]:
     return out
 
 
-def thermal_history(p: P.Practice) -> ThermalHistory:
+def thermal_history(p: P.Practice, illustrative: bool = False) -> ThermalHistory:
     pts = P.thin(p.runner_center, 400)
     stages = []
     for seg in p.segments:
@@ -95,13 +94,13 @@ def thermal_history(p: P.Practice) -> ThermalHistory:
                                       t_start_s=round(seg.t_start_s, 2), t_end_s=round(seg.t_end_s, 2),
                                       start_temperature_c=round(t0, 1), end_temperature_c=round(t1, 1),
                                       profile_kind="modeled_conduction" if seg.kind != "furnace_cool"
-                                      else "furnace_rate", evidence_ids=[]))
+                                      else "furnace_rate", evidence_ids=[], medium=seg.medium))
     points = []
     for t, temp in pts:
         idx = next((s.index for s in stages if s.t_start_s - 1e-6 <= t <= s.t_end_s + 1e-6), stages[-1].index)
         points.append(ThermalPoint(t_s=round(t, 2), temperature_c=round(temp, 1), stage_index=idx))
     return ThermalHistory(stages=stages, points=points, total_time_s=round(pts[-1][0], 2),
-                          time_basis="modeled_seconds")
+                          time_basis="illustrative_seconds" if illustrative else "modeled_seconds")
 
 
 def _temp_at(points, t):
@@ -171,15 +170,20 @@ GRAY_MATRIX = {"quench": "martensite", "temper": "tempered_martensite", "normali
                "anneal": "ferrite_pearlite", "austemper": "ausferrite", "martemper": "martensite"}
 
 
+GRAY_VARIANT_MATRIX = {"ferritizing": "ferrite_pearlite", "full": "ferrite_pearlite", "graphitizing": "pearlite",
+                       "stress_relief": "pearlite"}
+
+
 def illustration(material_id: str, treatment_id: str, request_hash: str, p: P.Practice | None,
-                 family: str) -> dict:
+                 family: str, matrix_hint: str | None = None) -> dict:
     """Especificación para que el cliente DIBUJE una microestructura ilustrativa (no es una micrografía)."""
     seed = int(hashlib.sha256(request_hash.encode()).hexdigest()[:8], 16)
     spec: dict[str, Any] = {"kind": "generated_illustration", "seed": seed, "family": family,
                             "astm_grain_size": ASSUMPTIONS["astm_grain_size"], "etchant": "nital_2pct",
                             "label_key": "illustration_not_micrograph"}
     if family == "gray_cast_iron":
-        spec.update({"graphite": "type_a_flakes", "matrix": GRAY_MATRIX.get(treatment_id, "pearlite"),
+        matrix = GRAY_VARIANT_MATRIX.get(matrix_hint or "", GRAY_MATRIX.get(treatment_id, "pearlite"))
+        spec.update({"graphite": "type_a_flakes", "matrix": matrix,
                      "fractions": None, "quantitative": False})
         return spec
     if p is None:
@@ -197,15 +201,13 @@ def illustration(material_id: str, treatment_id: str, request_hash: str, p: P.Pr
 
 
 def estimate_block(p: P.Practice | None, material_id: str, treatment_id: str, locale: str) -> dict:
-    rec = recommendation(material_id, treatment_id)
     out: dict[str, Any] = {
         "model_version": P.MODEL_VERSION,
         "label": ("Estimación por modelos empíricos publicados; no revisada por un especialista."
                   if locale == "es" else "Estimate from published empirical models; not reviewed by a specialist."),
-        "recommendation": recommendation_dict(rec, locale) if rec else None,
         "assumptions": {k: v for k, v in ASSUMPTIONS.items() if k != "ae_equals_ac"},
     }
-    if p is None:
+    if p is None or material_id not in COMPOSITION_RANGES:
         return out
     out.update({
         "composition_nominal_wt_pct": {k: round(v, 3) for k, v in p.composition.items()},
@@ -230,10 +232,3 @@ def estimate_block(p: P.Practice | None, material_id: str, treatment_id: str, lo
         },
     })
     return out
-
-
-def recommendation_dict(rec, locale: str) -> dict:
-    d = rec.as_dict(locale)
-    d["sources"] = [{"id": sid, "title": MODEL_SOURCE_CATALOG[sid]["title"], "authors": MODEL_SOURCE_CATALOG[sid]["authors"],
-                     "url": MODEL_SOURCE_CATALOG[sid]["url"]} for sid in rec.source_ids if sid in MODEL_SOURCE_CATALOG]
-    return d

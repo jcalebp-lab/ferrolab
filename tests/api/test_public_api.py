@@ -24,15 +24,18 @@ def test_health(client):
 def test_catalog_three_materials_six_treatments(client):
     mats = client.get("/api/v1/materials").json()["items"]
     assert [m["id"] for m in mats] == ["aisi_1045", "aisi_8620", "astm_a48_class_30"]
-    assert all(m["compositions"] == [] for m in mats)
+    assert mats[0]["compositions"] and mats[1]["compositions"] and mats[2]["compositions"] == []
     assert mats[2]["family"] == "gray_cast_iron"
     trts = client.get("/api/v1/treatments?locale=en").json()["items"]
     assert [t["name"] for t in trts] == ["Quenching", "Tempering", "Annealing", "Normalizing", "Austempering",
                                          "Martempering (marquenching)"]
     pairs = client.get("/api/v1/materials/aisi_1045/treatments").json()
     assert len(pairs["items"]) == 6 and pairs["interface"]["furnace_ui_max_c"] == 1600
-    assert all(p["compatibility_status"] != "supported" and p["protocol"]["fully_specified"] is False
-               for p in pairs["items"])
+    for p in pairs["items"]:
+        ref = p["reference_protocol"]
+        assert ref["is_reference"] and ref["evidence_status"] == "source_verified" and ref["sources"]
+        assert p["protocols"][0]["id"] == ref["id"]  # el de referencia va primero
+        assert p["result_level"] == "A" and p["headline"]["code"] in ("HEADLINE_VALID", "HEADLINE_DEPENDENCY")
 
 
 def test_etag_cache(client):
@@ -60,7 +63,8 @@ def test_simulation_envelope_and_nulls(client):
     assert any(w["code"] == "NO_SUITABLE_MICROGRAPH" for w in body["warnings"])
     assert any(w["code"] == "MODEL_ESTIMATE_NOT_REVIEWED" for w in body["warnings"])
     assert body["thermal_history"] and body["schematic_cycle"] is None
-    assert body["model_estimate"]["recommendation"]["temperature_typical_c"] == 845
+    assert body["protocol_card"]["params"]["furnace_temperature"]["ref"] == 845
+    assert body["result_level"] in ("A", "B") and body["headline"]["code"].startswith("HEADLINE_")
     assert r.headers["X-Request-ID"] == body["request_id"]
 
 
@@ -103,7 +107,7 @@ def test_all_pairs_answer_honestly(client, m, t):
     if t == "temper" and m != "astm_a48_class_30":
         assert body["simulation_status"] == "partial_result"
         assert body["results"]["hardness"]["evidence_kind"] == "modeled"
-        assert any(w["code"] == "MODEL_TEMPER_ASSUMED_PRIOR_QUENCH" for w in body["warnings"])
+        assert any(w["code"] == "DEPENDENCY_REFERENCE" for w in body["warnings"])
     else:
         assert body["simulation_status"] in ("insufficient_evidence", "unsupported")
         assert all(v is None for v in body["results"].values())
@@ -137,7 +141,10 @@ def test_knowledge_and_practice(client):
     p = client.get("/api/v1/practice?locale=en").json()["items"]
     assert p and all(0 <= q["correct_index"] < len(q["options"]) for q in p)
     srcs = client.get("/api/v1/sources").json()["items"]
-    assert all(s["verification_status"] == "unverified" for s in srcs)
+    # Solo las fuentes realmente consultadas por el proyecto están marcadas como verificadas.
+    verified = {s["id"] for s in srcs if s["verification_status"] == "verified"}
+    assert "src_voestalpine_1045" in verified and "src_vanguard_8620" in verified
+    assert {"src_matweb_8620_carb", "src_asm_gray_ht", "src_jmrt_2022_agi"}.isdisjoint(verified)
 
 
 def test_micrograph_absent_is_404(client):

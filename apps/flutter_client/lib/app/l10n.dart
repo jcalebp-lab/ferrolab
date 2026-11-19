@@ -79,6 +79,26 @@ extension EnumLabels on AppLocalizations {
         'air' => mediumAir,
         'furnace' => mediumFurnace,
         'salt_bath' => mediumSaltBath,
+        'tin_bath' => mediumTinBath,
         _ => code,
+      };
+
+  String goal(String g) => switch (g) {
+        'hardness' => goalHardness,
+        'toughness' => goalToughness,
+        'softening' => goalSoftening,
+        'stress_relief' => goalStressRelief,
+        'experimental' => goalExperimental,
+        'machinability' => goalMachinability,
+        'pending' => goalPending,
+        _ => goalReference,
+      };
+
+  String basis(String b) => switch (b) {
+        'source' => basisSource,
+        'rule' => basisRule,
+        'model' => basisModel,
+        'computed' => basisComputed,
+        _ => basisPending,
       };
 }

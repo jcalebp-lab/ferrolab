@@ -100,6 +100,8 @@ class Warning(BaseModel):
     message: str
     params: dict[str, Any] = Field(default_factory=dict)
     field: str | None = None
+    # Causa común (agrupa los mensajes en la interfaz): protocol | input | evidence | model | dependency | review
+    group: str | None = None
 
 
 class Assumption(BaseModel):
@@ -185,6 +187,10 @@ class SimulationInputEcho(BaseModel):
     initial_condition_id: str | None
     target_temperature_c: float
     hold_time_min: float
+    protocol_id: str | None = None
+    bath_temperature_c: float | None = None
+    bath_time_min: float | None = None
+    prior_mode: str | None = None
 
 
 class SimulationResult(BaseModel):
@@ -215,6 +221,10 @@ class SimulationResult(BaseModel):
     diagrams: list[dict[str, Any]] = Field(default_factory=list)
     model_estimate: dict[str, Any] | None = None
     microstructure_illustration: dict[str, Any] | None = None
+    # A = cálculo con modelos publicados; B = interpretación cualitativa; C = demostración ilustrativa.
+    result_level: str | None = None
+    headline: dict[str, Any] | None = None
+    protocol_card: dict[str, Any] | None = None
     warnings: list[Warning]
     evidence: list[EvidenceRef]
     assumptions: list[Assumption]

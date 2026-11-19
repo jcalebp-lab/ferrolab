@@ -1169,4 +1169,209 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get microLabelRetained => 'Retained austenite (white islands)';
+
+  @override
+  String get levelA =>
+      'A · Computed with published models (pending specialist validation)';
+
+  @override
+  String get levelB => 'B · Grounded qualitative interpretation';
+
+  @override
+  String get levelC => 'C · Illustrative educational demonstration';
+
+  @override
+  String get lpLimitations => 'Scientific basis and limitations';
+
+  @override
+  String get groupInput => 'Your parameters';
+
+  @override
+  String get groupDependency => 'Prior state';
+
+  @override
+  String get groupProtocol => 'Protocol';
+
+  @override
+  String get groupEvidence => 'Evidence';
+
+  @override
+  String get groupModel => 'Model';
+
+  @override
+  String get groupReview => 'Review';
+
+  @override
+  String get groupOther => 'Other';
+
+  @override
+  String get lpReference => 'Reference';
+
+  @override
+  String get lpVerified => 'Verified source';
+
+  @override
+  String get lpUnverified => 'Source not verified by FERROLAB';
+
+  @override
+  String get lpProtocols => 'Available protocols';
+
+  @override
+  String get lpUseProtocol => 'Use recommended protocol';
+
+  @override
+  String get lpParams => 'Protocol parameters';
+
+  @override
+  String get pFurnace => 'Furnace temperature';
+
+  @override
+  String get pHold => 'Holding time';
+
+  @override
+  String get pBath => 'Bath temperature';
+
+  @override
+  String get pBathTime => 'Bath time';
+
+  @override
+  String get pBathEqualize => 'Empty = until temperature equalizes (computed)';
+
+  @override
+  String get pOutside => 'Outside the documented interval for this protocol.';
+
+  @override
+  String get pMediumLocked => 'Cooling medium (set by the protocol)';
+
+  @override
+  String get lpSequence => 'Thermal sequence';
+
+  @override
+  String get lpSheet => 'Protocol scientific sheet';
+
+  @override
+  String get lpObjective => 'Objective';
+
+  @override
+  String get lpCondition => 'Material condition';
+
+  @override
+  String get lpExpected => 'Expected outcome';
+
+  @override
+  String get lpRestrictions => 'Conditions and restrictions';
+
+  @override
+  String get lpAssumptions => 'Assumptions';
+
+  @override
+  String get lpMissing => 'What still needs research';
+
+  @override
+  String get lpPublished =>
+      'Published results of the case (measured, not predicted)';
+
+  @override
+  String get lpSources => 'Sources';
+
+  @override
+  String get lpPrior => 'Tempering starting state';
+
+  @override
+  String get priorReference => 'Reference hardened';
+
+  @override
+  String get priorHistory => 'From my history';
+
+  @override
+  String get priorTheory => 'Theory only';
+
+  @override
+  String get priorHistoryEmpty =>
+      'No quenches of this material in your history yet (save them from Results).';
+
+  @override
+  String get seqAmbient => 'room temperature';
+
+  @override
+  String get seqUntilEqualized => 'until equalized';
+
+  @override
+  String get seqStart => 'Count starts';
+
+  @override
+  String get lpMaterialPanel => 'Material';
+
+  @override
+  String get lpComposition => 'Reference composition (wt%)';
+
+  @override
+  String get lpCompositionNone =>
+      'The standard sets no composition: check your part\'s.';
+
+  @override
+  String get lpTreatmentPanel => 'Treatment';
+
+  @override
+  String get basisSource => 'Value from the source';
+
+  @override
+  String get basisRule => 'Published rule applied to the 12.7 mm specimen';
+
+  @override
+  String get basisModel => 'Computed with the model (not published)';
+
+  @override
+  String get basisPending => 'the source gives no number';
+
+  @override
+  String get basisComputed => 'Computed by the thermal model';
+
+  @override
+  String get goalReference => 'General';
+
+  @override
+  String get goalHardness => 'Hardness-oriented';
+
+  @override
+  String get goalToughness => 'Toughness-oriented';
+
+  @override
+  String get goalSoftening => 'Softening';
+
+  @override
+  String get goalStressRelief => 'Stress relief';
+
+  @override
+  String get goalExperimental => 'Experimental case';
+
+  @override
+  String get goalMachinability => 'Machinability';
+
+  @override
+  String get goalPending => 'Pending';
+
+  @override
+  String get mediumTinBath => 'tin bath';
+
+  @override
+  String get furnaceBathScene => 'Isothermal bath';
+
+  @override
+  String lpLimitationsCount(String n) {
+    return '$n notices grouped by cause';
+  }
+
+  @override
+  String pRange(String range) {
+    return 'Documented interval: $range';
+  }
+
+  @override
+  String pRef(String v) {
+    return 'Reference: $v';
+  }
+
+  @override
+  String get lpProtocol => 'Protocol';
 }

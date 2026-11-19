@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from . import ENGINE_VERSION
 from . import model_estimate as ME
+from . import protocol_runtime as PR
 from .enums import (
     CompatibilityStatus,
     EvidenceKind,
@@ -27,8 +28,6 @@ from .enums import (
 )
 from .messages import ASSUMPTIONS, MESSAGES, STAGE_LABELS, localize
 from .metallurgy import practice as metallurgy_practice
-from .metallurgy.recommend import check as check_recommended
-from .metallurgy.recommend import recommendation as recommended_practice
 from .models import ModelNotActivated
 from .models import koistinen_marburger as km
 from .result import (
@@ -71,7 +70,11 @@ class InvalidState(ValueError):
 
 
 class SimulationRequest(BaseModel):
-    """Entrada canónica interna. El tiempo físico se guarda en segundos."""
+    """Entrada canónica interna. El tiempo físico se guarda en segundos.
+
+    `target_temperature_c` y `hold_time_min` son la temperatura del horno y el sostenimiento de la etapa de
+    austenización (o de revenido). El baño de austemperizado/martemperizado tiene sus propios parámetros.
+    """
 
     model_config = ConfigDict(frozen=True, extra="forbid")
     material_id: str
@@ -79,6 +82,14 @@ class SimulationRequest(BaseModel):
     initial_condition_id: str | None = None
     target_temperature_c: float = Field(ge=0, le=1600, allow_inf_nan=False)
     hold_time_min: float = Field(ge=0, allow_inf_nan=False)
+    protocol_id: str | None = None
+    bath_temperature_c: float | None = Field(default=None, ge=0, le=1600, allow_inf_nan=False)
+    bath_time_min: float | None = Field(default=None, ge=0, le=100000, allow_inf_nan=False)
+    # Revenido: de dónde sale el estado templado de partida.
+    prior_mode: Literal["reference", "history", "theory"] = "reference"
+    prior_protocol_id: str | None = None
+    prior_temperature_c: float | None = Field(default=None, ge=0, le=1600, allow_inf_nan=False)
+    prior_hold_min: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     locale: Locale = "es"
 
     @property
@@ -92,7 +103,7 @@ class Domain(BaseModel):
     max: float | None
     unit: str
     evidence_id: str | None
-    published: bool
+    published: bool  # True = rango documentado (con fuente y localizador) para el protocolo elegido
 
 
 class ValidationReport(BaseModel):
@@ -106,7 +117,9 @@ class ValidationReport(BaseModel):
     physical_limit_c: float | None
     initial_condition_id: str | None
     warnings: list[Warning]
-    recommendation: dict[str, Any] | None = None
+    result_level: str | None = None
+    headline: dict[str, Any] | None = None
+    protocol: dict[str, Any] | None = None
 
 
 @dataclass
@@ -116,17 +129,21 @@ class _Ctx:
     locale: Locale
     warnings: list[Warning] = field(default_factory=list)
 
-    def warn(self, code: str, severity: str, field_: str | None = None, **params: Any) -> None:
-        if any(w.code == code for w in self.warnings):
+    def warn(self, code: str, severity: str, field_: str | None = None, group: str | None = None,
+             key: str | None = None, **params: Any) -> None:
+        dedupe = key or code
+        if any((w.params.get("_key") or w.code) == dedupe for w in self.warnings):
             return
+        shown = {k: v for k, v in params.items() if not k.startswith("_")}
         self.warnings.append(
             Warning(
                 code=code,
                 severity=severity,  # type: ignore[arg-type]
                 message_key=f"scientific.{code.lower()}",
-                message=localize(MESSAGES, code, self.locale, **params),
-                params=params,
+                message=localize(MESSAGES, code, self.locale, **shown),
+                params={**shown, **({"_key": key} if key else {})},
                 field=field_,
+                group=group,
             )
         )
 
@@ -137,10 +154,33 @@ class _Ctx:
 
 _MEDIUM_NAMES = {"water": ("agua", "water"), "oil": ("aceite", "oil"), "air": ("aire", "air"),
                  "furnace": ("horno", "furnace"), "salt_bath": ("baño de sales", "salt bath")}
+_PARAM_NAMES = {"furnace_temperature": ("La temperatura del horno", "The furnace temperature"),
+                "hold_time": ("El tiempo de sostenimiento", "The holding time"),
+                "bath_temperature": ("La temperatura del baño", "The bath temperature"),
+                "bath_time": ("El tiempo en el baño", "The bath time")}
+_PARAM_FIELDS = {"furnace_temperature": "target_temperature_c", "hold_time": "hold_time_min",
+                 "bath_temperature": "bath_temperature_c", "bath_time": "bath_time_min"}
 
 
 def _fmt(v: float) -> str:
     return f"{v:g}"
+
+
+@dataclass
+class _Checked:
+    material: Any
+    treatment: Any
+    ic: InitialCondition | None
+    pair: MaterialTreatment | None
+    protocol: Protocol | None
+    resolved: PR.Resolved | None
+    t_dom: Domain
+    h_dom: Domain
+    guard: Any
+    compat: CompatibilityStatus
+    quantitative: bool
+    dependency: str | None
+    level: str
 
 
 class ScientificEngine:
@@ -161,27 +201,28 @@ class ScientificEngine:
         treatment = snap.treatment(req.treatment_id)
         if treatment is None:
             raise UnknownEntity("treatment_id", req.treatment_id)
+        protocol = PR.choose(snap, material.id, treatment.id, req.protocol_id)
+        if req.protocol_id is not None and protocol is None:
+            raise UnknownEntity("protocol_id", req.protocol_id)
         conds = snap.conditions_for(material.id)
         ic: InitialCondition | None
         if req.initial_condition_id is not None:
             ic = next((c for c in conds if c.id == req.initial_condition_id), None)
             if ic is None:
                 raise UnknownEntity("initial_condition_id", req.initial_condition_id)
+        elif protocol is not None and protocol.default_initial_condition_id:
+            ic = next((c for c in conds if c.id == protocol.default_initial_condition_id), None)
         elif len(conds) == 1:
             ic = conds[0]
         elif not conds:
             ic = None
         else:
-            raise InvalidState(
-                "invalid_state",
-                "Hay varias condiciones iniciales para este material: elige una.",
-                "initial_condition_id",
-            )
+            ic = conds[0]  # condición base del material (la primera del catálogo; nunca se supone templada)
         pair = snap.pair(material.id, treatment.id)
-        protocol = snap.protocol(pair.protocol_id) if pair else None
         return material, treatment, ic, pair, protocol
 
-    def _domains(self, pair: MaterialTreatment | None) -> tuple[Domain, Domain]:
+    def _legacy_domains(self, pair: MaterialTreatment | None) -> tuple[Domain, Domain]:
+        """Rango de la pareja (solo cuando hay evidencia PUBLICADA: ruta cuantitativa experimental)."""
         snap = self.snapshot
 
         def pub(eid: str | None) -> bool:
@@ -189,171 +230,219 @@ class ScientificEngine:
             return ev is not None and ev.review_status == ReviewStatus.PUBLISHED and bool(ev.locator)
 
         if pair is None:
-            empty_t = Domain(min=None, max=None, unit="°C", evidence_id=None, published=False)
-            return empty_t, Domain(min=None, max=None, unit="s", evidence_id=None, published=False)
-        t_dom = Domain(
-            min=pair.temperature_min_c,
-            max=pair.temperature_max_c,
-            unit="°C",
-            evidence_id=pair.temperature_evidence_id,
-            published=pub(pair.temperature_evidence_id),
-        )
-        h_dom = Domain(
-            min=pair.hold_min_s,
-            max=pair.hold_max_s,
-            unit="s",
-            evidence_id=pair.hold_evidence_id,
-            published=pub(pair.hold_evidence_id),
-        )
-        return t_dom, h_dom
+            return (Domain(min=None, max=None, unit="°C", evidence_id=None, published=False),
+                    Domain(min=None, max=None, unit="s", evidence_id=None, published=False))
+        return (Domain(min=pair.temperature_min_c, max=pair.temperature_max_c, unit="°C",
+                       evidence_id=pair.temperature_evidence_id, published=pub(pair.temperature_evidence_id)),
+                Domain(min=pair.hold_min_s, max=pair.hold_max_s, unit="s", evidence_id=pair.hold_evidence_id,
+                       published=pub(pair.hold_evidence_id)))
 
     def _physical_limit(self, family: MaterialFamily):
         guards = [g for g in self.snapshot.physical_guards if g.applies_to_family == family]
         return min(guards, key=lambda g: g.max_temperature_c) if guards else None
 
+    @staticmethod
+    def _model_outside(resolved: PR.Resolved, treatment_id: TreatmentId, is_steel: bool) -> bool:
+        """¿Algún parámetro fuera de rango invalida el modelo? En aceros, el sostenimiento de austenización no
+        cambia la cinética (se supone austenización completa): solo avisa. En el revenido sí cuenta (Kang & Lee)."""
+        return any(p.outside and not (p.key == "hold_time" and is_steel and treatment_id != TreatmentId.TEMPER)
+                   for p in resolved.params.values())
+
+    @staticmethod
+    def _is_legacy(protocol: Protocol | None) -> bool:
+        return protocol is not None and all(s.role is None for s in protocol.stages)
+
     # --------------------------------------------------------- validación
-    def _check(self, ctx: _Ctx):
+    def _check(self, ctx: _Ctx) -> _Checked:
         req = ctx.req
+        loc = ctx.locale
         material, treatment, ic, pair, protocol = self._resolve(req)
-        t_dom, h_dom = self._domains(pair)
         guard = self._physical_limit(material.family)
+        is_steel = material.family == MaterialFamily.STEEL
 
         if self.snapshot.contains_unreviewed_content:
-            ctx.warn("DATASET_CONTAINS_UNREVIEWED_CONTENT", "info")
+            ctx.warn("REVIEW_PENDING", "info", group="review")
 
         # 1. Límite físico (solo bloquea).
         if guard is not None and req.target_temperature_c >= guard.max_temperature_c:
-            ctx.warn(
-                "TEMPERATURE_ABOVE_PHYSICAL_LIMIT",
-                "blocking",
-                "target_temperature_c",
-                temperature_c=_fmt(req.target_temperature_c),
-                limit_c=_fmt(guard.max_temperature_c),
-                guard_review=guard.review_status.value,
-            )
+            ctx.warn("TEMPERATURE_ABOVE_PHYSICAL_LIMIT", "blocking", "target_temperature_c", group="input",
+                     temperature_c=_fmt(req.target_temperature_c), limit_c=_fmt(guard.max_temperature_c),
+                     guard_review=guard.review_status.value)
             if guard.review_status != ReviewStatus.PUBLISHED:
-                ctx.warn("PHYSICAL_LIMIT_UNREVIEWED", "info")
-
-        # 2. Dominio del protocolo.
-        if t_dom.published and t_dom.min is not None and t_dom.max is not None:
-            if not (t_dom.min <= req.target_temperature_c <= t_dom.max):
-                ctx.warn(
-                    "TEMPERATURE_OUTSIDE_PROTOCOL_RANGE",
-                    "blocking",
-                    "target_temperature_c",
-                    min_c=_fmt(t_dom.min),
-                    max_c=_fmt(t_dom.max),
-                )
-        else:
-            ctx.warn("TEMPERATURE_DOMAIN_UNPUBLISHED", "limitation", "target_temperature_c")
-        if h_dom.published and h_dom.min is not None and h_dom.max is not None:
-            if not (h_dom.min <= req.hold_s <= h_dom.max):
-                ctx.warn(
-                    "HOLD_OUTSIDE_PROTOCOL_RANGE",
-                    "blocking",
-                    "hold_time_min",
-                    min_min=_fmt(h_dom.min / 60),
-                    max_min=_fmt(h_dom.max / 60),
-                )
-        else:
-            ctx.warn("HOLD_DOMAIN_UNPUBLISHED", "limitation", "hold_time_min")
+                ctx.warn("PHYSICAL_LIMIT_UNREVIEWED", "info", group="review")
         if req.hold_time_min > self.snapshot.interface.hold_ui_max_min:
-            # rango de interfaz: lo valida el esquema de la API; defensa en profundidad
-            ctx.warn("HOLD_OUTSIDE_PROTOCOL_RANGE", "blocking", "hold_time_min",
+            ctx.warn("HOLD_OUTSIDE_PROTOCOL_RANGE", "blocking", "hold_time_min", group="input",
                      min_min="0", max_min=_fmt(self.snapshot.interface.hold_ui_max_min))
+
+        # 2. Dominio con evidencia publicada (ruta experimental heredada).
+        t_dom, h_dom = self._legacy_domains(pair)
+        if t_dom.published and t_dom.min is not None and t_dom.max is not None \
+                and not (t_dom.min <= req.target_temperature_c <= t_dom.max):
+            ctx.warn("TEMPERATURE_OUTSIDE_PROTOCOL_RANGE", "blocking", "target_temperature_c", group="input",
+                     min_c=_fmt(t_dom.min), max_c=_fmt(t_dom.max))
+        if h_dom.published and h_dom.min is not None and h_dom.max is not None \
+                and not (h_dom.min <= req.hold_s <= h_dom.max):
+            ctx.warn("HOLD_OUTSIDE_PROTOCOL_RANGE", "blocking", "hold_time_min", group="input",
+                     min_min=_fmt(h_dom.min / 60), max_min=_fmt(h_dom.max / 60))
 
         # 3. Compatibilidad.
         compat = pair.compatibility_status if pair else CompatibilityStatus.UNSUPPORTED
         if compat == CompatibilityStatus.UNSUPPORTED:
-            ctx.warn("COMBINATION_UNSUPPORTED", "limitation")
+            ctx.warn("COMBINATION_UNSUPPORTED", "limitation", group="protocol")
 
-        # 4. Reglas por material / tratamiento.
-        state_ok = True
-        if treatment.id == TreatmentId.TEMPER and (ic is None or ic.hardened is not True):
-            ctx.warn("TEMPER_REQUIRES_HARDENED_STATE", "limitation", "initial_condition_id")
-            state_ok = False
-        if pair and pair.required_initial_state and ic is not None:
-            for k, expected in pair.required_initial_state.items():
+        # 4. Protocolo de la biblioteca: parámetros, rangos y lo que falta (un aviso por causa).
+        resolved = None
+        if protocol is None:
+            ctx.warn("NO_PROTOCOL", "limitation", group="protocol")
+        elif not self._is_legacy(protocol):
+            resolved = PR.resolve(self.snapshot, protocol, furnace_c=req.target_temperature_c, hold_s=req.hold_s,
+                                  bath_c=req.bath_temperature_c,
+                                  bath_s=None if req.bath_time_min is None else req.bath_time_min * 60)
+            fu = resolved.params.get("furnace_temperature")
+            if fu is not None:
+                t_dom = Domain(min=fu.min, max=fu.max, unit="°C", evidence_id=fu.evidence_id,
+                               published=fu.basis in ("source", "rule"))
+            ho = resolved.params.get("hold_time")
+            if ho is not None:
+                h_dom = Domain(min=None if ho.min is None else ho.min * 60, max=None if ho.max is None else ho.max * 60,
+                               unit="s", evidence_id=ho.evidence_id, published=ho.basis in ("source", "rule"))
+            for i in resolved.issues:
+                p = dict(i.params)
+                key = None
+                if "param" in p:
+                    name = _PARAM_NAMES[p["param"]][loc == "en"]
+                    key = f"{i.code}:{p['param']}"
+                    if i.code == "PARAM_UNDOCUMENTED":
+                        extra = MESSAGES["PARAM_UNDOCUMENTED_STEEL_HOLD" if p.get("steel_hold")
+                                         else "PARAM_UNDOCUMENTED_DRAW"][loc == "en"]
+                        p = {"param_name": name, "extra": extra}
+                    else:
+                        p["param_name"] = name
+                        p.pop("param", None)
+                    ctx.warn(i.code, i.severity, _PARAM_FIELDS.get(i.params["param"]), group=i.group, key=key, **p)
+                else:
+                    ctx.warn(i.code, i.severity, group=i.group, **p)
+
+        # 5. Dependencias del estado inicial.
+        dependency = None
+        if treatment.id == TreatmentId.TEMPER and compat != CompatibilityStatus.UNSUPPORTED:
+            hardened = ic is not None and ic.hardened is True
+            if req.prior_mode == "theory":
+                dependency = "theory"
+                ctx.warn("DEPENDENCY_THEORY", "limitation", group="dependency")
+            elif req.prior_mode == "history" and req.prior_temperature_c is not None:
+                dependency = "history"
+                ctx.warn("DEPENDENCY_HISTORY", "info", group="dependency",
+                         temperature_c=_fmt(req.prior_temperature_c))
+            elif protocol is not None and protocol.prior_protocol_id:
+                dependency = "reference"
+                prior = self.snapshot.protocol(protocol.prior_protocol_id)
+                ctx.warn("DEPENDENCY_REFERENCE", "info", group="dependency",
+                         prior=(prior.name_en if loc == "en" else prior.name_es) if prior else "—")
+            elif not hardened:
+                dependency = "theory"
+                ctx.warn("TEMPER_REQUIRES_HARDENED_STATE", "limitation", "initial_condition_id", group="dependency")
+        if protocol is not None and protocol.required_initial_state and ic is not None:
+            for k, expected in protocol.required_initial_state.items():
                 if treatment.id == TreatmentId.TEMPER and k == "hardened":
-                    continue  # ya cubierto por TEMPER_REQUIRES_HARDENED_STATE
+                    continue
                 if getattr(ic, k, None) != expected:
                     ctx.warn("REQUIRED_INITIAL_STATE_NOT_MET", "limitation", "initial_condition_id",
-                             requirement=f"{k}={expected}")
-                    state_ok = False
-        if material.id == "aisi_8620" and (ic is None or ic.carburized is not True):
-            ctx.warn("CARBURIZED_CASE_NOT_ASSUMED", "info")
+                             group="dependency", requirement=f"{k}={expected}")
+        if material.id == "aisi_8620":
+            if ic is not None and ic.carburized is True:
+                ctx.warn("CARBURIZED_CASE_NOT_MODELED", "info", group="model")
+            else:
+                ctx.warn("CARBURIZED_CASE_NOT_ASSUMED", "info", group="model")
         if material.family == MaterialFamily.GRAY_CAST_IRON:
-            ctx.warn("CAST_IRON_NO_STEEL_MODELS", "info")
-        if treatment.id == TreatmentId.ANNEAL and (protocol is None or not protocol.variant_es):
-            ctx.warn("ANNEAL_VARIANT_REQUIRED", "limitation")
-        if treatment.id in (TreatmentId.AUSTEMPER, TreatmentId.MARTEMPER) and (
-            protocol is None or not protocol.is_fully_specified
-        ):
-            ctx.warn("STAGED_PROTOCOL_PENDING", "limitation")
+            ctx.warn("CAST_IRON_NO_STEEL_MODELS", "info", group="model")
 
-        protocol_ok = (
-            protocol is not None
-            and protocol.review_status == ReviewStatus.PUBLISHED
-            and protocol.is_fully_specified
-        )
-        if not protocol_ok:
-            ctx.warn("MISSING_VALIDATED_PROTOCOL", "limitation")
-
+        # 6. Ruta experimental (evidencia medida publicada) — sin cambios.
+        protocol_ok = (protocol is not None and protocol.review_status == ReviewStatus.PUBLISHED
+                       and protocol.is_fully_specified)
         quantitative = (
             compat in (CompatibilityStatus.SUPPORTED, CompatibilityStatus.CONDITIONAL)
-            and pair is not None
-            and pair.quantitative_outputs_enabled
-            and pair.review_status == ReviewStatus.PUBLISHED
-            and protocol_ok
-            and state_ok
+            and pair is not None and pair.quantitative_outputs_enabled and pair.review_status == ReviewStatus.PUBLISHED
+            and protocol_ok and (treatment.id != TreatmentId.TEMPER or (ic is not None and ic.hardened is True))
             and (ic is None or ic.review_status == ReviewStatus.PUBLISHED)
             and not self.snapshot.contains_unreviewed_content
         )
-        if pair is not None and compat != CompatibilityStatus.UNSUPPORTED and not pair.quantitative_outputs_enabled:
-            ctx.warn("PAIR_NOT_QUANTITATIVE", "limitation")
-        return material, treatment, ic, pair, protocol, t_dom, h_dom, guard, compat, quantitative
+
+        # 7. Nivel de resultado previsto (A/B/C).
+        if ctx.blocking or compat == CompatibilityStatus.UNSUPPORTED or protocol is None:
+            level = "C"
+        elif self._is_legacy(protocol):
+            level = "A" if quantitative else "C"
+        elif protocol.evidence_status != "source_verified" or dependency == "theory":
+            level = "C"
+        elif not (is_steel and protocol.model_applicable and ME.supported(material.id)):
+            level = "B"
+        elif resolved is not None and self._model_outside(resolved, treatment.id, is_steel):
+            level = "B"
+        else:
+            level = "A"
+        return _Checked(material, treatment, ic, pair, protocol, resolved, t_dom, h_dom, guard, compat, quantitative,
+                        dependency, level)
+
+    def _headline(self, ctx: _Ctx, k: _Checked, level: str) -> dict[str, Any]:
+        loc = ctx.locale
+        if ctx.blocking:
+            w = next(w for w in ctx.warnings if w.severity == "blocking")
+            return {"code": "BLOCKED", "kind": "warning", "message": w.message}
+        if k.compat == CompatibilityStatus.UNSUPPORTED:
+            return {"code": "UNSUPPORTED", "kind": "limitation", "message": localize(MESSAGES, "COMBINATION_UNSUPPORTED", loc)}
+        out = [w for w in ctx.warnings if w.code == "OUTSIDE_PROTOCOL_RANGE"]
+        if out:
+            hard = k.resolved is not None and self._model_outside(
+                k.resolved, k.treatment.id, k.material.family == MaterialFamily.STEEL)
+            code = "HEADLINE_OUT_OF_RANGE" if hard or level != "A" else "HEADLINE_OUT_OF_RANGE_SOFT"
+            return {"code": code, "kind": "warning",
+                    "message": localize(MESSAGES, code, loc, param_name=out[0].params["param_name"])}
+        name = None if k.protocol is None else (k.protocol.name_en if loc == "en" else k.protocol.name_es)
+        if k.dependency == "reference":
+            return {"code": "HEADLINE_DEPENDENCY", "kind": "info", "message": localize(MESSAGES, "HEADLINE_DEPENDENCY", loc)}
+        if level == "C":
+            code = "HEADLINE_UNVERIFIED" if k.protocol is not None and k.protocol.evidence_status == "source_unverified" \
+                else "HEADLINE_ILLUSTRATIVE"
+            return {"code": code, "kind": "limitation", "message": localize(MESSAGES, code, loc)}
+        if level == "B":
+            return {"code": "HEADLINE_PARTIAL", "kind": "limitation", "message": localize(MESSAGES, "HEADLINE_PARTIAL", loc)}
+        code = "HEADLINE_VALID" if k.protocol is not None and k.protocol.is_reference else "HEADLINE_VALID_VARIANT"
+        return {"code": code, "kind": "ok", "message": localize(MESSAGES, code, loc, name=name or "—")}
 
     def validate(self, req: SimulationRequest) -> ValidationReport:
         ctx = _Ctx(req=req, snap=self.snapshot, locale=req.locale)
-        _m, _t, ic, _p, _pr, t_dom, h_dom, guard, compat, quant = self._check(ctx)
-        if not ctx.blocking and compat != CompatibilityStatus.UNSUPPORTED:
-            self._recommend_warnings(ctx)
-        rec = recommended_practice(req.material_id, req.treatment_id)
+        k = self._check(ctx)
         if ctx.blocking:
             status = SimulationStatus.INVALID_INPUT
-        elif compat == CompatibilityStatus.UNSUPPORTED:
+        elif k.compat == CompatibilityStatus.UNSUPPORTED:
             status = SimulationStatus.UNSUPPORTED
-        elif quant:
+        elif k.quantitative:
             status = SimulationStatus.COMPLETED  # predicción optimista; se confirma al simular
-        elif ME.supported(req.material_id):
-            status = SimulationStatus.PARTIAL_RESULT  # estimaciones de modelo (D-26)
+        elif k.level == "A":
+            status = SimulationStatus.PARTIAL_RESULT
         else:
             status = SimulationStatus.INSUFFICIENT_EVIDENCE
         return ValidationReport(
             can_run=not ctx.blocking,
             predicted_status=status,
-            compatibility_status=compat,
-            quantitative_eligible=quant,
-            temperature_domain=t_dom,
-            hold_domain=h_dom,
-            physical_limit_c=guard.max_temperature_c if guard else None,
-            initial_condition_id=ic.id if ic else None,
+            compatibility_status=k.compat,
+            quantitative_eligible=k.quantitative,
+            temperature_domain=k.t_dom,
+            hold_domain=k.h_dom,
+            physical_limit_c=k.guard.max_temperature_c if k.guard else None,
+            initial_condition_id=k.ic.id if k.ic else None,
             warnings=ctx.warnings,
-            recommendation=ME.recommendation_dict(rec, req.locale) if rec else None,
+            result_level=k.level,
+            headline=self._headline(ctx, k, k.level),
+            protocol=None if k.protocol is None or self._is_legacy(k.protocol)
+            else PR.card(self.snapshot, k.protocol, req.locale, k.resolved),
         )
-
-    @staticmethod
-    def _recommend_warnings(ctx: _Ctx) -> None:
-        req = ctx.req
-        for code, params in check_recommended(req.material_id, req.treatment_id, req.target_temperature_c,
-                                              req.hold_time_min):
-            ctx.warn(code, "limitation", "target_temperature_c" if "TEMPERATURE" in code else "hold_time_min",
-                     **params)
 
     # ------------------------------------------------------- historial
     def build_thermal_history(self, req: SimulationRequest) -> ThermalHistory | None:
-        _m, _t, _ic, pair, protocol = self._resolve(req)
-        if protocol is None or protocol.review_status != ReviewStatus.PUBLISHED:
+        _m, _t, _ic, _pair, protocol = self._resolve(req)
+        if protocol is None or protocol.review_status != ReviewStatus.PUBLISHED or not self._is_legacy(protocol):
             return None
         return build_physical_history(
             protocol,
@@ -370,101 +459,123 @@ class ScientificEngine:
             "initial_condition_id": req.initial_condition_id,
             "target_temperature_c": float(req.target_temperature_c),
             "hold_s": float(req.hold_s),
+            "protocol_id": req.protocol_id,
+            "bath_temperature_c": req.bath_temperature_c,
+            "bath_time_min": req.bath_time_min,
+            "prior": [req.prior_mode, req.prior_protocol_id, req.prior_temperature_c, req.prior_hold_min],
             "dataset_checksum": self._checksum,
             "engine_version": ENGINE_VERSION,
         }
         raw = json.dumps(canonical, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(raw.encode()).hexdigest()
 
+    def _prior(self, req: SimulationRequest, k: _Checked):
+        """Estado templado de partida del revenido: protocolo de referencia o una práctica del historial."""
+        snap = self.snapshot
+        if k.dependency == "history":
+            prior = snap.protocol(req.prior_protocol_id) if req.prior_protocol_id else None
+            if prior is None or prior.material_id != k.material.id or prior.treatment_id != TreatmentId.QUENCH:
+                prior = snap.protocol(k.protocol.prior_protocol_id) if k.protocol.prior_protocol_id else None
+            if prior is None:
+                return None, None
+            r = PR.resolve(snap, prior, furnace_c=float(req.prior_temperature_c), hold_s=(req.prior_hold_min or 0) * 60)
+            return r.steps, {"source": "history", "protocol_id": prior.id,
+                             "quench_temperature_c": req.prior_temperature_c, "quench_hold_min": req.prior_hold_min}
+        prior = snap.protocol(k.protocol.prior_protocol_id) if k.protocol.prior_protocol_id else None
+        if prior is None:
+            return None, None
+        r = PR.resolve(snap, prior, furnace_c=0, hold_s=0, use_reference=True)
+        fu, ho = r.params.get("furnace_temperature"), r.params.get("hold_time")
+        return r.steps, {"source": "reference", "protocol_id": prior.id,
+                         "quench_temperature_c": fu.value if fu else None, "quench_hold_min": ho.value if ho else None}
+
     def simulate(self, req: SimulationRequest) -> SimulationResult:
         loc = req.locale
         ctx = _Ctx(req=req, snap=self.snapshot, locale=loc)
-        material, treatment, ic, pair, protocol, _td, _hd, _g, compat, quant = self._check(ctx)
+        k = self._check(ctx)
+        material, treatment, ic, pair, protocol, compat = k.material, k.treatment, k.ic, k.pair, k.protocol, k.compat
 
         history: ThermalHistory | None = None
         schematic = None
         diagrams: list[dict[str, Any]] = []
-        estimate = None
-        illustration = None
+        practice = None
         model_sources: list[str] = []
         facts: dict[str, Any] = {}
         used_models: list[str] = []
         used_evidence: list[EvidenceRecord] = []
+        level = k.level
 
         if ctx.blocking:
             status = SimulationStatus.INVALID_INPUT
         elif compat == CompatibilityStatus.UNSUPPORTED:
             status = SimulationStatus.UNSUPPORTED
         else:
-            if protocol is not None and protocol.review_status == ReviewStatus.PUBLISHED:
-                history = build_physical_history(
-                    protocol,
-                    target_temperature_c=req.target_temperature_c,
-                    hold_s=req.hold_s,
-                    ambient_c=self.snapshot.interface.ambient_reference_c,
-                )
-            if history is None:
-                templates = protocol.stages if protocol is not None else treatment.stage_outline
-                schematic = build_schematic_cycle(
-                    templates, target_temperature_c=req.target_temperature_c, hold_s=req.hold_s
-                )
-                ctx.warn("SCHEMATIC_CYCLE_ONLY", "info")
-            if req.hold_time_min == 0:
-                ctx.warn("HOLD_ZERO", "info")
-            if quant and history is not None:
+            if self._is_legacy(protocol) and protocol.review_status == ReviewStatus.PUBLISHED:
+                history = build_physical_history(protocol, target_temperature_c=req.target_temperature_c,
+                                                 hold_s=req.hold_s, ambient_c=self.snapshot.interface.ambient_reference_c)
+            if k.quantitative and history is not None:
                 facts, used_models, used_evidence = self._quantify(ctx, material.id, treatment.id, ic, protocol, history)
-            self._recommend_warnings(ctx)
-            practice = None
-            if ME.supported(material.id):
-                practice = metallurgy_practice.run(material.id, treatment.id, req.target_temperature_c, req.hold_s)
-                for k, v in ME.facts(practice, self.snapshot.dataset_version).items():
-                    facts.setdefault(k, v)
-                if history is None:
-                    history = ME.thermal_history(practice)
-                    schematic = None
-                    ctx.warnings = [w for w in ctx.warnings if w.code != "SCHEMATIC_CYCLE_ONLY"]
-                    ctx.warn("MODEL_THERMAL_HISTORY", "info")
+            if k.resolved is not None:
+                model_ok = level == "A"
+                is_steel = material.family == MaterialFamily.STEEL
+                if treatment.id == TreatmentId.TEMPER and k.dependency in ("reference", "history"):
+                    prior_steps, prior_info = self._prior(req, k)
+                    if prior_steps is None:
+                        practice = metallurgy_practice.simulate_steps(material.id, "temper", k.resolved.steps, model=False)
+                    else:
+                        hp = k.resolved.params.get("hold_time")
+                        practice = metallurgy_practice.simulate_temper(
+                            material.id, prior_steps, prior_info, k.resolved.steps, req.target_temperature_c,
+                            (hp.value or 0) * 60 if hp else 0.0, model=model_ok)
+                else:
+                    practice = metallurgy_practice.simulate_steps(material.id, treatment.id, k.resolved.steps,
+                                                                  model=model_ok, diagrams=is_steel)
+                history = ME.thermal_history(practice, illustrative=not is_steel)
+                ctx.warn("MODEL_THERMAL_HISTORY" if is_steel else "THERMAL_CURVE_ILLUSTRATIVE", "info", group="model")
                 diagrams = practice.diagrams
-                used_models.append(metallurgy_practice.MODEL_VERSION)
-                model_sources = list(metallurgy_practice.MODEL_SOURCES)
-                ctx.warn("MODEL_ESTIMATE_NOT_REVIEWED", "info")
-                if practice.prior is not None:
-                    ctx.warn("MODEL_TEMPER_ASSUMED_PRIOR_QUENCH", "limitation",
-                             quench_c=_fmt(practice.prior["quench_temperature_c"]),
-                             medium=_MEDIUM_NAMES.get(practice.prior["medium"], ("?", "?"))[loc == "en"])
-                for note in practice.notes:
-                    ctx.warn(note, "limitation" if note in ("MODEL_NO_AUSTENITIZATION", "MODEL_TEMPER_ABOVE_AE1",
-                                                            "MODEL_OVERHEATING",
-                                                            "MODEL_TEMPER_OUTSIDE_VALIDITY") else "info")
-            elif material.family == MaterialFamily.GRAY_CAST_IRON:
-                ctx.warn("CAST_IRON_ILLUSTRATION_ONLY", "info")
-            estimate = ME.estimate_block(practice, material.id, treatment.id, loc)
-            illustration = ME.illustration(material.id, treatment.id, self.request_hash(req), practice,
-                                           material.family.value)
-            rec = recommended_practice(material.id, treatment.id)
-            if rec:
-                model_sources += [s for s in rec.source_ids if s not in model_sources]
+                if model_ok:
+                    for key, v in ME.facts(practice, self.snapshot.dataset_version).items():
+                        facts.setdefault(key, v)
+                    used_models.append(metallurgy_practice.MODEL_VERSION)
+                    model_sources = list(metallurgy_practice.MODEL_SOURCES)
+                    ctx.warn("MODEL_ESTIMATE_NOT_REVIEWED", "info", group="review")
+                    for note in practice.notes:
+                        ctx.warn(note, "limitation" if note in ("MODEL_NO_AUSTENITIZATION", "MODEL_TEMPER_ABOVE_AE1",
+                                                                "MODEL_OVERHEATING", "MODEL_TEMPER_OUTSIDE_VALIDITY")
+                                 else "info", group="model")
+                    if treatment.id == TreatmentId.MARTEMPER and practice.fractions \
+                            and practice.fractions.get("bainite", 0) > 0.05:
+                        ctx.warn("MARTEMPER_BAINITE_FORMED", "limitation", group="model",
+                                 pct=f"{practice.fractions['bainite'] * 100:.0f}")
+                elif is_steel and level == "B" and self._model_outside(k.resolved, treatment.id, is_steel):
+                    ctx.warn("EXPLORATION_NO_NUMBERS", "info", group="model")
+            elif protocol is None:
+                schematic = build_schematic_cycle(treatment.stage_outline, target_temperature_c=req.target_temperature_c,
+                                                  hold_s=req.hold_s)
+                ctx.warn("SCHEMATIC_CYCLE_ONLY", "info", group="model")
+            if req.hold_time_min == 0 and (k.resolved is None or ("hold_time" in k.resolved.params
+                                                                   and k.resolved.params["hold_time"].basis != "pending")):
+                ctx.warn("HOLD_ZERO", "info", group="input")
             n_facts = sum(1 for v in facts.values() if v)
             if n_facts == 0:
                 status = SimulationStatus.INSUFFICIENT_EVIDENCE
-                if quant:
-                    ctx.warn("NO_QUANTITATIVE_EVIDENCE", "limitation")
+                if level == "A":
+                    level = "B"
+                if k.quantitative:
+                    ctx.warn("NO_QUANTITATIVE_EVIDENCE", "limitation", group="evidence")
             elif n_facts == len(QuantityCode):
                 status = SimulationStatus.COMPLETED
             else:
                 status = SimulationStatus.PARTIAL_RESULT
 
-        user_hold_label = None
+        card = None if protocol is None or self._is_legacy(protocol) else PR.card(self.snapshot, protocol, loc, k.resolved)
+        estimate = ME.estimate_block(practice if facts or (practice and practice.prior) else None, material.id,
+                                     treatment.id, loc)
+        illustration = ME.illustration(material.id, treatment.id, self.request_hash(req),
+                                       practice if level == "A" else None, material.family.value,
+                                       matrix_hint=None if protocol is None else protocol.variant_code)
         if protocol is not None:
-            hold_stage = next((s for s in protocol.stages if s.duration_mode == "user_hold"), None)
-            if hold_stage:
-                user_hold_label = localize(STAGE_LABELS, hold_stage.label_key, loc)
-        elif treatment.stage_outline:
-            hold_tpl = next((s for s in treatment.stage_outline if s.user_hold), None)
-            if hold_tpl:
-                user_hold_label = localize(STAGE_LABELS, hold_tpl.label_key, loc)
-        if user_hold_label and status not in (SimulationStatus.INVALID_INPUT, SimulationStatus.UNSUPPORTED):
-            ctx.warn("HOLD_REFERS_TO_STAGE", "info", "hold_time_min", stage=user_hold_label)
+            model_sources += [s for s in protocol.source_ids if s not in model_sources]
 
         results = Results(**facts)
         result_status = {
@@ -485,6 +596,10 @@ class ScientificEngine:
                 initial_condition_id=ic.id if ic else None,
                 target_temperature_c=req.target_temperature_c,
                 hold_time_min=req.hold_time_min,
+                protocol_id=protocol.id if protocol else None,
+                bath_temperature_c=req.bath_temperature_c,
+                bath_time_min=req.bath_time_min,
+                prior_mode=req.prior_mode if treatment.id == TreatmentId.TEMPER else None,
             ),
             compatibility_status=compat,
             material=MaterialRef(id=material.id, display_name=material.display_name, family=material.family),
@@ -497,18 +612,16 @@ class ScientificEngine:
             result_status=result_status,
             warnings=ctx.warnings,
             evidence=self._evidence_refs(material, treatment, used_evidence, used_models)
-            + ME.source_refs(model_sources),
+            + self._protocol_source_refs(model_sources),
             diagrams=diagrams,
             model_estimate=estimate,
             microstructure_illustration=illustration,
+            result_level=level,
+            headline=self._headline(ctx, k, level),
+            protocol_card=card,
             assumptions=[
                 Assumption(code=c, text=localize(ASSUMPTIONS, c, loc))
-                for c in (
-                    "GEOMETRY_OMITTED",
-                    "COOLING_FIXED_BY_PROTOCOL",
-                    "EDUCATIONAL_NOT_INDUSTRIAL",
-                    "LINEAR_SEGMENTS_ILLUSTRATIVE",
-                )
+                for c in ("GEOMETRY_OMITTED", "COOLING_FIXED_BY_PROTOCOL", "EDUCATIONAL_NOT_INDUSTRIAL")
             ],
             explanation=Explanation(
                 review_status=treatment.review_status.value,
@@ -521,6 +634,19 @@ class ScientificEngine:
                 localize(MESSAGES, "COMBINATION_UNSUPPORTED", loc),
             ),
         )
+
+    def _protocol_source_refs(self, ids: list[str]) -> list[EvidenceRef]:
+        """Fuentes del protocolo (catálogo) y de los modelos (catálogo interno del motor)."""
+        refs = []
+        for sid in ids:
+            s = self.snapshot.source(sid)
+            if s is not None:
+                refs.append(EvidenceRef(source_id=s.id, title=s.title, authors=s.authors, year=s.year, edition=s.edition,
+                                        doi=s.doi, url=s.url, kind=s.kind, verification_status=s.verification_status,
+                                        usage="supports_value"))
+            else:
+                refs += ME.source_refs([sid])
+        return refs
 
     # ------------------------------------------------------- cuantificación
     def _quantify(self, ctx, material_id, treatment_id, ic, protocol: Protocol, history: ThermalHistory):

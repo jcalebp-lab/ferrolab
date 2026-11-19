@@ -6,6 +6,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Request, Response
 from ferrolab_fse import ENGINE_VERSION, SimulationRequest
+from ferrolab_fse import protocol_runtime as PR
 from ferrolab_fse.messages import MESSAGES, STAGE_LABELS, localize
 from ferrolab_fse.result import Warning as FseWarning
 
@@ -121,8 +122,13 @@ def material_treatments(material_id: str, locale: str = Depends(locale_q), st: A
     out = []
     for t in snap.treatments:
         pair = snap.pair(material_id, t.id)
-        req = SimulationRequest(material_id=material_id, treatment_id=t.id, target_temperature_c=20, hold_time_min=0,
-                                locale=locale)  # solo para dominios/protocolo; no es una simulación
+        ref = PR.choose(snap, material_id, t.id, None)
+        rp = PR.resolve(snap, ref, furnace_c=20, hold_s=0, use_reference=True).params if ref else {}
+        fu, ho = rp.get("furnace_temperature"), rp.get("hold_time")
+        # Validación con los valores de referencia del protocolo (estado «recién cargado»); no es una simulación.
+        req = SimulationRequest(material_id=material_id, treatment_id=t.id,
+                                target_temperature_c=(fu.value if fu and fu.value else 20),
+                                hold_time_min=(ho.value if ho and ho.value else 0), locale=locale)
         report = loaded.engine.validate(req)
         proto = snap.protocol(pair.protocol_id) if pair else None
         out.append({
@@ -135,7 +141,10 @@ def material_treatments(material_id: str, locale: str = Depends(locale_q), st: A
             "temperature_domain": report.temperature_domain.model_dump(),
             "hold_domain": report.hold_domain.model_dump(),
             "physical_limit_c": report.physical_limit_c,
-            "recommendation": report.recommendation,
+            "result_level": report.result_level,
+            "headline": report.headline,
+            "reference_protocol": report.protocol,
+            "protocols": [PR.card(snap, pr, locale) for pr in snap.protocols_for(material_id, t.id)],
             "protocol": None if proto is None else {
                 "id": proto.id, "version": proto.version, "review_status": proto.review_status,
                 "medium": _l(proto, "medium", locale), "medium_documented": proto.medium_evidence_id is not None,

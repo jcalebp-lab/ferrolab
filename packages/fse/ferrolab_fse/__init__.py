@@ -1,6 +1,6 @@
 """Ferrolab Scientific Engine (FSE)."""
 
-ENGINE_VERSION = "0.2.0"
+ENGINE_VERSION = "0.3.0"
 
 from .engine import InvalidState, ScientificEngine, SimulationRequest, UnknownEntity  # noqa: E402
 from .snapshot import DatasetSnapshot  # noqa: E402

@@ -2215,6 +2215,396 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Austenita retenida (islas blancas)'**
   String get microLabelRetained;
+
+  /// No description provided for @levelA.
+  ///
+  /// In es, this message translates to:
+  /// **'A · Cálculo con modelos publicados (pendiente de validación por especialista)'**
+  String get levelA;
+
+  /// No description provided for @levelB.
+  ///
+  /// In es, this message translates to:
+  /// **'B · Interpretación cualitativa fundamentada'**
+  String get levelB;
+
+  /// No description provided for @levelC.
+  ///
+  /// In es, this message translates to:
+  /// **'C · Demostración educativa ilustrativa'**
+  String get levelC;
+
+  /// No description provided for @lpLimitations.
+  ///
+  /// In es, this message translates to:
+  /// **'Fundamento científico y limitaciones'**
+  String get lpLimitations;
+
+  /// No description provided for @groupInput.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus parámetros'**
+  String get groupInput;
+
+  /// No description provided for @groupDependency.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado previo'**
+  String get groupDependency;
+
+  /// No description provided for @groupProtocol.
+  ///
+  /// In es, this message translates to:
+  /// **'Protocolo'**
+  String get groupProtocol;
+
+  /// No description provided for @groupEvidence.
+  ///
+  /// In es, this message translates to:
+  /// **'Evidencia'**
+  String get groupEvidence;
+
+  /// No description provided for @groupModel.
+  ///
+  /// In es, this message translates to:
+  /// **'Modelo'**
+  String get groupModel;
+
+  /// No description provided for @groupReview.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisión'**
+  String get groupReview;
+
+  /// No description provided for @groupOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otros'**
+  String get groupOther;
+
+  /// No description provided for @lpReference.
+  ///
+  /// In es, this message translates to:
+  /// **'Referencia'**
+  String get lpReference;
+
+  /// No description provided for @lpVerified.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuente verificada'**
+  String get lpVerified;
+
+  /// No description provided for @lpUnverified.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuente no verificada por FERROLAB'**
+  String get lpUnverified;
+
+  /// No description provided for @lpProtocols.
+  ///
+  /// In es, this message translates to:
+  /// **'Protocolos disponibles'**
+  String get lpProtocols;
+
+  /// No description provided for @lpUseProtocol.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar protocolo recomendado'**
+  String get lpUseProtocol;
+
+  /// No description provided for @lpParams.
+  ///
+  /// In es, this message translates to:
+  /// **'Parámetros del protocolo'**
+  String get lpParams;
+
+  /// No description provided for @pFurnace.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperatura del horno'**
+  String get pFurnace;
+
+  /// No description provided for @pHold.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiempo de sostenimiento'**
+  String get pHold;
+
+  /// No description provided for @pBath.
+  ///
+  /// In es, this message translates to:
+  /// **'Temperatura del baño'**
+  String get pBath;
+
+  /// No description provided for @pBathTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiempo en el baño'**
+  String get pBathTime;
+
+  /// No description provided for @pBathEqualize.
+  ///
+  /// In es, this message translates to:
+  /// **'Vacío = hasta igualar la temperatura (calculado)'**
+  String get pBathEqualize;
+
+  /// No description provided for @pOutside.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuera del intervalo documentado para este protocolo.'**
+  String get pOutside;
+
+  /// No description provided for @pMediumLocked.
+  ///
+  /// In es, this message translates to:
+  /// **'Medio de enfriamiento (fijado por el protocolo)'**
+  String get pMediumLocked;
+
+  /// No description provided for @lpSequence.
+  ///
+  /// In es, this message translates to:
+  /// **'Secuencia térmica'**
+  String get lpSequence;
+
+  /// No description provided for @lpSheet.
+  ///
+  /// In es, this message translates to:
+  /// **'Ficha científica del protocolo'**
+  String get lpSheet;
+
+  /// No description provided for @lpObjective.
+  ///
+  /// In es, this message translates to:
+  /// **'Objetivo'**
+  String get lpObjective;
+
+  /// No description provided for @lpCondition.
+  ///
+  /// In es, this message translates to:
+  /// **'Condición del material'**
+  String get lpCondition;
+
+  /// No description provided for @lpExpected.
+  ///
+  /// In es, this message translates to:
+  /// **'Resultado esperado'**
+  String get lpExpected;
+
+  /// No description provided for @lpRestrictions.
+  ///
+  /// In es, this message translates to:
+  /// **'Condiciones y restricciones'**
+  String get lpRestrictions;
+
+  /// No description provided for @lpAssumptions.
+  ///
+  /// In es, this message translates to:
+  /// **'Supuestos'**
+  String get lpAssumptions;
+
+  /// No description provided for @lpMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que falta investigar'**
+  String get lpMissing;
+
+  /// No description provided for @lpPublished.
+  ///
+  /// In es, this message translates to:
+  /// **'Resultados publicados del caso (medidos, no predichos)'**
+  String get lpPublished;
+
+  /// No description provided for @lpSources.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuentes'**
+  String get lpSources;
+
+  /// No description provided for @lpPrior.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado de partida del revenido'**
+  String get lpPrior;
+
+  /// No description provided for @priorReference.
+  ///
+  /// In es, this message translates to:
+  /// **'Templada de referencia'**
+  String get priorReference;
+
+  /// No description provided for @priorHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'De mi historial'**
+  String get priorHistory;
+
+  /// No description provided for @priorTheory.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo teoría'**
+  String get priorTheory;
+
+  /// No description provided for @priorHistoryEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay temples de este material en tu historial (guárdalos desde Resultados).'**
+  String get priorHistoryEmpty;
+
+  /// No description provided for @seqAmbient.
+  ///
+  /// In es, this message translates to:
+  /// **'ambiente'**
+  String get seqAmbient;
+
+  /// No description provided for @seqUntilEqualized.
+  ///
+  /// In es, this message translates to:
+  /// **'hasta igualar'**
+  String get seqUntilEqualized;
+
+  /// No description provided for @seqStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio del conteo'**
+  String get seqStart;
+
+  /// No description provided for @lpMaterialPanel.
+  ///
+  /// In es, this message translates to:
+  /// **'Material'**
+  String get lpMaterialPanel;
+
+  /// No description provided for @lpComposition.
+  ///
+  /// In es, this message translates to:
+  /// **'Composición de referencia (% en masa)'**
+  String get lpComposition;
+
+  /// No description provided for @lpCompositionNone.
+  ///
+  /// In es, this message translates to:
+  /// **'La norma no fija composición: comprueba la de tu pieza.'**
+  String get lpCompositionNone;
+
+  /// No description provided for @lpTreatmentPanel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tratamiento'**
+  String get lpTreatmentPanel;
+
+  /// No description provided for @basisSource.
+  ///
+  /// In es, this message translates to:
+  /// **'Dato de la fuente'**
+  String get basisSource;
+
+  /// No description provided for @basisRule.
+  ///
+  /// In es, this message translates to:
+  /// **'Regla publicada aplicada a la probeta de 12,7 mm'**
+  String get basisRule;
+
+  /// No description provided for @basisModel.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculado con el modelo (no publicado)'**
+  String get basisModel;
+
+  /// No description provided for @basisPending.
+  ///
+  /// In es, this message translates to:
+  /// **'la fuente no da cifra'**
+  String get basisPending;
+
+  /// No description provided for @basisComputed.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculado por el modelo térmico'**
+  String get basisComputed;
+
+  /// No description provided for @goalReference.
+  ///
+  /// In es, this message translates to:
+  /// **'General'**
+  String get goalReference;
+
+  /// No description provided for @goalHardness.
+  ///
+  /// In es, this message translates to:
+  /// **'Orientado a dureza'**
+  String get goalHardness;
+
+  /// No description provided for @goalToughness.
+  ///
+  /// In es, this message translates to:
+  /// **'Orientado a tenacidad'**
+  String get goalToughness;
+
+  /// No description provided for @goalSoftening.
+  ///
+  /// In es, this message translates to:
+  /// **'Ablandamiento'**
+  String get goalSoftening;
+
+  /// No description provided for @goalStressRelief.
+  ///
+  /// In es, this message translates to:
+  /// **'Alivio de tensiones'**
+  String get goalStressRelief;
+
+  /// No description provided for @goalExperimental.
+  ///
+  /// In es, this message translates to:
+  /// **'Caso experimental'**
+  String get goalExperimental;
+
+  /// No description provided for @goalMachinability.
+  ///
+  /// In es, this message translates to:
+  /// **'Maquinabilidad'**
+  String get goalMachinability;
+
+  /// No description provided for @goalPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get goalPending;
+
+  /// No description provided for @mediumTinBath.
+  ///
+  /// In es, this message translates to:
+  /// **'baño de estaño'**
+  String get mediumTinBath;
+
+  /// No description provided for @furnaceBathScene.
+  ///
+  /// In es, this message translates to:
+  /// **'Baño isotérmico'**
+  String get furnaceBathScene;
+
+  /// No description provided for @lpLimitationsCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} avisos agrupados por causa'**
+  String lpLimitationsCount(String n);
+
+  /// No description provided for @pRange.
+  ///
+  /// In es, this message translates to:
+  /// **'Intervalo documentado: {range}'**
+  String pRange(String range);
+
+  /// No description provided for @pRef.
+  ///
+  /// In es, this message translates to:
+  /// **'Referencia: {v}'**
+  String pRef(String v);
+
+  /// No description provided for @lpProtocol.
+  ///
+  /// In es, this message translates to:
+  /// **'Protocolo'**
+  String get lpProtocol;
 }
 
 class _AppLocalizationsDelegate
