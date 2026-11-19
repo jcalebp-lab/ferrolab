@@ -102,6 +102,10 @@ class Step:
     until_c: float | None = None
 
 
+# Etapas del revenido (Krauss, «Steels: Processing, Structure, and Performance»; Callister): la cementita sustituye a
+# los carburos de transición y la austenita retenida se descompone hacia 250–350 °C. Desde 350 °C se usa la palanca.
+TEMPER_CEMENTITE_C = 350.0
+
 COOLING_KINDS = {"transfer", "quench", "bath", "furnace_cool", "air"}
 
 
@@ -279,6 +283,10 @@ def simulate_temper(material_id: str, prior_steps: list[Step], prior_info: dict,
     f = dict(prior.fractions)
     f["tempered_martensite"] = f.pop("martensite", 0.0)
     p.fractions = f
+    if temper_c >= TEMPER_CEMENTITE_C:
+        # Por encima de la 3.ª etapa del revenido el carbono de la martensita precipita como cementita y la austenita
+        # retenida se ha descompuesto: fases = ferrita + cementita por la regla de la palanca (diagrama Fe–Fe3C).
+        p.phases = _phases({"martensite": 0.0, "retained_austenite": 0.0}, c, 0.0)
     p.fractions_range = None if prior.fractions_range is None else {
         ("tempered_martensite" if k == "martensite" else k): v for k, v in prior.fractions_range.items()}
     vr_h = prior.vr_700_k_s * 3600

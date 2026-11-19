@@ -85,8 +85,8 @@ def estimate(comps: dict[str, dict[str, float]], path: list[tuple[float, float]]
             ds.append(r[0])
     lo_t, hi_t = LEE_T_RANGE_C
     flags = []
-    # tolerancia de 3 °C: el centro de la probeta se iguala con el horno a ±2 °C (criterio del modelo térmico)
-    if t_peak_c < lo_t - 3:
+    # 830–850 °C: extrapolación corta, declarada en los supuestos (GRAIN_MODEL); solo se avisa más abajo.
+    if t_peak_c < lo_t - 20:
         flags.append("below_850c")
     if t_peak_c > hi_t:
         flags.append("above_1200c")

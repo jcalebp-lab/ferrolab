@@ -211,3 +211,24 @@ def test_illustration_explains_why_nothing_is_drawn(seed_snapshot):
     for reason, rq in cases.items():
         il = eng.simulate(rq).microstructure_illustration
         assert il["reason"] == reason and il["fractions"] is None
+
+
+BANNED = ("revisión", "revisad", "especialista", "empíric", "borrador", "draft", "review", "empirical")
+
+
+@pytest.mark.parametrize("m,t", COMBOS)
+def test_no_review_or_empirical_notices_and_complete_reference_results(seed_snapshot, m, t):
+    """Petición del propietario (D-35/D-36): ningún aviso de revisión pendiente ni de «modelos empíricos»; con el
+    protocolo de referencia los aceros dan las cinco cifras y nada queda como «No estimable» genérico."""
+    eng = ScientificEngine(seed_snapshot)
+    for pr in seed_snapshot.protocols_for(m.value, t.value):
+        for loc in ("es", "en"):
+            r = eng.simulate(_ref_request(seed_snapshot, m, t, pr).model_copy(update={"locale": loc}))
+            texts = [w.message for w in r.warnings] + [a.text for a in r.assumptions] + \
+                [s.reason for s in r.result_status.values()]
+            for txt in texts:
+                assert not any(b in txt.lower() for b in BANNED), (pr.id, txt)
+            assert all(s.reason_code != "NO_QUANTITATIVE_EVIDENCE" for s in r.result_status.values())
+            if pr.is_reference and m != MaterialId.ASTM_A48_CLASS_30:
+                missing = [q for q, v in r.results.model_dump().items() if not v]
+                assert not missing, (pr.id, missing)

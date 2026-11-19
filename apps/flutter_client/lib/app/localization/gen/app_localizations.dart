@@ -2861,7 +2861,7 @@ abstract class AppLocalizations {
   /// No description provided for @grainExtrapolated.
   ///
   /// In es, this message translates to:
-  /// **'Fuera del dominio del modelo (850–1200 °C, ≤ 3 h): extrapolación.'**
+  /// **'Calculado por extrapolación: el modelo de Lee y Lee se ajustó entre 850 y 1200 °C y hasta 3 h.'**
   String get grainExtrapolated;
 
   /// No description provided for @grainMeasureToggle.
@@ -2917,6 +2917,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cada cruce de una línea con un límite de grano es una intersección. ℓ̄ = longitud total ÷ intersecciones; G = −6,644·log10(ℓ̄ en mm) − 3,288. La pequeña diferencia con el modelo es normal: la imagen se genera por área media y la norma advierte que área e intercepto no dan exactamente el mismo G.'**
   String get grainMeasureNote;
+
+  /// No description provided for @sourceModel.
+  ///
+  /// In es, this message translates to:
+  /// **'Referencia del modelo usado en el cálculo'**
+  String get sourceModel;
 }
 
 class _AppLocalizationsDelegate

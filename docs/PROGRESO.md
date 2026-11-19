@@ -1,13 +1,13 @@
 # Estado del proyecto FERROLAB
 
-**Fecha:** 19-11-2026 · **Engine:** 0.4.0 (modelos `ferrolab_metallurgy@1.1.0`) · **App:** 0.5.0 · **Dataset:** `0.2.0-dev+unreviewed` · **Protocolos:** 41 (ver `docs/PROTOCOLOS.md`)
+**Fecha:** 19-11-2026 · **Engine:** 0.4.0 (modelos `ferrolab_metallurgy@1.1.0`) · **App:** 0.5.1 · **Dataset:** `0.2.0-dev+unreviewed` · **Protocolos:** 41 (ver `docs/PROTOCOLOS.md`)
 
 ## 0. Publicado
 
 - **App web pública:** https://ferrolab-ckzk.onrender.com (Render, plan gratuito; se duerme tras ~15 min sin visitas y tarda ~1 min en despertar).
 - **Base de datos:** Supabase (us-east-1), usuario propio `ferrolab_app` sin privilegios de superusuario; 27 tablas con RLS de denegación por defecto. Se pausa tras una semana sin uso (plan gratuito).
 - **Modo:** `staging` (piloto público con contenido marcado «pendiente de revisión»; sin tokens de desarrollo).
-- **APK Android:** `dist/FERROLAB-0.5.0.apk` (solo HTTPS, servidor público preconfigurado, firma de pruebas; no se sube al repositorio).
+- **APK Android:** `dist/FERROLAB-0.5.1.apk` (solo HTTPS, servidor público preconfigurado, firma de pruebas; no se sube al repositorio).
 
 ## 1. Qué funciona (probado en este entorno)
 

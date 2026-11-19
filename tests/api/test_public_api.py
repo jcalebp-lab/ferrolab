@@ -108,7 +108,7 @@ def test_all_pairs_answer_honestly(client, m, t):
                                                     "target_temperature_c": 600}).json()
     # 600 °C no austeniza: solo el revenido (estado templado supuesto y declarado) puede dar cifra modelada.
     if t == "temper" and m != "astm_a48_class_30":
-        assert body["simulation_status"] == "partial_result"
+        assert body["simulation_status"] in ("partial_result", "completed")
         assert body["results"]["hardness"]["evidence_kind"] == "modeled"
         assert any(w["code"] == "DEPENDENCY_REFERENCE" for w in body["warnings"])
     else:

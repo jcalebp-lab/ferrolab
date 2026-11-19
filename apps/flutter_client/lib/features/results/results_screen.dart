@@ -217,19 +217,13 @@ class ResultFactCard extends StatelessWidget {
         ]),
         if (!q.available) ...[
           Semantics(
-            label: '$title: ${t.resultsUnavailable}',
+            label: '$title: ${q.reason}',
             child: Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
               Text('—', style: context.text.headlineSmall),
               const Gap(FlSpace.s),
-              Expanded(child: Text(t.resultsUnavailable, style: context.text.bodyMedium)),
+              Expanded(child: Text(q.reason, style: context.text.bodyMedium)),
             ]),
           ),
-          if (q.reason != t.resultsUnavailable) ...[
-            const Gap(FlSpace.xs),
-            Text(q.reason, style: context.text.bodySmall),
-          ],
-          const Gap(FlSpace.s),
-          EvidenceBadge(q.level),
         ] else ...[
           if (q.single != null) _fact(context, null, q.single!),
           if (q.group != null) for (final e in q.group!.entries) _fact(context, e.key, e.value),
@@ -316,7 +310,7 @@ class ResultFactCard extends StatelessWidget {
       context: context,
       builder: (c) => AlertDialog(
         title: Text(t.quantity(q.code)),
-        content: Text(q.available ? q.reason : '${q.reason}\n\n${t.resultsWhatsMissingBody}'),
+        content: Text(q.reason),
         actions: [TextButton(onPressed: () => Navigator.pop(c), child: Text(t.close))],
       ),
     );
@@ -348,7 +342,7 @@ class _Foundation extends StatelessWidget {
             title: Text(t.resultsProtocol),
             children: [
               KeyValue(t.protocolMedium, p.medium),
-              KeyValue('ID', '${p.id} · ${p.version} · ${p.reviewStatus}'),
+              KeyValue('ID', '${p.id} · ${p.version}'),
               for (final s in p.stages)
                 KeyValue('${s.ordinal}', '${s.label} · ${s.endTemperatureC != null ? '${fmtNum(s.endTemperatureC!)} °C' : s.endTemperatureBasis}'
                     ' · ${s.durationS != null ? fmtDuration(s.durationS!) : s.durationBasis}'),

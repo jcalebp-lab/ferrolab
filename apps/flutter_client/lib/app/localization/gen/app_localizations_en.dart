@@ -1524,7 +1524,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get grainExtrapolated =>
-      'Outside the model domain (850–1200 °C, ≤ 3 h): extrapolation.';
+      'Computed by extrapolation: the Lee and Lee model was fitted between 850 and 1200 °C and up to 3 h.';
 
   @override
   String get grainMeasureToggle => 'Measure grain size';
@@ -1559,4 +1559,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get grainMeasureNote =>
       'Each crossing of a line with a grain boundary is an intersection. ℓ̄ = total length ÷ intersections; G = −6.644·log10(ℓ̄ in mm) − 3.288. A small difference from the model is normal: the image is generated from the mean area and the standard notes that area and intercept do not give exactly the same G.';
+
+  @override
+  String get sourceModel => 'Reference for the model used in the computation';
 }

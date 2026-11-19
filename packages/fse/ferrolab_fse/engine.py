@@ -183,7 +183,7 @@ class _Checked:
     level: str
 
 
-ASSUMPTION_NOTES = {"MODEL_GRAIN_LEE"}
+ASSUMPTION_NOTES = {"MODEL_GRAIN_LEE", "MODEL_GRAIN_EXTRAPOLATED"}  # se explican en la tarjeta de grano y en los supuestos
 
 
 class ScientificEngine:
@@ -269,8 +269,6 @@ class ScientificEngine:
             ctx.warn("TEMPERATURE_ABOVE_PHYSICAL_LIMIT", "blocking", "target_temperature_c", group="input",
                      temperature_c=_fmt(req.target_temperature_c), limit_c=_fmt(guard.max_temperature_c),
                      guard_review=guard.review_status.value)
-            if guard.review_status != ReviewStatus.PUBLISHED:
-                ctx.warn("PHYSICAL_LIMIT_UNREVIEWED", "info", group="review")
         if req.hold_time_min > self.snapshot.interface.hold_ui_max_min:
             ctx.warn("HOLD_OUTSIDE_PROTOCOL_RANGE", "blocking", "hold_time_min", group="input",
                      min_min="0", max_min=_fmt(self.snapshot.interface.hold_ui_max_min))
@@ -584,9 +582,10 @@ class ScientificEngine:
         if protocol is not None:
             model_sources += [s for s in protocol.source_ids if s not in model_sources]
 
+        why = self._why_missing(k, level, ctx, practice)
         results = Results(**facts)
         result_status = {
-            q: self._quantity_status(q, facts.get(q.value), status, loc) for q in QuantityCode
+            q: self._quantity_status(q, facts.get(q.value), status, loc, why) for q in QuantityCode
         }
 
         return SimulationResult(
@@ -657,8 +656,6 @@ class ScientificEngine:
             codes.append("STRENGTH_FROM_HARDNESS")
         if "tensile_strength_min" in mech:
             codes.append("A48_CLASS_REFERENCE")
-        if self.snapshot.contains_unreviewed_content:
-            codes.append("REVIEW_STATUS")
         codes.append("EDUCATIONAL_NOT_INDUSTRIAL")
         return codes
 
@@ -779,14 +776,27 @@ class ScientificEngine:
             req.hold_s, "hold_s", "hold_min_s", "hold_max_s"
         )
 
+    def _why_missing(self, k: _Checked, level: str, ctx: _Ctx, practice) -> str:
+        """Motivo concreto (y qué hacer) cuando una cifra no se puede dar."""
+        if k.material.family == MaterialFamily.GRAY_CAST_IRON:
+            return "WHY_GRAY_IRON"
+        code = self._illustration_reason(k, level, ctx)
+        if code is None and practice is not None and "MODEL_NO_AUSTENITIZATION" in practice.notes:
+            return "WHY_NO_AUSTENITIZATION"
+        if code is None and practice is not None and "MODEL_GRAIN_INTERCRITICAL" in practice.notes:
+            return "WHY_INTERCRITICAL"
+        return {"theory": "WHY_THEORY", "unverified": "WHY_UNVERIFIED", "outside_range": "WHY_OUTSIDE_RANGE",
+                "carburized_case": "WHY_CARBURIZED", "not_modeled": "WHY_NOT_MODELED"}.get(code or "", "WHY_GENERIC")
+
     @staticmethod
-    def _quantity_status(q: QuantityCode, fact, status: SimulationStatus, loc: str) -> QuantityStatus:
+    def _quantity_status(q: QuantityCode, fact, status: SimulationStatus, loc: str, why: str = "WHY_GENERIC") -> QuantityStatus:
         if fact:
             first = fact if isinstance(fact, ResultFact) else next(iter(fact.values()))
             if first.evidence_kind == EvidenceKind.MODELED and first.method != "koistinen_marburger":
                 return QuantityStatus(evidence_level=first.evidence_level, reason_code="MODEL_ESTIMATE",
-                                      reason="Estimación por modelo empírico publicado (no medida)" if loc == "es"
-                                      else "Estimate from a published empirical model (not measured)")
+                                      reason="Calculado con modelos publicados (ver «Supuestos y origen de las cifras»)"
+                                      if loc == "es" else "Computed with published models (see «Assumptions and origin "
+                                      "of the figures»)")
             return QuantityStatus(evidence_level=first.evidence_level, reason_code="SUPPORTED_BY_EVIDENCE",
                                   reason="Respaldado por evidencia publicada" if loc == "es" else "Supported by published evidence")
         if status == SimulationStatus.INVALID_INPUT:
@@ -795,11 +805,11 @@ class ScientificEngine:
         if status == SimulationStatus.UNSUPPORTED:
             return QuantityStatus(evidence_level=EvidenceLevel.UNSUPPORTED, reason_code="COMBINATION_UNSUPPORTED",
                                   reason=localize(MESSAGES, "COMBINATION_UNSUPPORTED", loc))
-        return QuantityStatus(
-            evidence_level=EvidenceLevel.INSUFFICIENT_EVIDENCE,
-            reason_code="NO_QUANTITATIVE_EVIDENCE",
-            reason="No estimable con la evidencia actual" if loc == "es" else "Not estimable from current evidence",
-        )
+        if why == "WHY_GRAY_IRON" and q == QuantityCode.GRAIN_SIZE:
+            why = "WHY_GRAY_IRON_GRAIN"
+        return QuantityStatus(evidence_level=EvidenceLevel.INSUFFICIENT_EVIDENCE,
+                              reason_code="NOT_APPLICABLE" if why == "WHY_GRAY_IRON_GRAIN" else why,
+                              reason=localize(MESSAGES, why, loc))
 
     # ------------------------------------------------------- salida
     @staticmethod

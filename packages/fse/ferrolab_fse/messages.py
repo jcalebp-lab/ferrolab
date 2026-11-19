@@ -12,10 +12,10 @@ MESSAGES: dict[str, tuple[str, str]] = {
     "TEMPERATURE_ABOVE_PHYSICAL_LIMIT": (
         "La temperatura elegida ({temperature_c} °C) alcanza o supera el límite físico registrado "
         "para esta familia de materiales ({limit_c} °C): el material ya no sería un sólido y un "
-        "tratamiento térmico no tiene sentido. Estado del límite: {guard_review}.",
+        "tratamiento térmico no tiene sentido.",
         "The selected temperature ({temperature_c} °C) reaches or exceeds the recorded physical "
         "limit for this material family ({limit_c} °C): the material would no longer be solid, so a "
-        "heat treatment makes no sense. Limit status: {guard_review}.",
+        "heat treatment makes no sense.",
     ),
     "TEMPERATURE_OUTSIDE_PROTOCOL_RANGE": (
         "La temperatura excede el rango documentado para este protocolo ({min_c}–{max_c} °C).",
@@ -141,6 +141,56 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "Phases, constituents, hardness and diagrams are estimates from published empirical models "
         "(Li 1998, Koistinen–Marburger, Maynier 1978) for a 12.7 mm specimen, at the center. "
         "They are not measurements and have not been reviewed by a specialist.",
+    ),
+    "WHY_GRAY_IRON": (
+        "En la fundición gris no hay un modelo publicado de transformación: FERROLAB muestra el resultado esperado del "
+        "protocolo, la matriz y el grafito en el microscopio y micrografías reales de la matriz.",
+        "There is no published transformation model for gray iron: FERROLAB shows the protocol's expected result, the "
+        "matrix and graphite in the microscope and real micrographs of the matrix.",
+    ),
+    "WHY_GRAY_IRON_GRAIN": (
+        "No aplica: en la fundición gris se clasifica el grafito (forma, distribución y tamaño según ASTM A247; aquí "
+        "grafito laminar tipo A), no el tamaño de grano de la matriz.",
+        "Not applicable: in gray iron the graphite is classified (form, distribution and size per ASTM A247; here "
+        "type A flake graphite), not the matrix grain size.",
+    ),
+    "WHY_THEORY": (
+        "El revenido necesita una muestra templada de partida: elige «Muestra de referencia» o una del historial.",
+        "Tempering needs a quenched starting sample: choose «Reference sample» or one from the history.",
+    ),
+    "WHY_UNVERIFIED": (
+        "Variante de demostración: su fuente no se pudo consultar. Elige el protocolo de referencia para obtener cifras.",
+        "Demonstration variant: its source could not be consulted. Choose the reference protocol to get figures.",
+    ),
+    "WHY_OUTSIDE_RANGE": (
+        "Tu práctica está fuera del rango documentado del protocolo: pulsa «Usar protocolo recomendado» para obtener "
+        "cifras.",
+        "Your practice is outside the protocol's documented range: press «Use recommended protocol» to get figures.",
+    ),
+    "WHY_CARBURIZED": (
+        "Este protocolo es para piezas cementadas y la capa rica en carbono no se calcula: elige el protocolo de "
+        "referencia (sin cementar) para obtener cifras del acero base.",
+        "This protocol is for carburized parts and the carbon-rich case is not computed: choose the reference "
+        "(non-carburized) protocol to get figures for the base steel.",
+    ),
+    "WHY_NOT_MODELED": (
+        "Este protocolo (subcrítico o de alivio de tensiones) no transforma la austenita: conserva el estado de partida. "
+        "Consulta el resultado esperado en la ficha del protocolo.",
+        "This protocol (subcritical or stress relief) does not transform austenite: it keeps the starting state. See "
+        "the expected result in the protocol sheet.",
+    ),
+    "WHY_NO_AUSTENITIZATION": (
+        "La probeta no llegó a austenizarse (no superó Ae1): sube la temperatura o usa el protocolo recomendado.",
+        "The specimen did not austenitize (it did not exceed Ae1): raise the temperature or use the recommended "
+        "protocol.",
+    ),
+    "WHY_INTERCRITICAL": (
+        "Austenización incompleta (intercrítica): el tamaño de grano no se estima. Sube la temperatura por encima de Ac3.",
+        "Incomplete (intercritical) austenitization: grain size is not estimated. Raise the temperature above Ac3.",
+    ),
+    "WHY_GENERIC": (
+        "Para esta condición no hay un modelo o dato publicado aplicable. Usa el protocolo recomendado.",
+        "No applicable published model or data for this condition. Use the recommended protocol.",
     ),
     "MODEL_GRAIN_EXTRAPOLATED": (
         "El modelo de grano de Lee y Lee se ajustó entre 850 y 1200 °C y hasta 3 h; esta práctica queda fuera de "
@@ -357,11 +407,13 @@ ASSUMPTIONS: dict[str, tuple[str, str]] = {
         "Tamaño de grano: grano austenítico previo con el modelo de Lee y Lee (2008) a partir de la temperatura y "
         "el tiempo reales por encima de Ae3 (regla de aditividad); número ASTM por la relación de intercepto de "
         "ASTM E112. En recocido y normalizado del 8620 se añade el grano ferrítico de Hodgson y Gibbs (1992). "
-        "Ese tamaño de grano alimenta también la cinética de transformación y el dibujo del microscopio.",
+        "Ese tamaño de grano alimenta también la cinética de transformación y el dibujo del microscopio. "
+        "Entre 830 y 850 °C el modelo se aplica como extrapolación corta (los datos de ajuste empiezan en 850 °C).",
         "Grain size: prior-austenite grain from the Lee and Lee (2008) model using the actual temperature and time "
         "above Ae3 (additivity rule); ASTM number from the ASTM E112 intercept relation. For 8620 annealing and "
         "normalizing the ferrite grain of Hodgson and Gibbs (1992) is added. This grain size also feeds the "
-        "transformation kinetics and the microscope drawing.",
+        "transformation kinetics and the microscope drawing. Between 830 and 850 °C the model is applied as a short "
+        "extrapolation (the fitting data start at 850 °C).",
     ),
     "STRENGTH_FROM_HARDNESS": (
         "Resistencia a tracción y límite de fluencia calculados desde la dureza HV con las correlaciones de Pavlina "
