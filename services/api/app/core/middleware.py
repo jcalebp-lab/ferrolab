@@ -43,6 +43,9 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
             response.headers.setdefault("Cross-Origin-Resource-Policy", "same-site")
             response.headers.setdefault("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
             response.headers.setdefault("Cache-Control", "no-store")
+        elif path.startswith("/media/"):
+            # Imágenes inmutables (cambian de nombre si cambian): caché larga.
+            response.headers.setdefault("Cache-Control", "public, max-age=604800")
         elif not path.startswith(("/docs", "/redoc", "/openapi")):
             # App web estática (si SERVE_WEB_APP): revalidar para no servir versiones viejas.
             response.headers.setdefault("Cache-Control", "no-cache")

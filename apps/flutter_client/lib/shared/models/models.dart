@@ -467,10 +467,16 @@ class ProtocolOut {
 class MicrographDto {
   MicrographDto({required this.id, required this.imageUrl, required this.author, required this.attribution,
       required this.licenseCode, required this.licenseUrl, this.magnificationX, this.scaleBarUm,
-      required this.imagingMethod, required this.matchQuality, required this.alt, required this.calibrated});
+      required this.imagingMethod, required this.matchQuality, required this.alt, required this.calibrated,
+      this.specimen, this.pageUrl, this.thumbnailUrl, this.family, this.constituents = const [], this.preparation,
+      this.localUrl});
   final String id, imageUrl, author, attribution, licenseCode, licenseUrl, imagingMethod, matchQuality, alt;
+  final String? specimen, pageUrl, thumbnailUrl, family, preparation, localUrl;
+  final List<String> constituents;
   final double? magnificationX, scaleBarUm;
   final bool calibrated;
+  /// Imagen para pantalla: la copia servida por FERROLAB (ruta relativa al servidor) o, si no existe, la miniatura.
+  String displayUrl(String serverBase) => localUrl != null ? '$serverBase$localUrl' : (thumbnailUrl ?? imageUrl);
   factory MicrographDto.fromJson(Json j) => MicrographDto(
         id: j['id'] as String,
         imageUrl: j['image_url'] as String,
@@ -484,6 +490,13 @@ class MicrographDto {
         matchQuality: j['match_quality'] as String,
         alt: j['alt'] as String,
         calibrated: j['calibrated'] as bool,
+        specimen: j['specimen'] as String?,
+        pageUrl: j['page_url'] as String?,
+        thumbnailUrl: j['thumbnail_url'] as String?,
+        family: j['family'] as String?,
+        constituents: _ls(j['constituents']),
+        preparation: j['preparation'] as String?,
+        localUrl: j['display_url'] as String?,
       );
 }
 
@@ -573,6 +586,8 @@ class SimulationResultDto {
   /// Diagramas TTT/CCT calculados para el material, con la trayectoria de la práctica.
   List<DiagramDto> get diagrams => ((raw['diagrams'] as List?) ?? const []).map((d) => DiagramDto.fromJson(d as Json)).toList();
   Json? get illustration => raw['microstructure_illustration'] as Json?;
+  List<MicrographDto> get relatedMicrographs =>
+      ((raw['related_micrographs'] as List?) ?? const []).map((e) => MicrographDto.fromJson(e as Json)).toList();
   Json? get modelEstimate => raw['model_estimate'] as Json?;
   ProtocolCard? get protocolCard => raw['protocol_card'] == null ? null : ProtocolCard.fromJson(raw['protocol_card'] as Json);
   String? get resultLevel => raw['result_level'] as String?;

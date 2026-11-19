@@ -537,5 +537,50 @@
   "settingsVersion": "Version",
   "settingsAppVersion": "Installed app",
   "settingsEngineVersion": "Server engine",
-  "settingsDatasetVersion": "Scientific catalog"
+  "settingsDatasetVersion": "Scientific catalog",
+  "microRelatedTitle": "Real micrographs of these constituents",
+  "microRelatedNote": "Real, freely licensed photographs of OTHER samples containing the same constituents the model computed. They are not your specimen: use them to compare with the illustration.",
+  "microLoadError": "The image could not be loaded (check your connection).",
+  "microAuthor": "Author",
+  "microLicense": "License",
+  "microSourcePage": "Source page",
+  "microMethod": "Method",
+  "microMethodSem": "Scanning electron microscope (SEM)",
+  "microMethodOptical": "Optical microscope",
+  "microPreparation": "Preparation",
+  "microMatch": "Match with FERROLAB",
+  "microFilterAll": "All",
+  "matchExact": "Same condition",
+  "matchComparable": "Comparable condition",
+  "matchIllustrative": "Example of the constituent (another sample)",
+  "matchNone": "No match",
+  "microSpecimen": "Real photographed sample: {s}",
+  "@microSpecimen": {
+    "placeholders": {
+      "s": {
+        "type": "String"
+      }
+    }
+  },
+  "microOriginalMag": "Magnification stated by the source: {x}× (original image)",
+  "@microOriginalMag": {
+    "placeholders": {
+      "x": {
+        "type": "String"
+      }
+    }
+  },
+  "microLibraryNote": "{n} real micrographs with verified free licenses (Wikimedia Commons). Each states the real sample; filter by constituent.",
+  "@microLibraryNote": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "constSpheroidite": "Spheroidized cementite (spheroidite)",
+  "constNodules": "Nodular (spheroidal) graphite",
+  "constAusferrite": "Ausferrite",
+  "constProeutectoidCementite": "Proeutectoid cementite",
+  "microMethodTem": "Transmission electron microscope (TEM)"
 }

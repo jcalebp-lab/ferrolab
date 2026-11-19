@@ -218,6 +218,8 @@ class SimulationResult(BaseModel):
     results: Results
     result_status: dict[QuantityCode, QuantityStatus]
     micrograph: dict[str, Any] | None = None
+    # Ejemplos reales (otras muestras) de los constituyentes calculados; nunca son la muestra del estudiante.
+    related_micrographs: list[dict[str, Any]] = Field(default_factory=list)
     diagrams: list[dict[str, Any]] = Field(default_factory=list)
     model_estimate: dict[str, Any] | None = None
     microstructure_illustration: dict[str, Any] | None = None

@@ -28,7 +28,7 @@ Totales de la última ejecución: **Python 196/196**, **Flutter 11/11**, **E2E 4
 - **Fundición gris A48**: sin modelo cinético; protocolos documentados (nivel B) e ilustración cualitativa; la norma no fija composición.
 - **Revenido**: parte de la muestra templada de referencia, de una del historial o solo teoría; fuera de 145–716 °C no se estima.
 - **Variantes no verificadas** (MatWeb, ASM, J. Mater. Res. Technol. 2022, Bodycote): se muestran como demostración (nivel C) hasta que alguien consulte el texto original.
-- **Micrografías reales**: biblioteca vacía hasta tener imágenes con licencia verificada.
+- **Micrografías reales**: 25 de Wikimedia Commons con licencia libre (D-34); solo una coincide en material y tratamiento (martensita en SAE 1045), las demás son ejemplos de constituyentes de otras muestras. Faltan micrografías propias de AISI 8620 y ASTM A48 clase 30.
 - **iOS**: requiere cuenta de Apple Developer y una Mac; mientras tanto, uso desde el navegador.
 - **Límite de 1538 °C (D-07)**: en borrador; una persona debe verificar la fuente y el localizador.
 

@@ -388,6 +388,12 @@ R = {  # (estado, razón ES, razón EN)
 }
 
 PAIRS, PROTOCOLS = LIB.PAIRS, LIB.PROTOCOLS
+# Micrografías REALES con licencia libre verificada (Wikimedia Commons): database/seeds/micrographs_curated.json.
+_CUR = ROOT / "database" / "seeds" / "micrographs_curated.json"
+MICROGRAPHS = json.loads(_CUR.read_text(encoding="utf-8"))["micrographs"] if _CUR.exists() else []
+SOURCES.append({"id": "src_wikimedia_commons", "kind": "dataset", "title": "Wikimedia Commons — micrografías con licencia libre",
+                "verification_status": "verified", "url": "https://commons.wikimedia.org/",
+                "notes": "Licencia, autor y descripción leídos de los metadatos oficiales de cada archivo (API de Commons)."})
 SOURCES += LIB.SOURCES
 EVIDENCE += LIB.EVIDENCE
 INITIAL_CONDITIONS += LIB.INITIAL_CONDITIONS
@@ -536,7 +542,7 @@ def build() -> dict:
         "protocols": PROTOCOLS,
         "physical_guards": GUARDS,
         "model_versions": [],
-        "micrographs": [],
+        "micrographs": MICROGRAPHS,
         "knowledge": KNOWLEDGE,
         "practice_questions": PRACTICE,
     }

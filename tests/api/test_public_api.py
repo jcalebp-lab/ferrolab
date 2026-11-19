@@ -59,8 +59,9 @@ def test_simulation_envelope_and_nulls(client):
     res = body["results"]
     assert res["grain_size"] is None and res["mechanical_properties"] is None
     assert res["hardness"]["evidence_kind"] == "modeled" and res["hardness"]["model_version"]
-    assert body["micrograph"] is None
-    assert any(w["code"] == "NO_SUITABLE_MICROGRAPH" for w in body["warnings"])
+    # Micrografía real comparable (martensita en SAE 1045), con licencia verificada.
+    assert body["micrograph"]["match_quality"] == "comparable" and body["micrograph"]["license_verified"]
+    assert body["related_micrographs"]
     assert any(w["code"] == "MODEL_ESTIMATE_NOT_REVIEWED" for w in body["warnings"])
     assert body["thermal_history"] and body["schematic_cycle"] is None
     assert body["protocol_card"]["params"]["furnace_temperature"]["ref"] == 845
@@ -147,9 +148,28 @@ def test_knowledge_and_practice(client):
     assert {"src_matweb_8620_carb", "src_asm_gray_ht", "src_jmrt_2022_agi"}.isdisjoint(verified)
 
 
-def test_micrograph_absent_is_404(client):
+def test_micrograph_library_only_verified_licenses(client):
     assert client.get("/api/v1/micrographs/x").status_code == 404
-    assert client.get("/api/v1/micrographs").json()["items"] == []
+    items = client.get("/api/v1/micrographs").json()["items"]
+    assert items, "la biblioteca de micrografías reales no debe estar vacía"
+    for m in items:
+        assert m["license_verified"] is True and m["license_code"] and m["license_url"] and m["author"]
+        assert m["page_url"].startswith("https://commons.wikimedia.org/") and m["specimen"]
+        assert m["constituents"] and m["match_quality"] in ("illustrative", "comparable", "exact")
+    served = [m for m in items if m["display_url"]]
+    assert len(served) == len(items), "cada micrografía debe tener su copia servida por FERROLAB"
+    r = client.get(served[0]["display_url"])
+    assert r.status_code == 200 and r.headers["content-type"] == "image/jpeg" and len(r.content) < 600_000
+
+
+def test_simulation_offers_related_real_micrographs(client):
+    body = client.post("/api/v1/simulations", json={"material_id": "aisi_1045", "treatment_id": "anneal",
+                                                    "target_temperature_c": 830, "hold_time_min": 60}).json()
+    rel = body["related_micrographs"]
+    assert rel and all("pearlite" in m["constituents"] or "proeutectoid_ferrite" in m["constituents"] for m in rel)
+    gray = client.post("/api/v1/simulations", json={"material_id": "astm_a48_class_30", "treatment_id": "normalize",
+                                                    "target_temperature_c": 900, "hold_time_min": 30}).json()
+    assert all(m["family"] == "gray_cast_iron" for m in gray["related_micrographs"])
 
 
 def test_openapi_exported_matches(client):

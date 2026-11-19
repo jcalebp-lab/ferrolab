@@ -1421,4 +1421,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDatasetVersion => 'Scientific catalog';
+
+  @override
+  String get microRelatedTitle => 'Real micrographs of these constituents';
+
+  @override
+  String get microRelatedNote =>
+      'Real, freely licensed photographs of OTHER samples containing the same constituents the model computed. They are not your specimen: use them to compare with the illustration.';
+
+  @override
+  String get microLoadError =>
+      'The image could not be loaded (check your connection).';
+
+  @override
+  String get microAuthor => 'Author';
+
+  @override
+  String get microLicense => 'License';
+
+  @override
+  String get microSourcePage => 'Source page';
+
+  @override
+  String get microMethod => 'Method';
+
+  @override
+  String get microMethodSem => 'Scanning electron microscope (SEM)';
+
+  @override
+  String get microMethodOptical => 'Optical microscope';
+
+  @override
+  String get microPreparation => 'Preparation';
+
+  @override
+  String get microMatch => 'Match with FERROLAB';
+
+  @override
+  String get microFilterAll => 'All';
+
+  @override
+  String get matchExact => 'Same condition';
+
+  @override
+  String get matchComparable => 'Comparable condition';
+
+  @override
+  String get matchIllustrative => 'Example of the constituent (another sample)';
+
+  @override
+  String get matchNone => 'No match';
+
+  @override
+  String microSpecimen(String s) {
+    return 'Real photographed sample: $s';
+  }
+
+  @override
+  String microOriginalMag(String x) {
+    return 'Magnification stated by the source: $x× (original image)';
+  }
+
+  @override
+  String microLibraryNote(String n) {
+    return '$n real micrographs with verified free licenses (Wikimedia Commons). Each states the real sample; filter by constituent.';
+  }
+
+  @override
+  String get constSpheroidite => 'Spheroidized cementite (spheroidite)';
+
+  @override
+  String get constNodules => 'Nodular (spheroidal) graphite';
+
+  @override
+  String get constAusferrite => 'Ausferrite';
+
+  @override
+  String get constProeutectoidCementite => 'Proeutectoid cementite';
+
+  @override
+  String get microMethodTem => 'Transmission electron microscope (TEM)';
 }

@@ -53,7 +53,11 @@ def test_db01_catalog_has_no_invented_numbers(seed_data):
             assert ev[c["evidence_id"]]["locator"] and src[ev[c["evidence_id"]]["source_id"]]["verification_status"] == "verified"
         if m["family"] == "gray_cast_iron":
             assert m["compositions"] == []  # ASTM A48 no fija composición
-    assert seed_data["micrographs"] == [] and seed_data["model_versions"] == []
+    assert seed_data["model_versions"] == []
+    # Micrografías: solo reales, con licencia libre verificada, autor y página de la fuente.
+    for m in seed_data["micrographs"]:
+        assert m["license_verified"] and m["license_code"] and m["author"] and m["page_url"]
+        assert src[m["source_id"]]["verification_status"] == "verified"
     numeric = [e for e in seed_data["evidence"] if e.get("value") is not None]
     # Única cifra: el límite de bloqueo (fusión del Fe), en borrador.
     assert [e["id"] for e in numeric] == ["ev_fe_melting_point"]

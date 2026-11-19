@@ -2683,6 +2683,150 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Catálogo científico'**
   String get settingsDatasetVersion;
+
+  /// No description provided for @microRelatedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Micrografías reales de estos constituyentes'**
+  String get microRelatedTitle;
+
+  /// No description provided for @microRelatedNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Fotografías reales con licencia libre de OTRAS muestras que contienen los mismos constituyentes que calculó el modelo. No son tu probeta: sirven para comparar con la ilustración.'**
+  String get microRelatedNote;
+
+  /// No description provided for @microLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar la imagen (revisa la conexión).'**
+  String get microLoadError;
+
+  /// No description provided for @microAuthor.
+  ///
+  /// In es, this message translates to:
+  /// **'Autor'**
+  String get microAuthor;
+
+  /// No description provided for @microLicense.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia'**
+  String get microLicense;
+
+  /// No description provided for @microSourcePage.
+  ///
+  /// In es, this message translates to:
+  /// **'Página de la fuente'**
+  String get microSourcePage;
+
+  /// No description provided for @microMethod.
+  ///
+  /// In es, this message translates to:
+  /// **'Técnica'**
+  String get microMethod;
+
+  /// No description provided for @microMethodSem.
+  ///
+  /// In es, this message translates to:
+  /// **'Microscopio electrónico de barrido (SEM)'**
+  String get microMethodSem;
+
+  /// No description provided for @microMethodOptical.
+  ///
+  /// In es, this message translates to:
+  /// **'Microscopio óptico'**
+  String get microMethodOptical;
+
+  /// No description provided for @microPreparation.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparación'**
+  String get microPreparation;
+
+  /// No description provided for @microMatch.
+  ///
+  /// In es, this message translates to:
+  /// **'Correspondencia con FERROLAB'**
+  String get microMatch;
+
+  /// No description provided for @microFilterAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas'**
+  String get microFilterAll;
+
+  /// No description provided for @matchExact.
+  ///
+  /// In es, this message translates to:
+  /// **'Misma condición'**
+  String get matchExact;
+
+  /// No description provided for @matchComparable.
+  ///
+  /// In es, this message translates to:
+  /// **'Condición comparable'**
+  String get matchComparable;
+
+  /// No description provided for @matchIllustrative.
+  ///
+  /// In es, this message translates to:
+  /// **'Ejemplo del constituyente (otra muestra)'**
+  String get matchIllustrative;
+
+  /// No description provided for @matchNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin correspondencia'**
+  String get matchNone;
+
+  /// No description provided for @microSpecimen.
+  ///
+  /// In es, this message translates to:
+  /// **'Muestra real fotografiada: {s}'**
+  String microSpecimen(String s);
+
+  /// No description provided for @microOriginalMag.
+  ///
+  /// In es, this message translates to:
+  /// **'Aumento indicado por la fuente: {x}× (en la imagen original)'**
+  String microOriginalMag(String x);
+
+  /// No description provided for @microLibraryNote.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} micrografías reales con licencia libre verificada (Wikimedia Commons). Cada una indica la muestra real; filtra por constituyente.'**
+  String microLibraryNote(String n);
+
+  /// No description provided for @constSpheroidite.
+  ///
+  /// In es, this message translates to:
+  /// **'Cementita globular (esferoidita)'**
+  String get constSpheroidite;
+
+  /// No description provided for @constNodules.
+  ///
+  /// In es, this message translates to:
+  /// **'Grafito nodular (esferoidal)'**
+  String get constNodules;
+
+  /// No description provided for @constAusferrite.
+  ///
+  /// In es, this message translates to:
+  /// **'Ausferrita'**
+  String get constAusferrite;
+
+  /// No description provided for @constProeutectoidCementite.
+  ///
+  /// In es, this message translates to:
+  /// **'Cementita proeutectoide'**
+  String get constProeutectoidCementite;
+
+  /// No description provided for @microMethodTem.
+  ///
+  /// In es, this message translates to:
+  /// **'Microscopio electrónico de transmisión (TEM)'**
+  String get microMethodTem;
 }
 
 class _AppLocalizationsDelegate

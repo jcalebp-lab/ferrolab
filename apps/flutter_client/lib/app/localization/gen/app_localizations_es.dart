@@ -1428,4 +1428,84 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsDatasetVersion => 'Catálogo científico';
+
+  @override
+  String get microRelatedTitle => 'Micrografías reales de estos constituyentes';
+
+  @override
+  String get microRelatedNote =>
+      'Fotografías reales con licencia libre de OTRAS muestras que contienen los mismos constituyentes que calculó el modelo. No son tu probeta: sirven para comparar con la ilustración.';
+
+  @override
+  String get microLoadError =>
+      'No se pudo cargar la imagen (revisa la conexión).';
+
+  @override
+  String get microAuthor => 'Autor';
+
+  @override
+  String get microLicense => 'Licencia';
+
+  @override
+  String get microSourcePage => 'Página de la fuente';
+
+  @override
+  String get microMethod => 'Técnica';
+
+  @override
+  String get microMethodSem => 'Microscopio electrónico de barrido (SEM)';
+
+  @override
+  String get microMethodOptical => 'Microscopio óptico';
+
+  @override
+  String get microPreparation => 'Preparación';
+
+  @override
+  String get microMatch => 'Correspondencia con FERROLAB';
+
+  @override
+  String get microFilterAll => 'Todas';
+
+  @override
+  String get matchExact => 'Misma condición';
+
+  @override
+  String get matchComparable => 'Condición comparable';
+
+  @override
+  String get matchIllustrative => 'Ejemplo del constituyente (otra muestra)';
+
+  @override
+  String get matchNone => 'Sin correspondencia';
+
+  @override
+  String microSpecimen(String s) {
+    return 'Muestra real fotografiada: $s';
+  }
+
+  @override
+  String microOriginalMag(String x) {
+    return 'Aumento indicado por la fuente: $x× (en la imagen original)';
+  }
+
+  @override
+  String microLibraryNote(String n) {
+    return '$n micrografías reales con licencia libre verificada (Wikimedia Commons). Cada una indica la muestra real; filtra por constituyente.';
+  }
+
+  @override
+  String get constSpheroidite => 'Cementita globular (esferoidita)';
+
+  @override
+  String get constNodules => 'Grafito nodular (esferoidal)';
+
+  @override
+  String get constAusferrite => 'Ausferrita';
+
+  @override
+  String get constProeutectoidCementite => 'Cementita proeutectoide';
+
+  @override
+  String get microMethodTem => 'Microscopio electrónico de transmisión (TEM)';
 }

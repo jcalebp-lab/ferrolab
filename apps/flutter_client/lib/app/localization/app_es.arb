@@ -610,5 +610,50 @@
   "settingsVersion": "Versión",
   "settingsAppVersion": "App instalada",
   "settingsEngineVersion": "Motor del servidor",
-  "settingsDatasetVersion": "Catálogo científico"
+  "settingsDatasetVersion": "Catálogo científico",
+  "microRelatedTitle": "Micrografías reales de estos constituyentes",
+  "microRelatedNote": "Fotografías reales con licencia libre de OTRAS muestras que contienen los mismos constituyentes que calculó el modelo. No son tu probeta: sirven para comparar con la ilustración.",
+  "microLoadError": "No se pudo cargar la imagen (revisa la conexión).",
+  "microAuthor": "Autor",
+  "microLicense": "Licencia",
+  "microSourcePage": "Página de la fuente",
+  "microMethod": "Técnica",
+  "microMethodSem": "Microscopio electrónico de barrido (SEM)",
+  "microMethodOptical": "Microscopio óptico",
+  "microPreparation": "Preparación",
+  "microMatch": "Correspondencia con FERROLAB",
+  "microFilterAll": "Todas",
+  "matchExact": "Misma condición",
+  "matchComparable": "Condición comparable",
+  "matchIllustrative": "Ejemplo del constituyente (otra muestra)",
+  "matchNone": "Sin correspondencia",
+  "microSpecimen": "Muestra real fotografiada: {s}",
+  "@microSpecimen": {
+    "placeholders": {
+      "s": {
+        "type": "String"
+      }
+    }
+  },
+  "microOriginalMag": "Aumento indicado por la fuente: {x}× (en la imagen original)",
+  "@microOriginalMag": {
+    "placeholders": {
+      "x": {
+        "type": "String"
+      }
+    }
+  },
+  "microLibraryNote": "{n} micrografías reales con licencia libre verificada (Wikimedia Commons). Cada una indica la muestra real; filtra por constituyente.",
+  "@microLibraryNote": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "constSpheroidite": "Cementita globular (esferoidita)",
+  "constNodules": "Grafito nodular (esferoidal)",
+  "constAusferrite": "Ausferrita",
+  "constProeutectoidCementite": "Cementita proeutectoide",
+  "microMethodTem": "Microscopio electrónico de transmisión (TEM)"
 }

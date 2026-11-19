@@ -59,6 +59,10 @@ extension EnumLabels on AppLocalizations {
         'tempered_martensite' => constTemperedMartensite,
         'retained_austenite' => constRetained,
         'graphite_flakes' || 'graphite' => constGraphite,
+        'spheroidized_cementite' => constSpheroidite,
+        'graphite_nodules' => constNodules,
+        'ausferrite' => constAusferrite,
+        'proeutectoid_cementite' => constProeutectoidCementite,
         'ferrite' => phaseFerrite,
         'cementite' => phaseCementite,
         'austenite' => phaseAustenite,
@@ -111,5 +115,12 @@ extension EnumLabels on AppLocalizations {
         'theory' => microReasonTheory,
         'invalid_input' => microReasonInvalid,
         _ => microReasonNotComputed,
+      };
+
+  String microMatchLabel(String m) => switch (m) {
+        'exact' => matchExact,
+        'comparable' => matchComparable,
+        'illustrative' => matchIllustrative,
+        _ => matchNone,
       };
 }

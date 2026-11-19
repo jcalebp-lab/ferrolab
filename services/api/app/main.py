@@ -6,6 +6,7 @@ Ejecutar (desarrollo):  uv run uvicorn app.main:app --app-dir services/api --por
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -42,6 +43,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                        expose_headers=["X-Request-ID", "ETag", "Retry-After"], max_age=600)
     app.include_router(public.router)
     app.include_router(admin.router)
+    # Micrografías reales redimensionadas (licencias libres; autor y licencia se envían en la API).
+    from fastapi.staticfiles import StaticFiles as _Static
+
+    media = Path(__file__).resolve().parent / "static"
+    app.mount("/media", _Static(directory=media), name="media")
     if s.serve_web_app:
         from fastapi.staticfiles import StaticFiles
 

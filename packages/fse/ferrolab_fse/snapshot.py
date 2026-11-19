@@ -416,11 +416,18 @@ class Micrograph(_Frozen):
     scale_bar_um: float | None = None
     pixel_size_um: float | None = None
     preparation: str | None = None
-    imaging_method: Literal["optical", "sem", "illustration"]
+    imaging_method: Literal["optical", "sem", "tem", "illustration"]
     match_quality: MatchQuality
     constituents: list[str] = Field(default_factory=list)
     alt_es: str
     alt_en: str
+    # Muestra REAL fotografiada (p. ej. «acero eutectoide 0,8 % C, recocido»). Con match_quality «illustrative»
+    # la imagen enseña un constituyente; no es la muestra del estudiante.
+    specimen_es: str | None = None
+    specimen_en: str | None = None
+    family: str | None = None  # steel | gray_cast_iron | ductile_iron (para relacionar ejemplos)
+    page_url: str | None = None  # página de la fuente con la licencia
+    thumbnail_url: str | None = None
     review_status: ReviewStatus = ReviewStatus.DRAFT
 
     @model_validator(mode="after")

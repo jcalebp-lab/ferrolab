@@ -181,15 +181,27 @@ def simulate(body: SimulationCreate, request: Request, st: AppState = Depends(ge
                                        message=localize(MESSAGES, "NO_SUITABLE_MICROGRAPH", body.locale)))
         else:
             micro = mg.public_micrograph(found, body.locale)
+    rel = []
+    il = result.microstructure_illustration or {}
+    if result.simulation_status not in ("invalid_input", "unsupported"):
+        if il.get("family") == "gray_cast_iron":
+            cons = ["graphite_flakes", {"martensite": "martensite", "tempered_martensite": "tempered_martensite",
+                                        "ausferrite": "bainite", "ferrite_pearlite": "proeutectoid_ferrite"}
+                    .get(il.get("matrix") or "", "pearlite")]
+        else:
+            fr = il.get("fractions") or {}
+            cons = [("tempered_martensite" if k == "martensite" and il.get("tempered") else k)
+                    for k, v in fr.items() if v >= 0.03]
+        rel = [mg.public_micrograph(m, body.locale) for m in mg.related(loaded.snapshot, il.get("family", "steel"), cons)]
     return result.model_copy(update={"request_id": request.state.request_id, "micrograph": micro,
-                                     "warnings": warnings})
+                                     "warnings": warnings, "related_micrographs": rel})
 
 
 # ------------------------------------------------------------------ contenidos
 @router.get("/micrographs/{micrograph_id}", tags=["media"], dependencies=[read_limit])
 def micrograph(micrograph_id: str, locale: str = Depends(locale_q), st: AppState = Depends(get_state)):
     snap = st.current().snapshot
-    m = next((x for x in snap.micrographs if x.id == micrograph_id and mg.is_public(x)), None)
+    m = next((x for x in snap.micrographs if x.id == micrograph_id and mg.is_public(x, snap)), None)
     if m is None:
         raise ApiError(404, "not_found", "Micrografía inexistente o sin licencia verificada")
     return mg.public_micrograph(m, locale)
@@ -198,7 +210,7 @@ def micrograph(micrograph_id: str, locale: str = Depends(locale_q), st: AppState
 @router.get("/micrographs", tags=["media"], dependencies=[read_limit])
 def micrographs(locale: str = Depends(locale_q), st: AppState = Depends(get_state)):
     snap = st.current().snapshot
-    return {"items": [mg.public_micrograph(m, locale) for m in snap.micrographs if mg.is_public(m)]}
+    return {"items": [mg.public_micrograph(m, locale) for m in snap.micrographs if mg.is_public(m, snap)]}
 
 
 def _k(snap, k, loc):
