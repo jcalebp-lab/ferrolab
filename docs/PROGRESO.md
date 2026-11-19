@@ -2,6 +2,13 @@
 
 **Fecha:** 18-11-2026 · **Engine:** 0.1.0 · **Dataset activo en desarrollo:** `0.1.0-dev+unreviewed`
 
+## 0. Publicado
+
+- **App web pública:** https://ferrolab-ckzk.onrender.com (Render, plan gratuito, región Virginia; se duerme tras ~15 min sin visitas y tarda ~1 min en despertar).
+- **Base de datos:** Supabase (proyecto `fkwxdzkstjsbffqpgdqj`, us-east-1), usuario propio `ferrolab_app` sin privilegios de superusuario; 27 tablas con RLS de denegación por defecto.
+- **Modo:** `staging` (piloto público con contenido marcado «pendiente de revisión»; sin tokens de desarrollo).
+- **APK Android:** `FERROLAB-0.2.0.apk` (solo HTTPS, servidor público preconfigurado, firma de pruebas).
+
 ## 1. Qué funciona (probado en este entorno)
 
 | Área | Estado | Cómo se comprobó |
