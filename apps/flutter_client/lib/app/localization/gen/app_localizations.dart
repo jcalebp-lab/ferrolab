@@ -2605,6 +2605,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Protocolo'**
   String get lpProtocol;
+
+  /// No description provided for @microQualitativeNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Ilustración CUALITATIVA: matriz y grafito según lo que describe la fuente para este tratamiento. No hay fracciones calculadas ni es una micrografía real.'**
+  String get microQualitativeNote;
+
+  /// No description provided for @microReasonNoAustenitization.
+  ///
+  /// In es, this message translates to:
+  /// **'No hubo austenización: la microestructura de partida no cambia y no se dibuja una nueva.'**
+  String get microReasonNoAustenitization;
+
+  /// No description provided for @microReasonOutsideRange.
+  ///
+  /// In es, this message translates to:
+  /// **'No se dibuja: la práctica está fuera del protocolo documentado y en modo exploración no se calculan fracciones. Vuelve al valor de referencia para ver la microestructura.'**
+  String get microReasonOutsideRange;
+
+  /// No description provided for @microReasonCarburized.
+  ///
+  /// In es, this message translates to:
+  /// **'No se dibuja: la capa cementada no se modela, así que no hay fracciones de la capa que representar.'**
+  String get microReasonCarburized;
+
+  /// No description provided for @microReasonNotModeled.
+  ///
+  /// In es, this message translates to:
+  /// **'No se dibuja: FERROLAB no tiene un modelo para esta transformación (p. ej. globulización subcrítica). Consulta el resultado esperado en la ficha del protocolo.'**
+  String get microReasonNotModeled;
+
+  /// No description provided for @microReasonUnverified.
+  ///
+  /// In es, this message translates to:
+  /// **'No se dibuja: la variante tiene una fuente no verificada y no se calculan fracciones.'**
+  String get microReasonUnverified;
+
+  /// No description provided for @microReasonTheory.
+  ///
+  /// In es, this message translates to:
+  /// **'No se dibuja: en modo «solo teoría» no hay estado templado de partida.'**
+  String get microReasonTheory;
+
+  /// No description provided for @microReasonInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'No se dibuja: corrige la entrada para continuar.'**
+  String get microReasonInvalid;
+
+  /// No description provided for @microReasonNotComputed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se dibuja: no hay fracciones calculadas para esta práctica.'**
+  String get microReasonNotComputed;
 }
 
 class _AppLocalizationsDelegate

@@ -1374,4 +1374,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lpProtocol => 'Protocol';
+
+  @override
+  String get microQualitativeNote =>
+      'QUALITATIVE illustration: matrix and graphite as the source describes for this treatment. There are no computed fractions and it is not a real micrograph.';
+
+  @override
+  String get microReasonNoAustenitization =>
+      'No austenitization: the starting microstructure does not change and no new one is drawn.';
+
+  @override
+  String get microReasonOutsideRange =>
+      'Not drawn: the practice is outside the documented protocol, and exploration mode computes no fractions. Go back to the reference value to see the microstructure.';
+
+  @override
+  String get microReasonCarburized =>
+      'Not drawn: the carburized case is not modeled, so there are no case fractions to represent.';
+
+  @override
+  String get microReasonNotModeled =>
+      'Not drawn: FERROLAB has no model for this transformation (e.g. subcritical spheroidizing). See the expected outcome in the protocol sheet.';
+
+  @override
+  String get microReasonUnverified =>
+      'Not drawn: the variant has an unverified source and no fractions are computed.';
+
+  @override
+  String get microReasonTheory =>
+      'Not drawn: in theory-only mode there is no hardened starting state.';
+
+  @override
+  String get microReasonInvalid => 'Not drawn: correct the input to continue.';
+
+  @override
+  String get microReasonNotComputed =>
+      'Not drawn: there are no computed fractions for this practice.';
 }

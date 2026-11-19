@@ -597,5 +597,14 @@
       }
     }
   },
-  "lpProtocol": "Protocolo"
+  "lpProtocol": "Protocolo",
+  "microQualitativeNote": "Ilustración CUALITATIVA: matriz y grafito según lo que describe la fuente para este tratamiento. No hay fracciones calculadas ni es una micrografía real.",
+  "microReasonNoAustenitization": "No hubo austenización: la microestructura de partida no cambia y no se dibuja una nueva.",
+  "microReasonOutsideRange": "No se dibuja: la práctica está fuera del protocolo documentado y en modo exploración no se calculan fracciones. Vuelve al valor de referencia para ver la microestructura.",
+  "microReasonCarburized": "No se dibuja: la capa cementada no se modela, así que no hay fracciones de la capa que representar.",
+  "microReasonNotModeled": "No se dibuja: FERROLAB no tiene un modelo para esta transformación (p. ej. globulización subcrítica). Consulta el resultado esperado en la ficha del protocolo.",
+  "microReasonUnverified": "No se dibuja: la variante tiene una fuente no verificada y no se calculan fracciones.",
+  "microReasonTheory": "No se dibuja: en modo «solo teoría» no hay estado templado de partida.",
+  "microReasonInvalid": "No se dibuja: corrige la entrada para continuar.",
+  "microReasonNotComputed": "No se dibuja: no hay fracciones calculadas para esta práctica."
 }

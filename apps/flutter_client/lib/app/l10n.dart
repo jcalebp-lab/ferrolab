@@ -101,4 +101,15 @@ extension EnumLabels on AppLocalizations {
         'computed' => basisComputed,
         _ => basisPending,
       };
+
+  String microReason(String r) => switch (r) {
+        'no_austenitization' => microReasonNoAustenitization,
+        'outside_range' => microReasonOutsideRange,
+        'carburized_case' => microReasonCarburized,
+        'not_modeled' => microReasonNotModeled,
+        'unverified' => microReasonUnverified,
+        'theory' => microReasonTheory,
+        'invalid_input' => microReasonInvalid,
+        _ => microReasonNotComputed,
+      };
 }

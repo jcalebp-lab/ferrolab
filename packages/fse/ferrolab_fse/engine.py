@@ -573,7 +573,8 @@ class ScientificEngine:
                                      treatment.id, loc)
         illustration = ME.illustration(material.id, treatment.id, self.request_hash(req),
                                        practice if level == "A" else None, material.family.value,
-                                       matrix_hint=None if protocol is None else protocol.variant_code)
+                                       matrix_hint=None if protocol is None else protocol.variant_code,
+                                       reason=self._illustration_reason(k, level, ctx))
         if protocol is not None:
             model_sources += [s for s in protocol.source_ids if s not in model_sources]
 
@@ -634,6 +635,23 @@ class ScientificEngine:
                 localize(MESSAGES, "COMBINATION_UNSUPPORTED", loc),
             ),
         )
+
+    def _illustration_reason(self, k: _Checked, level: str, ctx: _Ctx) -> str | None:
+        """Por qué no hay microestructura calculada que dibujar (la interfaz lo explica al estudiante)."""
+        if level == "A":
+            return None
+        if ctx.blocking:
+            return "invalid_input"
+        if k.dependency == "theory":
+            return "theory"
+        if k.protocol is not None and k.protocol.evidence_status == "source_unverified":
+            return "unverified"
+        if k.resolved is not None and self._model_outside(k.resolved, k.treatment.id,
+                                                          k.material.family == MaterialFamily.STEEL):
+            return "outside_range"
+        if k.protocol is not None and not k.protocol.model_applicable:
+            return "carburized_case" if k.ic is not None and k.ic.carburized else "not_modeled"
+        return "not_computed"
 
     def _protocol_source_refs(self, ids: list[str]) -> list[EvidenceRef]:
         """Fuentes del protocolo (catálogo) y de los modelos (catálogo interno del motor)."""

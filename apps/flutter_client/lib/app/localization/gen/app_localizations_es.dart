@@ -1380,4 +1380,40 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get lpProtocol => 'Protocolo';
+
+  @override
+  String get microQualitativeNote =>
+      'Ilustración CUALITATIVA: matriz y grafito según lo que describe la fuente para este tratamiento. No hay fracciones calculadas ni es una micrografía real.';
+
+  @override
+  String get microReasonNoAustenitization =>
+      'No hubo austenización: la microestructura de partida no cambia y no se dibuja una nueva.';
+
+  @override
+  String get microReasonOutsideRange =>
+      'No se dibuja: la práctica está fuera del protocolo documentado y en modo exploración no se calculan fracciones. Vuelve al valor de referencia para ver la microestructura.';
+
+  @override
+  String get microReasonCarburized =>
+      'No se dibuja: la capa cementada no se modela, así que no hay fracciones de la capa que representar.';
+
+  @override
+  String get microReasonNotModeled =>
+      'No se dibuja: FERROLAB no tiene un modelo para esta transformación (p. ej. globulización subcrítica). Consulta el resultado esperado en la ficha del protocolo.';
+
+  @override
+  String get microReasonUnverified =>
+      'No se dibuja: la variante tiene una fuente no verificada y no se calculan fracciones.';
+
+  @override
+  String get microReasonTheory =>
+      'No se dibuja: en modo «solo teoría» no hay estado templado de partida.';
+
+  @override
+  String get microReasonInvalid =>
+      'No se dibuja: corrige la entrada para continuar.';
+
+  @override
+  String get microReasonNotComputed =>
+      'No se dibuja: no hay fracciones calculadas para esta práctica.';
 }

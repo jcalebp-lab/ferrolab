@@ -95,6 +95,9 @@ def thermal_history(p: P.Practice, illustrative: bool = False) -> ThermalHistory
                                       start_temperature_c=round(t0, 1), end_temperature_c=round(t1, 1),
                                       profile_kind="modeled_conduction" if seg.kind != "furnace_cool"
                                       else "furnace_rate", evidence_ids=[], medium=seg.medium))
+    if not stages:  # nada que calentar ni enfriar (p. ej. temperatura objetivo ≤ ambiente y sin tiempo)
+        return ThermalHistory(stages=[], points=[], total_time_s=0.0,
+                              time_basis="illustrative_seconds" if illustrative else "modeled_seconds")
     points = []
     for t, temp in pts:
         idx = next((s.index for s in stages if s.t_start_s - 1e-6 <= t <= s.t_end_s + 1e-6), stages[-1].index)
@@ -175,7 +178,7 @@ GRAY_VARIANT_MATRIX = {"ferritizing": "ferrite_pearlite", "full": "ferrite_pearl
 
 
 def illustration(material_id: str, treatment_id: str, request_hash: str, p: P.Practice | None,
-                 family: str, matrix_hint: str | None = None) -> dict:
+                 family: str, matrix_hint: str | None = None, reason: str | None = None) -> dict:
     """Especificación para que el cliente DIBUJE una microestructura ilustrativa (no es una micrografía)."""
     seed = int(hashlib.sha256(request_hash.encode()).hexdigest()[:8], 16)
     spec: dict[str, Any] = {"kind": "generated_illustration", "seed": seed, "family": family,
@@ -184,17 +187,19 @@ def illustration(material_id: str, treatment_id: str, request_hash: str, p: P.Pr
     if family == "gray_cast_iron":
         matrix = GRAY_VARIANT_MATRIX.get(matrix_hint or "", GRAY_MATRIX.get(treatment_id, "pearlite"))
         spec.update({"graphite": "type_a_flakes", "matrix": matrix,
-                     "fractions": None, "quantitative": False})
+                     "fractions": None, "quantitative": False, "reason": "qualitative_cast_iron"})
         return spec
     if p is None:
-        return spec | {"fractions": None, "quantitative": False}
+        # Sin fracciones calculadas no se dibuja una microestructura nueva; se dice por qué.
+        return spec | {"fractions": None, "quantitative": False, "reason": reason or "not_computed"}
     if treatment_id == "temper" and p.prior and p.prior.get("fractions"):
         spec.update({"fractions": _normalized(p.prior["fractions"]), "tempered": True, "quantitative": True,
                      "tempering_temperature_c": round(p.max_center_c)})
     elif p.fractions:
         spec.update({"fractions": _normalized(p.fractions), "tempered": False, "quantitative": True})
     else:
-        spec.update({"fractions": None, "quantitative": False, "unchanged_initial_state": True})
+        spec.update({"fractions": None, "quantitative": False, "unchanged_initial_state": True,
+                     "reason": "no_austenitization" if "MODEL_NO_AUSTENITIZATION" in p.notes else "not_computed"})
     vr = p.vr_700_k_s
     spec["pearlite_spacing"] = "fine" if vr and vr > 1 else "coarse"
     return spec

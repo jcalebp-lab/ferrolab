@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:material_ui/material_ui.dart';
 
@@ -49,6 +50,7 @@ class _GeneratedMicroscopeState extends State<GeneratedMicroscope> {
   void didUpdateWidget(covariant GeneratedMicroscope old) {
     super.didUpdateWidget(old);
     if (old.spec['seed'] != widget.spec['seed'] || old.spec['fractions'] != widget.spec['fractions']) {
+      _micro.picture?.dispose();
       _micro = _Micro.build(widget.spec);
       _tc.value = Matrix4.identity();
       _zoom = 1;
@@ -71,6 +73,7 @@ class _GeneratedMicroscopeState extends State<GeneratedMicroscope> {
 
   @override
   void dispose() {
+    _micro.picture?.dispose();
     _tc.dispose();
     super.dispose();
   }
@@ -233,6 +236,8 @@ List<Offset> _clip(List<Offset> poly, Offset a, Offset b) {
 
 class _Micro {
   _Micro(this.cells, this.spec, this.flakes, this.tempered, this.spacing, this.ra);
+  ui.Picture? picture; // caché del dibujo (ver _MicroPainter.paint)
+  double? pictureWidth;
   final List<_Cell> cells;
   final Map<String, dynamic> spec;
   final List<List<Offset>> flakes;
@@ -481,6 +486,19 @@ class _MicroPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // El campo se dibuja UNA vez (miles de trazos) y se guarda como Picture: el zoom y el arrastre solo la
+    // reproducen, así el microscopio va fluido también en celulares.
+    if (m.picture == null || m.pictureWidth != size.width) {
+      final rec = ui.PictureRecorder();
+      _draw(Canvas(rec), size);
+      m.picture?.dispose();
+      m.picture = rec.endRecording();
+      m.pictureWidth = size.width;
+    }
+    canvas.drawPicture(m.picture!);
+  }
+
+  void _draw(Canvas canvas, Size size) {
     final s = size.width / kFieldUm;
     canvas.save();
     canvas.scale(s, s);

@@ -472,12 +472,13 @@ class _GeneratedMicroSummary extends StatelessWidget {
     final t = context.t;
     final hasPicture = spec['family'] == 'gray_cast_iron' || spec['fractions'] != null;
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Notice(t.microGeneratedNote, kind: 'info', icon: Icons.brush_outlined),
+      Notice(spec['quantitative'] == true ? t.microGeneratedNote : t.microQualitativeNote, kind: 'info',
+          icon: Icons.brush_outlined),
       const Gap(FlSpace.s),
       if (!hasPicture)
-        Notice(t.microUnchanged, kind: 'limitation')
+        Notice(t.microReason(spec['reason'] as String? ?? 'not_computed'), kind: 'limitation',
+            icon: Icons.image_not_supported_outlined)
       else ...[
-        if (spec['family'] == 'gray_cast_iron') ...[Text(t.microQualitative, style: context.text.bodySmall), const Gap(FlSpace.s)],
         GeneratedMicroscope(spec: spec, height: 340),
         const Gap(FlSpace.s),
         MicroLegend(spec: spec),

@@ -24,7 +24,8 @@ class MicroscopeScreen extends ConsumerWidget {
         if (drawable) ...[
           Text(t.microGeneratedTitle, style: context.text.titleLarge),
           const Gap(FlSpace.s),
-          Notice(t.microGeneratedNote, kind: 'info', icon: Icons.brush_outlined),
+          Notice(spec['quantitative'] == true ? t.microGeneratedNote : t.microQualitativeNote, kind: 'info',
+              icon: Icons.brush_outlined),
           const Gap(FlSpace.m),
           GeneratedMicroscope(spec: spec, height: 640),
           const Gap(FlSpace.m),
@@ -32,6 +33,11 @@ class MicroscopeScreen extends ConsumerWidget {
           const Gap(FlSpace.xl),
           Text(t.microRealTitle, style: context.text.titleLarge),
           const Gap(FlSpace.s),
+        ],
+        if (!drawable && spec != null) ...[
+          Notice(t.microReason(spec['reason'] as String? ?? 'not_computed'), kind: 'limitation',
+              icon: Icons.image_not_supported_outlined),
+          const Gap(FlSpace.xl),
         ],
         if (m == null) ...[
           const Icon(Icons.image_not_supported_outlined, size: 64),

@@ -193,3 +193,21 @@ def test_physically_invalid_inputs(seed_snapshot):
         _req("aisi_1045", "quench", target_temperature_c=float("nan"))
     with pytest.raises(ValueError):
         _req("aisi_1045", "austemper", bath_temperature_c=-5)
+
+
+def test_illustration_explains_why_nothing_is_drawn(seed_snapshot):
+    eng = ScientificEngine(seed_snapshot)
+    ok = eng.simulate(_req("aisi_1045", "quench", target_temperature_c=845, hold_time_min=7.5))
+    assert ok.microstructure_illustration["fractions"] and ok.microstructure_illustration.get("reason") is None
+    cases = {
+        "outside_range": _req("aisi_1045", "quench", target_temperature_c=950, hold_time_min=7.5),
+        "carburized_case": _req("aisi_8620", "quench", target_temperature_c=835, hold_time_min=10,
+                                protocol_id="prot_8620_quench_single_refine"),
+        "not_modeled": _req("aisi_1045", "anneal", target_temperature_c=695, hold_time_min=60,
+                            protocol_id="prot_1045_anneal_subcritical"),
+        "theory": _req("aisi_1045", "temper", target_temperature_c=550, hold_time_min=30, prior_mode="theory"),
+        "qualitative_cast_iron": _req("astm_a48_class_30", "quench", target_temperature_c=870, hold_time_min=30),
+    }
+    for reason, rq in cases.items():
+        il = eng.simulate(rq).microstructure_illustration
+        assert il["reason"] == reason and il["fractions"] is None
