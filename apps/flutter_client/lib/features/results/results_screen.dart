@@ -184,7 +184,6 @@ class _StatusHeader extends StatelessWidget {
       Wrap(spacing: FlSpace.s, runSpacing: FlSpace.s, children: [LevelBadge(r.resultLevel)]),
       const Gap(FlSpace.s),
       Text(r.explanation.compatibilityReason, style: context.text.bodyMedium),
-      if (r.unreviewed) ...[const Gap(FlSpace.m), const UnreviewedBanner()],
     ]);
   }
 }
@@ -239,8 +238,44 @@ class ResultFactCard extends StatelessWidget {
     );
   }
 
+  String _label(BuildContext context, String key) {
+    final t = context.t;
+    return switch (key) {
+      'yield_strength' => t.mechYield,
+      'tensile_strength' => t.mechTensile,
+      'tensile_strength_min' => t.mechTensileMin,
+      _ => t.constituent(key),
+    };
+  }
+
+  Widget _grain(BuildContext context, ResultFact f) {
+    final t = context.t;
+    final u = f.uncertainty ?? const {};
+    String one(Object? v) => (v as num).toStringAsFixed(1);
+    final lo = u['min'] as num?, hi = u['max'] as num?;
+    final extra = (u['extrapolation'] as List?)?.isNotEmpty ?? false;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: FlSpace.s),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(t.grainAstm(one(f.value)), style: context.text.headlineSmall),
+        if (u['austenite_um'] != null) Text(t.grainAustenite(one(u['austenite_um'])), style: context.text.bodyMedium),
+        if (u['ferrite_um'] != null)
+          Text(t.grainFerrite(one(u['ferrite_um']), one(u['ferrite_g'])), style: context.text.bodyMedium),
+        if (lo != null && hi != null && (hi - lo).abs() >= .05)
+          Text('${t.factBand}: G ${one(lo)}–${one(hi)}', style: context.text.bodySmall),
+        if (extra) Text(t.grainExtrapolated, style: context.text.bodySmall),
+        Wrap(spacing: FlSpace.s, runSpacing: FlSpace.xs, children: [
+          EvidenceBadge(f.evidenceLevel),
+          Pill(icon: Icons.source_outlined, label: t.kind(f.evidenceKind), background: context.fl.accentSoft),
+        ]),
+        Text('${f.method} · ${f.sourceIds.join(', ')}', style: context.text.bodySmall),
+      ]),
+    );
+  }
+
   Widget _fact(BuildContext context, String? key, ResultFact f) {
     final t = context.t;
+    if (f.unit == 'ASTM_G') return _grain(context, f);
     final frac = f.unit == 'fraction';
     String fmt(num v) => frac ? '${(v * 100).toStringAsFixed(1)} %' : '${fmtNum(v.toDouble().roundToDouble())} ${f.unit}';
     final value = fmt(f.value);
@@ -259,7 +294,7 @@ class ResultFactCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: FlSpace.s),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(key == null ? value : '${t.constituent(key)}: $value', style: context.text.headlineSmall),
+        Text(key == null ? value : '${_label(context, key)}: $value', style: context.text.headlineSmall),
         if (hrc != null) Text('≈ ${hrc.round()} HRC', style: context.text.titleMedium),
         if (band != null) Text('${t.factBand}: $band', style: context.text.bodySmall),
         if (surf != null) Text('${t.modelSurface}: ${fmtNum(surf.toDouble().roundToDouble())} HV'
@@ -291,6 +326,12 @@ class ResultFactCard extends StatelessWidget {
 class _Foundation extends StatelessWidget {
   const _Foundation({required this.r});
   final SimulationResultDto r;
+
+  /// Micrografías reales mostradas con este resultado: se citan siempre (autor, licencia y página de origen).
+  List<MicrographDto> get _micrographs {
+    final seen = <String>{};
+    return [if (r.micrograph != null) r.micrograph!, ...r.relatedMicrographs].where((m) => seen.add(m.id)).toList();
+  }
   @override
   Widget build(BuildContext context) {
     final t = context.t;
@@ -329,6 +370,19 @@ class _Foundation extends StatelessWidget {
                 _ => t.resultsSuggestedReading,
               }, style: context.text.labelLarge),
               SourceTile(s),
+            ],
+            if (_micrographs.isNotEmpty) ...[
+              const Gap(FlSpace.s),
+              Text(t.resultsMicrographRefs, style: context.text.labelLarge),
+              for (final m in _micrographs)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: FlSpace.xs),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(m.attribution, style: context.text.bodyMedium),
+                    Text('${m.author} · ${m.licenseCode} — ${m.licenseUrl}', style: context.text.bodySmall),
+                    if (m.pageUrl != null) SelectableText(m.pageUrl!, style: context.text.bodySmall),
+                  ]),
+                ),
             ],
           ],
         ),
@@ -511,8 +565,6 @@ class _ModelDetails extends StatelessWidget {
       title: t.modelTitle,
       icon: Icons.functions,
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Notice(t.modelLabel, kind: 'limitation', icon: Icons.info_outline),
-        const Gap(FlSpace.s),
         Text(t.modelSpecimen, style: context.text.bodySmall),
         if (est['cooling_rate_700c_k_s'] != null)
           Text(t.modelCooling(fmtNum(((est['cooling_rate_700c_k_s'] as num) * 100).round() / 100))),

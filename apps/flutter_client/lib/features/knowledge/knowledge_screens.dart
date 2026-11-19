@@ -49,7 +49,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                   onChanged: (v) => setState(() => _query = v),
                 ),
                 const Gap(FlSpace.m),
-                if (entries.any((e) => e.reviewStatus != 'published')) ...[const UnreviewedBanner(), const Gap(FlSpace.m)],
                 for (final e in items)
                   Card(
                     margin: const EdgeInsets.only(bottom: FlSpace.s),
@@ -126,7 +125,6 @@ class KnowledgeDetailScreen extends ConsumerWidget {
             Text(e.title, style: context.text.headlineSmall),
             const Gap(FlSpace.l),
             Text(e.body, style: context.text.bodyLarge),
-            if (e.reviewStatus != 'published') ...[const Gap(FlSpace.l), const UnreviewedBanner()],
             if (related.isNotEmpty) ...[
               const Gap(FlSpace.xl),
               Text(t.learnRelated, style: context.text.titleMedium),

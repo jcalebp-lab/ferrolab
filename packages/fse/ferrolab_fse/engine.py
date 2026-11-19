@@ -183,6 +183,9 @@ class _Checked:
     level: str
 
 
+ASSUMPTION_NOTES = {"MODEL_GRAIN_LEE"}
+
+
 class ScientificEngine:
     def __init__(self, snapshot: DatasetSnapshot) -> None:
         self.snapshot = snapshot
@@ -260,8 +263,6 @@ class ScientificEngine:
         guard = self._physical_limit(material.family)
         is_steel = material.family == MaterialFamily.STEEL
 
-        if self.snapshot.contains_unreviewed_content:
-            ctx.warn("REVIEW_PENDING", "info", group="review")
 
         # 1. Límite físico (solo bloquea).
         if guard is not None and req.target_temperature_c >= guard.max_temperature_c:
@@ -538,8 +539,9 @@ class ScientificEngine:
                         facts.setdefault(key, v)
                     used_models.append(metallurgy_practice.MODEL_VERSION)
                     model_sources = list(metallurgy_practice.MODEL_SOURCES)
-                    ctx.warn("MODEL_ESTIMATE_NOT_REVIEWED", "info", group="review")
                     for note in practice.notes:
+                        if note in ASSUMPTION_NOTES:
+                            continue
                         ctx.warn(note, "limitation" if note in ("MODEL_NO_AUSTENITIZATION", "MODEL_TEMPER_ABOVE_AE1",
                                                                 "MODEL_OVERHEATING", "MODEL_TEMPER_OUTSIDE_VALIDITY")
                                  else "info", group="model")
@@ -557,6 +559,10 @@ class ScientificEngine:
                                                                    and k.resolved.params["hold_time"].basis != "pending")):
                 ctx.warn("HOLD_ZERO", "info", group="input")
             n_facts = sum(1 for v in facts.values() if v)
+            if material.family == MaterialFamily.GRAY_CAST_IRON and "mechanical_properties" not in facts:
+                # Referencia de la norma para la clase (colada, sin tratar): no cuenta como resultado del tratamiento.
+                facts["mechanical_properties"] = ME.gray_iron_mechanical(self.snapshot.dataset_version)
+                model_sources.append("src_astm_a48_class")
             if n_facts == 0:
                 status = SimulationStatus.INSUFFICIENT_EVIDENCE
                 if level == "A":
@@ -622,7 +628,7 @@ class ScientificEngine:
             protocol_card=card,
             assumptions=[
                 Assumption(code=c, text=localize(ASSUMPTIONS, c, loc))
-                for c in ("GEOMETRY_OMITTED", "COOLING_FIXED_BY_PROTOCOL", "EDUCATIONAL_NOT_INDUSTRIAL")
+                for c in self._assumption_codes(facts, practice, material)
             ],
             explanation=Explanation(
                 review_status=treatment.review_status.value,
@@ -635,6 +641,26 @@ class ScientificEngine:
                 localize(MESSAGES, "COMBINATION_UNSUPPORTED", loc),
             ),
         )
+
+    def _assumption_codes(self, facts: dict[str, Any], practice, material) -> list[str]:
+        """Supuestos y procedencia de las cifras (se muestran en «Supuestos y fuentes», no como avisos)."""
+        codes = ["GEOMETRY_OMITTED", "COOLING_FIXED_BY_PROTOCOL"]
+        modeled = any(
+            (f.evidence_kind == EvidenceKind.MODELED) for v in facts.values() if v
+            for f in ([v] if isinstance(v, ResultFact) else v.values()))
+        if modeled:
+            codes.append("MODEL_ESTIMATES")
+        if facts.get("grain_size") is not None:
+            codes.append("GRAIN_MODEL")
+        mech = facts.get("mechanical_properties") or {}
+        if any(k in mech for k in ("yield_strength", "tensile_strength")):
+            codes.append("STRENGTH_FROM_HARDNESS")
+        if "tensile_strength_min" in mech:
+            codes.append("A48_CLASS_REFERENCE")
+        if self.snapshot.contains_unreviewed_content:
+            codes.append("REVIEW_STATUS")
+        codes.append("EDUCATIONAL_NOT_INDUSTRIAL")
+        return codes
 
     def _illustration_reason(self, k: _Checked, level: str, ctx: _Ctx) -> str | None:
         """Por qué no hay microestructura calculada que dibujar (la interfaz lo explica al estudiante)."""

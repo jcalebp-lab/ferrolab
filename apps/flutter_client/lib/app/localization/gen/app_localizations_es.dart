@@ -110,10 +110,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeLastSession => 'Última simulación';
 
   @override
-  String get unreviewedBanner =>
-      'Contenido editorial pendiente de revisión por un especialista.';
-
-  @override
   String get settings => 'Ajustes';
 
   @override
@@ -478,7 +474,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resultsWarnings => 'Advertencias y limitaciones';
 
   @override
-  String get resultsAssumptions => 'Supuestos';
+  String get resultsAssumptions => 'Supuestos y origen de las cifras';
 
   @override
   String get resultsSources => 'Fuentes';
@@ -1068,10 +1064,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get modelTitle => 'Detalles de la estimación';
 
   @override
-  String get modelLabel =>
-      'Estimación por modelos empíricos publicados; no revisada por un especialista.';
-
-  @override
   String get modelCritical => 'Temperaturas críticas (calculadas)';
 
   @override
@@ -1176,8 +1168,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get microLabelRetained => 'Austenita retenida (islas blancas)';
 
   @override
-  String get levelA =>
-      'A · Cálculo con modelos publicados (pendiente de validación por especialista)';
+  String get levelA => 'A · Cálculo con modelos publicados';
 
   @override
   String get levelB => 'B · Interpretación cualitativa fundamentada';
@@ -1508,4 +1499,70 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get microMethodTem => 'Microscopio electrónico de transmisión (TEM)';
+
+  @override
+  String get resultsMicrographRefs => 'Micrografías citadas';
+
+  @override
+  String get mechYield => 'Límite de fluencia';
+
+  @override
+  String get mechTensile => 'Resistencia a tracción';
+
+  @override
+  String get mechTensileMin =>
+      'Resistencia mínima a tracción (norma, colada sin tratar)';
+
+  @override
+  String grainAstm(String g) {
+    return 'G ASTM $g';
+  }
+
+  @override
+  String grainAustenite(String d) {
+    return 'Grano austenítico previo: $d µm (intercepto lineal medio)';
+  }
+
+  @override
+  String grainFerrite(String d, String g) {
+    return 'Grano ferrítico: $d µm · G ASTM $g';
+  }
+
+  @override
+  String get grainExtrapolated =>
+      'Fuera del dominio del modelo (850–1200 °C, ≤ 3 h): extrapolación.';
+
+  @override
+  String get grainMeasureToggle => 'Medir tamaño de grano';
+
+  @override
+  String get grainMeasureTitle => 'Medición por intercepto lineal (ASTM E112)';
+
+  @override
+  String grainMeasureBody(String lines, String length, String n) {
+    return 'Sobre la imagen se trazan $lines líneas de ensayo con una longitud total de $length µm. Se cuentan $n cruces con límites de grano.';
+  }
+
+  @override
+  String grainMeasureResult(String l, String g) {
+    return 'ℓ̄ = $l µm → G medido = $g';
+  }
+
+  @override
+  String grainMeasureModel(String g, String kind) {
+    return 'G calculado por el modelo: $g ($kind)';
+  }
+
+  @override
+  String get grainKindAustenite => 'grano austenítico previo';
+
+  @override
+  String get grainKindFerrite => 'grano ferrítico';
+
+  @override
+  String get grainKindAssumed => 'supuesto';
+
+  @override
+  String get grainMeasureNote =>
+      'Cada cruce de una línea con un límite de grano es una intersección. ℓ̄ = longitud total ÷ intersecciones; G = −6,644·log10(ℓ̄ en mm) − 3,288. La pequeña diferencia con el modelo es normal: la imagen se genera por área media y la norma advierte que área e intercepto no dan exactamente el mismo G.';
 }

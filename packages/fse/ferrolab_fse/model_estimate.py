@@ -12,6 +12,7 @@ import math
 from typing import Any
 
 from .enums import EvidenceKind, EvidenceLevel, StageKind
+from .metallurgy import grain as GR
 from .metallurgy import practice as P
 from .metallurgy.data import ASSUMPTIONS, COMPOSITION_RANGES
 from .metallurgy.hardness import hv_to_hrc
@@ -56,6 +57,26 @@ MODEL_SOURCE_CATALOG: dict[str, dict[str, Any]] = {
                           "doi": None, "url": "https://www.compraco.com.br/", "kind": "web"},
     "src_wiki_martempering": {"title": "Martempering", "authors": "Wikipedia", "year": None, "doi": None,
                               "url": "https://en.wikipedia.org/wiki/Martempering", "kind": "encyclopedia"},
+    "src_lee_2008": {"title": "Prediction of austenite grain growth during austenitization of low alloy steels",
+                     "authors": "S.-J. Lee, Y.-K. Lee", "year": 2008, "doi": "10.1016/j.matdes.2008.03.009",
+                     "url": "https://doi.org/10.1016/j.matdes.2008.03.009", "kind": "journal_article"},
+    "src_gorni_handbook": {"title": "Steel Forming and Heat Treating Handbook (reproduce la ecuación de Lee & Lee 2008)",
+                           "authors": "A. A. Gorni", "year": None, "doi": None,
+                           "url": "https://www.gorni.eng.br/e/Gorni_SFHTHandbook.pdf", "kind": "book"},
+    "src_astm_e112_g": {"title": "ASTM E112 — Standard Test Methods for Determining Average Grain Size "
+                        "(G = −6.643856·log10 ℓ̄ − 3.288, ℓ̄ en mm)", "authors": "ASTM International", "year": None,
+                        "doi": None, "url": "https://store.astm.org/e0112-13r21.html", "kind": "standard"},
+    "src_hodgson_gibbs_1992": {"title": "A mathematical model to predict the mechanical properties of hot rolled "
+                               "C-Mn and microalloyed steels", "authors": "P. D. Hodgson, R. K. Gibbs", "year": 1992,
+                               "doi": "10.2355/isijinternational.32.1329",
+                               "url": "https://doi.org/10.2355/isijinternational.32.1329", "kind": "journal_article"},
+    "src_pavlina_2008": {"title": "Correlation of yield strength and tensile strength with hardness for steels",
+                         "authors": "E. J. Pavlina, C. J. Van Tyne", "year": 2008, "doi": "10.1007/s11665-008-9225-5",
+                         "url": "https://doi.org/10.1007/s11665-008-9225-5", "kind": "journal_article"},
+    "src_astm_a48_class": {"title": "ASTM A48/A48M — Gray iron castings: el número de clase es la resistencia mínima "
+                           "a tracción en ksi (clase 30 ≥ 30 ksi ≈ 207 MPa)", "authors": "ASTM International "
+                           "(tabla reproducida por Portland Bolt y Total Materia)", "year": None, "doi": None,
+                           "url": "https://www.portlandbolt.com/technical/specifications/astm-a48/", "kind": "standard"},
     "src_wiki_austempering": {"title": "Austempering", "authors": "Wikipedia", "year": None, "doi": None,
                               "url": "https://en.wikipedia.org/wiki/Austempering", "kind": "encyclopedia"},
 }
@@ -123,7 +144,7 @@ def _fact(value: float, unit: str, dataset_version: str, *, basis: str | None = 
                       model_version=P.MODEL_VERSION, dataset_version=dataset_version,
                       validity={"reference_diameter_mm": ASSUMPTIONS["reference_diameter_m"] * 1000,
                                 "report_point": ASSUMPTIONS["report_point"],
-                                "astm_grain_size": ASSUMPTIONS["astm_grain_size"],
+                                "grain_size": "lee_2008_computed_or_assumed_g7_if_intercritical",
                                 "review": "not_reviewed_by_specialist"},
                       uncertainty=uncertainty)
 
@@ -155,7 +176,73 @@ def facts(p: P.Practice, dataset_version: str) -> dict[str, Any]:
                                              "surface_hrc": _r(hv_to_hrc(p.hardness_surface_hv))
                                              if p.hardness_surface_hv else None,
                                              "basis": "composition_range_and_medium_severity"})
+    gf = grain_fact(p, dataset_version)
+    if gf is not None:
+        out["grain_size"] = gf
+    mf = mechanical_facts(p, dataset_version)
+    if mf:
+        out["mechanical_properties"] = mf
     return out
+
+
+GRAIN_SOURCES = ["src_lee_2008", "src_gorni_handbook", "src_astm_e112_g"]
+PAVLINA_YS = (-90.7, 2.876, (129.0, 632.0))  # MPa = a + b·HV; dominio de HV de los datos
+PAVLINA_TS = (-99.8, 3.734, (129.0, 592.0))
+A48_CLASS30_MIN_MPA = 207.0  # 30 ksi
+
+
+def _src_fact(value: float, unit: str, dataset_version: str, sources: list[str], method: str, validity: dict,
+              uncertainty: dict | None, kind: EvidenceKind = EvidenceKind.MODELED,
+              level: EvidenceLevel = EvidenceLevel.BOUNDED_ESTIMATE) -> ResultFact:
+    return ResultFact(value=round(value, 1), unit=unit, method=method, evidence_kind=kind, evidence_level=level,
+                      source_ids=sources, model_version=P.MODEL_VERSION if kind == EvidenceKind.MODELED else None,
+                      dataset_version=dataset_version, validity=validity, uncertainty=uncertainty)
+
+
+def grain_fact(p: P.Practice, dataset_version: str) -> ResultFact | None:
+    g = p.grain
+    if not g:
+        return None
+    ferrite = g.get("ferrite_um") is not None
+    sources = GRAIN_SOURCES + (["src_hodgson_gibbs_1992"] if ferrite else [])
+    lo, hi = g["austenite_g_range"]
+    unc = {"min": round(lo, 1), "max": round(hi, 1), "austenite_um": round(g["austenite_um"], 1),
+           "austenite_um_min": round(g["austenite_um_range"][0], 1),
+           "austenite_um_max": round(g["austenite_um_range"][1], 1), "austenite_g": round(g["austenite_g"], 1),
+           "equivalent_time_s": round(g["equivalent_time_s"]), "extrapolation": list(g["extrapolation"]),
+           "basis": "composition_range"}
+    if ferrite:
+        unc.update({"ferrite_um": round(g["ferrite_um"], 1), "ferrite_g": round(g["ferrite_g"], 1),
+                    "ferrite_cooling_k_s": round(g["ferrite_rate_k_s"], 3)})
+    return _src_fact(g["austenite_g"], "ASTM_G", dataset_version, sources, "lee_2008_astm_e112",
+                     {"grain": "prior_austenite", "temperature_range_c": list(GR.LEE_T_RANGE_C),
+                      "max_time_s": GR.LEE_T_MAX_S, "report_point": "center",
+                      "intercept_assumption": "model_d_as_mean_lineal_intercept"}, unc)
+
+
+def mechanical_facts(p: P.Practice, dataset_version: str) -> dict[str, ResultFact] | None:
+    if p.hardness_hv is None:
+        return None
+    lo, hi = p.hardness_range or (p.hardness_hv, p.hardness_hv)
+    out = {}
+    for key, (a, b, (hv_lo, hv_hi)) in (("yield_strength", PAVLINA_YS), ("tensile_strength", PAVLINA_TS)):
+        if not hv_lo <= p.hardness_hv <= hv_hi:
+            continue
+        band_lo, band_hi = max(lo, hv_lo), min(hi, hv_hi)
+        out[key] = _src_fact(a + b * p.hardness_hv, "MPa", dataset_version, ["src_pavlina_2008"],
+                             "pavlina_van_tyne_2008_from_hv",
+                             {"hv_range": [hv_lo, hv_hi], "steels": "non_austenitic_hypoeutectoid",
+                              "from_hardness_hv": round(p.hardness_hv, 1)},
+                             {"min": round(a + b * band_lo, 1), "max": round(a + b * band_hi, 1),
+                              "basis": "hardness_band_without_regression_scatter"})
+    return out or None
+
+
+def gray_iron_mechanical(dataset_version: str) -> dict[str, ResultFact]:
+    return {"tensile_strength_min": _src_fact(
+        A48_CLASS30_MIN_MPA, "MPa", dataset_version, ["src_astm_a48_class"], "astm_a48_class_minimum",
+        {"condition": "as_cast_separately_cast_test_bar", "applies_after_heat_treatment": False}, None,
+        kind=EvidenceKind.LITERATURE, level=EvidenceLevel.QUALITATIVE)}
 
 
 def _normalized(d: dict[str, float]) -> dict[str, float]:
@@ -192,6 +279,11 @@ def illustration(material_id: str, treatment_id: str, request_hash: str, p: P.Pr
     if p is None:
         # Sin fracciones calculadas no se dibuja una microestructura nueva; se dice por qué.
         return spec | {"fractions": None, "quantitative": False, "reason": reason or "not_computed"}
+    if p.grain:
+        shown_ferrite = p.grain.get("ferrite_g") is not None and treatment_id in ("anneal", "normalize")
+        spec["astm_grain_size"] = round(p.grain["ferrite_g"] if shown_ferrite else p.grain["austenite_g"], 2)
+        spec["grain_kind"] = "ferrite" if shown_ferrite else "prior_austenite"
+        spec["grain_computed"] = True
     if treatment_id == "temper" and p.prior and p.prior.get("fractions"):
         spec.update({"fractions": _normalized(p.prior["fractions"]), "tempered": True, "quantitative": True,
                      "tempering_temperature_c": round(p.max_center_c)})
@@ -228,6 +320,7 @@ def estimate_block(p: P.Practice | None, material_id: str, treatment_id: str, lo
         "fractions_range": None if p.fractions_range is None else
         {k: [round(a, 4), round(b, 4)] for k, (a, b) in p.fractions_range.items()},
         "notes": list(p.notes),
+        "grain": None if not p.grain else {k: (list(v) if isinstance(v, tuple) else v) for k, v in p.grain.items()},
         "prior_state": None if p.prior is None else {
             **{k: v for k, v in p.prior.items() if k not in ("fractions", "hardness_range")},
             "fractions": None if not p.prior.get("fractions") else

@@ -112,10 +112,13 @@ async function flow(viewport, tag) {
   check(`${tag}: resultados`, await waitText(page, 'Esto podemos concluir'));
   const rt = await text(page);
   check(`${tag}: dureza estimada con HV, HRC y banda`, /\d+\s*HV/.test(rt) && /HRC/.test(rt) && rt.includes('Banda de incertidumbre') && !/\b0\s*HRC/.test(rt));
-  check(`${tag}: cifras etiquetadas como estimación de modelo`, rt.includes('no revisada por un especialista') && rt.includes('Martensita'));
+  check(`${tag}: cifras etiquetadas como estimación de modelo, sin avisos de revisión`,
+    rt.includes('Estimación acotada') && rt.includes('Modelado') && rt.includes('Martensita')
+    && !rt.includes('no revisada por un especialista') && !rt.includes('pendiente de revisión por un especialista'));
   check(`${tag}: microestructura generada + diagramas`, rt.includes('Microestructura generada') && rt.includes('Diagramas TTT y CCT'));
-  check(`${tag}: grano/propiedades sin cifra (nunca 0)`, rt.includes('No estimable con la evidencia actual'));
-  check(`${tag}: micrografía ausente informada`, rt.includes('Aún no tenemos una micrografía verificada'));
+  check(`${tag}: tamaño de grano ASTM y propiedades mecánicas calculadas`,
+    /G ASTM \d/.test(rt) && rt.includes('Grano austenítico previo') && rt.includes('Resistencia a tracción') && /\d+\s*MPa/.test(rt));
+  check(`${tag}: micrografía real citada`, rt.includes('Micrografía real con licencia') && rt.includes('Wikimedia Commons'));
   await page.screenshot({ path: `${OUT}${tag}-09-resultados.png`, fullPage: true });
   await click(page, '¿Por qué ocurrió esto?');
   check(`${tag}: tutor en modo editorial (IA apagada)`, await waitText(page, 'Explicación editorial (sin IA)'));

@@ -132,7 +132,7 @@ def test_release_gates_then_publish_and_rollback(c, token):
     sim = c.post("/api/v1/simulations", json={"material_id": "aisi_1045", "treatment_id": "quench",
                                               "target_temperature_c": 850, "hold_time_min": 30}).json()
     # Sin evidencia medida publicada, la única cifra es la estimación de modelo etiquetada (D-26).
-    assert sim["simulation_status"] == "partial_result"
+    assert sim["simulation_status"] == "completed"
     assert sim["results"]["hardness"]["evidence_kind"] == "modeled"
     assert sim["results"]["hardness"]["evidence_level"] == "bounded_estimate"
     assert c.get("/api/v1/materials").json()["items"][0]["review_status"] == "published"

@@ -173,26 +173,18 @@ def simulate(body: SimulationCreate, request: Request, st: AppState = Depends(ge
     result = loaded.engine.simulate(_to_req(body))
     micro = None
     warnings = list(result.warnings)
+    rel = []
     if result.simulation_status not in ("invalid_input", "unsupported"):
         found = mg.select(loaded.snapshot, body.material_id, body.treatment_id, result.input.initial_condition_id)
-        if found is None:
+        if found is not None:
+            micro = mg.public_micrograph(found, body.locale)
+        family, weights = mg.weights_for(result.microstructure_illustration or {}, body.treatment_id)
+        rel = [mg.public_micrograph(m, body.locale) for m in
+               mg.related(loaded.snapshot, family, weights, other_families=family == "gray_cast_iron")]
+        if found is None and not rel:
             warnings.append(FseWarning(code="NO_SUITABLE_MICROGRAPH", severity="info",
                                        message_key="scientific.no_suitable_micrograph",
                                        message=localize(MESSAGES, "NO_SUITABLE_MICROGRAPH", body.locale)))
-        else:
-            micro = mg.public_micrograph(found, body.locale)
-    rel = []
-    il = result.microstructure_illustration or {}
-    if result.simulation_status not in ("invalid_input", "unsupported"):
-        if il.get("family") == "gray_cast_iron":
-            cons = ["graphite_flakes", {"martensite": "martensite", "tempered_martensite": "tempered_martensite",
-                                        "ausferrite": "bainite", "ferrite_pearlite": "proeutectoid_ferrite"}
-                    .get(il.get("matrix") or "", "pearlite")]
-        else:
-            fr = il.get("fractions") or {}
-            cons = [("tempered_martensite" if k == "martensite" and il.get("tempered") else k)
-                    for k, v in fr.items() if v >= 0.03]
-        rel = [mg.public_micrograph(m, body.locale) for m in mg.related(loaded.snapshot, il.get("family", "steel"), cons)]
     return result.model_copy(update={"request_id": request.state.request_id, "micrograph": micro,
                                      "warnings": warnings, "related_micrographs": rel})
 

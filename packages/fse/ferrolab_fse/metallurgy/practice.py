@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from . import grain as grain_model
 from . import kinetics as kin
 from .cooling import Medium, Runner, medium, rate_at, thin
 from .critical import critical_temperatures
@@ -21,7 +22,7 @@ from .data import (
 )
 from .hardness import mixture_hv, tempered_mixture_hv
 
-MODEL_VERSION = "ferrolab_metallurgy@1.0.0"
+MODEL_VERSION = "ferrolab_metallurgy@1.1.0"
 MODEL_SOURCES = ("src_li_1998", "src_collins_2023", "src_km_1959", "src_maynier_1978", "src_andrews_1965",
                  "src_grange_1961", "src_grossmann", "src_kang_lee_2014")
 
@@ -62,6 +63,7 @@ class Practice:
     diagrams: list[dict] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)  # códigos de aviso del modelo
     prior: dict | None = None  # estado de partida (revenido)
+    grain: dict | None = None  # tamaño de grano (Lee & Lee 2008, ASTM E112, Hodgson & Gibbs 1992)
 
 
 def _austenitize(c: dict[str, float], t_max: float) -> tuple[float, float]:
@@ -140,8 +142,8 @@ def _execute(r: Runner, steps: list[Step], severity_h: float | None = None) -> t
     return (len(r.center) - 1 if i0 is None else i0), bath_c
 
 
-def _decompose(path, c, fa, ca):
-    st = kin.integrate(path, c, ASSUMPTIONS["astm_grain_size"], austenite0=fa, carbon0=ca)
+def _decompose(path, c, fa, ca, g=None):
+    st = kin.integrate(path, c, ASSUMPTIONS["astm_grain_size"] if g is None else g, austenite0=fa, carbon0=ca)
     return kin.final_microstructure(st), st
 
 
@@ -184,10 +186,22 @@ def simulate_steps(material_id: str, treatment_id: str, steps: list[Step], *, mo
         p.notes.append("MODEL_INTERCRITICAL")
     if t_max > tm.ae3 + 150:
         p.notes.append("MODEL_OVERHEATING")
-    micro, st = _decompose(path_c, c, fa, ca)
+    g = None
+    if fa >= 1:
+        p.grain = grain_model.estimate(comps, run_.center, {k: kin.li_temps(v).ae3 for k, v in comps.items()}, t_max)
+        if p.grain is not None:
+            g = p.grain["austenite_g"]
+            p.notes.append("MODEL_GRAIN_LEE")
+            if p.grain["extrapolation"]:
+                p.notes.append("MODEL_GRAIN_EXTRAPOLATED")
+    else:
+        p.notes.append("MODEL_GRAIN_INTERCRITICAL")
+    if g is not None:
+        p.diagrams = _diagrams(c, t_max, path_c, run_.center[i0][0], g)
+    micro, st = _decompose(path_c, c, fa, ca, g)
     p.fractions = micro
     p.phases = _phases(micro, c, st.carbon_austenite)
-    p.surface_fractions, _ = _decompose(path_s, c, fa, ca)
+    p.surface_fractions, _ = _decompose(path_s, c, fa, ca, g)
     vr = rate_at(path_c, 700.0)
     fc = next((s for s in steps if s.kind == "furnace_cool"), None)
     if vr is None and fc is not None:
@@ -195,6 +209,12 @@ def simulate_steps(material_id: str, treatment_id: str, steps: list[Step], *, mo
     if vr is None:  # p. ej. baño isotérmico por encima de 700 °C: se usa la velocidad media hasta el baño
         vr = rate_at(path_c, max(t for _, t in path_c) - 1.0)
     p.vr_700_k_s = vr
+    if p.grain is not None and vr is not None and micro.get("proeutectoid_ferrite", 0) >= 0.05:
+        da = grain_model.ferrite_grain_um(c, vr, p.grain["austenite_um"])
+        if da is not None:
+            p.grain["ferrite_um"] = da
+            p.grain["ferrite_g"] = grain_model.astm_g_from_intercept_um(da)
+            p.grain["ferrite_rate_k_s"] = vr
     ranges: dict[str, list[float]] = {k: [v, v] for k, v in micro.items()}
     hvs: list[float] = []
     if vr is not None:
@@ -207,7 +227,7 @@ def simulate_steps(material_id: str, treatment_id: str, steps: list[Step], *, mo
         fak, cak = _austenitize(ck, t_max)
         if fak <= 0:
             continue
-        mk, _ = _decompose(path_c, ck, fak, cak)
+        mk, _ = _decompose(path_c, ck, fak, cak, g)
         for k, v in mk.items():
             ranges[k][0] = min(ranges[k][0], v)
             ranges[k][1] = max(ranges[k][1], v)
@@ -218,7 +238,7 @@ def simulate_steps(material_id: str, treatment_id: str, steps: list[Step], *, mo
         r2 = Runner(ASSUMPTIONS["ambient_c"])
         j0, _ = _execute(r2, steps, severity_h=GROSSMANN_H_RANGE[qm][1])
         path2 = r2.center[j0:]
-        m2, _ = _decompose(path2, c, fa, ca)
+        m2, _ = _decompose(path2, c, fa, ca, g)
         for k, v in m2.items():
             ranges[k][0] = min(ranges[k][0], v)
             ranges[k][1] = max(ranges[k][1], v)
@@ -241,6 +261,7 @@ def simulate_temper(material_id: str, prior_steps: list[Step], prior_info: dict,
     p.prior = {**prior_info, "medium": prior.medium_code, "fractions": prior.fractions,
                "hardness_hv": prior.hardness_hv, "hardness_range": prior.hardness_range}
     p.diagrams = prior.diagrams
+    p.grain = prior.grain  # el revenido no cambia el grano austenítico previo
     if not model or comps is None:
         return p
     c = comps["nominal"]
@@ -269,7 +290,8 @@ def simulate_temper(material_id: str, prior_steps: list[Step], prior_info: dict,
         fak, cak = _austenitize(ck, t_aus)
         if fak <= 0:
             continue
-        mk, _ = _decompose(prior.runner_center[prior.cooling_start_index:], ck, fak, cak)
+        mk, _ = _decompose(prior.runner_center[prior.cooling_start_index:], ck, fak, cak,
+                           None if prior.grain is None else prior.grain["austenite_g"])
         hvs.append(tempered_mixture_hv(mk, ck, vr_h, temper_c, hold_s))
     p.hardness_range = (min(hvs), max(hvs))
     p.vr_700_k_s = prior.vr_700_k_s
@@ -287,8 +309,8 @@ def _critical_dict(c: dict[str, float]) -> dict[str, float]:
     return cr
 
 
-def _diagrams(c, t_max, path_c, t_cool0) -> list[dict]:
-    grain = ASSUMPTIONS["astm_grain_size"]
+def _diagrams(c, t_max, path_c, t_cool0, g=None) -> list[dict]:
+    grain = ASSUMPTIONS["astm_grain_size"] if g is None else g
     user = [[round(max(t - t_cool0, 0.01), 3), round(temp, 1)] for t, temp in thin(path_c, 300)]
     ttt = kin.ttt_diagram(c, grain)
     ttt["user_path"] = user

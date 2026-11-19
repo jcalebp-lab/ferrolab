@@ -109,9 +109,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeLastSession => 'Last simulation';
 
   @override
-  String get unreviewedBanner => 'Editorial content pending specialist review.';
-
-  @override
   String get settings => 'Settings';
 
   @override
@@ -475,7 +472,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resultsWarnings => 'Warnings and limitations';
 
   @override
-  String get resultsAssumptions => 'Assumptions';
+  String get resultsAssumptions => 'Assumptions and origin of the figures';
 
   @override
   String get resultsSources => 'Sources';
@@ -1063,10 +1060,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get modelTitle => 'Estimate details';
 
   @override
-  String get modelLabel =>
-      'Estimate from published empirical models; not reviewed by a specialist.';
-
-  @override
   String get modelCritical => 'Critical temperatures (computed)';
 
   @override
@@ -1171,8 +1164,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get microLabelRetained => 'Retained austenite (white islands)';
 
   @override
-  String get levelA =>
-      'A · Computed with published models (pending specialist validation)';
+  String get levelA => 'A · Computed with published models';
 
   @override
   String get levelB => 'B · Grounded qualitative interpretation';
@@ -1501,4 +1493,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get microMethodTem => 'Transmission electron microscope (TEM)';
+
+  @override
+  String get resultsMicrographRefs => 'Cited micrographs';
+
+  @override
+  String get mechYield => 'Yield strength';
+
+  @override
+  String get mechTensile => 'Tensile strength';
+
+  @override
+  String get mechTensileMin =>
+      'Minimum tensile strength (standard, untreated casting)';
+
+  @override
+  String grainAstm(String g) {
+    return 'ASTM G $g';
+  }
+
+  @override
+  String grainAustenite(String d) {
+    return 'Prior-austenite grain: $d µm (mean lineal intercept)';
+  }
+
+  @override
+  String grainFerrite(String d, String g) {
+    return 'Ferrite grain: $d µm · ASTM G $g';
+  }
+
+  @override
+  String get grainExtrapolated =>
+      'Outside the model domain (850–1200 °C, ≤ 3 h): extrapolation.';
+
+  @override
+  String get grainMeasureToggle => 'Measure grain size';
+
+  @override
+  String get grainMeasureTitle => 'Lineal intercept measurement (ASTM E112)';
+
+  @override
+  String grainMeasureBody(String lines, String length, String n) {
+    return '$lines test lines with a total length of $length µm are drawn on the image. $n grain-boundary crossings are counted.';
+  }
+
+  @override
+  String grainMeasureResult(String l, String g) {
+    return 'ℓ̄ = $l µm → measured G = $g';
+  }
+
+  @override
+  String grainMeasureModel(String g, String kind) {
+    return 'G computed by the model: $g ($kind)';
+  }
+
+  @override
+  String get grainKindAustenite => 'prior-austenite grain';
+
+  @override
+  String get grainKindFerrite => 'ferrite grain';
+
+  @override
+  String get grainKindAssumed => 'assumed';
+
+  @override
+  String get grainMeasureNote =>
+      'Each crossing of a line with a grain boundary is an intersection. ℓ̄ = total length ÷ intersections; G = −6.644·log10(ℓ̄ in mm) − 3.288. A small difference from the model is normal: the image is generated from the mean area and the standard notes that area and intercept do not give exactly the same G.';
 }

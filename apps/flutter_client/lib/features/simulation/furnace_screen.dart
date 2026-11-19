@@ -129,7 +129,6 @@ class _PlayerState extends State<_Player> with SingleTickerProviderStateMixin {
           label: Text(t.furnaceSeeResults),
         );
         return PageBody(maxWidth: 1160, children: [
-          if (r.unreviewed) ...[const UnreviewedBanner(), const Gap(FlSpace.m)],
           if (wide)
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Expanded(child: furnace),

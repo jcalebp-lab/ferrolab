@@ -31,7 +31,6 @@
   "homeTeacher": "Docentes",
   "homeBanner": "Herramienta educativa. Las propiedades dependen de datos y condiciones reales.",
   "homeLastSession": "Última simulación",
-  "unreviewedBanner": "Contenido editorial pendiente de revisión por un especialista.",
   "settings": "Ajustes",
   "stepOf": "Paso {step} de {total}",
   "@stepOf": {
@@ -147,7 +146,7 @@
   "chartTimeAxis": "tiempo",
   "chartNoData": "Sin trayectoria para mostrar",
   "resultsTitle": "Esto podemos concluir",
-  "status_completed": "Resultado completo respaldado",
+  "status_completed": "Resultado completo",
   "status_partial_result": "Resultado parcial",
   "status_insufficient_evidence": "Evidencia insuficiente para cifras",
   "status_unsupported": "Combinación no soportada",
@@ -182,7 +181,7 @@
   "kind_illustrative": "Ilustrativo",
   "kind_unavailable": "No disponible",
   "resultsWarnings": "Advertencias y limitaciones",
-  "resultsAssumptions": "Supuestos",
+  "resultsAssumptions": "Supuestos y origen de las cifras",
   "resultsSources": "Fuentes",
   "resultsVersions": "Versiones",
   "resultsProtocol": "Protocolo",
@@ -399,7 +398,6 @@
   "diagAxes": "Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM 7.",
   "diagTable": "Ver datos del diagrama",
   "modelTitle": "Detalles de la estimación",
-  "modelLabel": "Estimación por modelos empíricos publicados; no revisada por un especialista.",
   "modelCritical": "Temperaturas críticas (calculadas)",
   "modelComposition": "Composición nominal usada (% en masa)",
   "modelSurface": "Superficie de la probeta",
@@ -512,7 +510,7 @@
   "microLabelsToggle": "Señalar microconstituyentes",
   "microLabelsZoomHint": "Las flechas se muestran en el aumento base: pulsa «Volver al aumento inicial».",
   "microLabelRetained": "Austenita retenida (islas blancas)",
-  "levelA": "A · Cálculo con modelos publicados (pendiente de validación por especialista)",
+  "levelA": "A · Cálculo con modelos publicados",
   "levelB": "B · Interpretación cualitativa fundamentada",
   "levelC": "C · Demostración educativa ilustrativa",
   "lpLimitations": "Fundamento científico y limitaciones",
@@ -655,5 +653,79 @@
   "constNodules": "Grafito nodular (esferoidal)",
   "constAusferrite": "Ausferrita",
   "constProeutectoidCementite": "Cementita proeutectoide",
-  "microMethodTem": "Microscopio electrónico de transmisión (TEM)"
+  "microMethodTem": "Microscopio electrónico de transmisión (TEM)",
+  "resultsMicrographRefs": "Micrografías citadas",
+  "mechYield": "Límite de fluencia",
+  "mechTensile": "Resistencia a tracción",
+  "mechTensileMin": "Resistencia mínima a tracción (norma, colada sin tratar)",
+  "grainAstm": "G ASTM {g}",
+  "@grainAstm": {
+    "placeholders": {
+      "g": {
+        "type": "String"
+      }
+    }
+  },
+  "grainAustenite": "Grano austenítico previo: {d} µm (intercepto lineal medio)",
+  "@grainAustenite": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      }
+    }
+  },
+  "grainFerrite": "Grano ferrítico: {d} µm · G ASTM {g}",
+  "@grainFerrite": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      },
+      "g": {
+        "type": "String"
+      }
+    }
+  },
+  "grainExtrapolated": "Fuera del dominio del modelo (850–1200 °C, ≤ 3 h): extrapolación.",
+  "grainMeasureToggle": "Medir tamaño de grano",
+  "grainMeasureTitle": "Medición por intercepto lineal (ASTM E112)",
+  "grainMeasureBody": "Sobre la imagen se trazan {lines} líneas de ensayo con una longitud total de {length} µm. Se cuentan {n} cruces con límites de grano.",
+  "@grainMeasureBody": {
+    "placeholders": {
+      "lines": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      },
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "grainMeasureResult": "ℓ̄ = {l} µm → G medido = {g}",
+  "@grainMeasureResult": {
+    "placeholders": {
+      "l": {
+        "type": "String"
+      },
+      "g": {
+        "type": "String"
+      }
+    }
+  },
+  "grainMeasureModel": "G calculado por el modelo: {g} ({kind})",
+  "@grainMeasureModel": {
+    "placeholders": {
+      "g": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "grainKindAustenite": "grano austenítico previo",
+  "grainKindFerrite": "grano ferrítico",
+  "grainKindAssumed": "supuesto",
+  "grainMeasureNote": "Cada cruce de una línea con un límite de grano es una intersección. ℓ̄ = longitud total ÷ intersecciones; G = −6,644·log10(ℓ̄ en mm) − 3,288. La pequeña diferencia con el modelo es normal: la imagen se genera por área media y la norma advierte que área e intercepto no dan exactamente el mismo G."
 }

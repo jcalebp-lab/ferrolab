@@ -142,6 +142,18 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "(Li 1998, Koistinen–Marburger, Maynier 1978) for a 12.7 mm specimen, at the center. "
         "They are not measurements and have not been reviewed by a specialist.",
     ),
+    "MODEL_GRAIN_EXTRAPOLATED": (
+        "El modelo de grano de Lee y Lee se ajustó entre 850 y 1200 °C y hasta 3 h; esta práctica queda fuera de "
+        "ese dominio y el tamaño de grano es una extrapolación.",
+        "The Lee and Lee grain model was fitted between 850 and 1200 °C and up to 3 h; this practice is outside "
+        "that domain and the grain size is an extrapolation.",
+    ),
+    "MODEL_GRAIN_INTERCRITICAL": (
+        "Austenización incompleta (intercrítica): no se estima el tamaño de grano y la cinética usa G ASTM 7 "
+        "(supuesto).",
+        "Incomplete (intercritical) austenitization: grain size is not estimated and the kinetics use ASTM G 7 "
+        "(assumption).",
+    ),
     "MODEL_THERMAL_HISTORY": (
         "La curva térmica se calculó con un modelo de conducción de calor (supuestos declarados).",
         "The thermal curve was computed with a heat-conduction model (declared assumptions).",
@@ -333,6 +345,46 @@ MESSAGES: dict[str, tuple[str, str]] = {
 }
 
 ASSUMPTIONS: dict[str, tuple[str, str]] = {
+    "MODEL_ESTIMATES": (
+        "Origen de las cifras: fases, constituyentes, dureza y diagramas se calculan con modelos publicados "
+        "(Li 1998, Koistinen–Marburger 1959, Maynier 1978, Kang y Lee 2014) para una probeta de 12,7 mm, en el "
+        "centro. Son estimaciones de modelo, no mediciones de laboratorio; la banda indica la incertidumbre.",
+        "Origin of the figures: phases, constituents, hardness and diagrams are computed with published models "
+        "(Li 1998, Koistinen–Marburger 1959, Maynier 1978, Kang and Lee 2014) for a 12.7 mm specimen, at the "
+        "center. They are model estimates, not laboratory measurements; the band shows the uncertainty.",
+    ),
+    "GRAIN_MODEL": (
+        "Tamaño de grano: grano austenítico previo con el modelo de Lee y Lee (2008) a partir de la temperatura y "
+        "el tiempo reales por encima de Ae3 (regla de aditividad); número ASTM por la relación de intercepto de "
+        "ASTM E112. En recocido y normalizado del 8620 se añade el grano ferrítico de Hodgson y Gibbs (1992). "
+        "Ese tamaño de grano alimenta también la cinética de transformación y el dibujo del microscopio.",
+        "Grain size: prior-austenite grain from the Lee and Lee (2008) model using the actual temperature and time "
+        "above Ae3 (additivity rule); ASTM number from the ASTM E112 intercept relation. For 8620 annealing and "
+        "normalizing the ferrite grain of Hodgson and Gibbs (1992) is added. This grain size also feeds the "
+        "transformation kinetics and the microscope drawing.",
+    ),
+    "STRENGTH_FROM_HARDNESS": (
+        "Resistencia a tracción y límite de fluencia calculados desde la dureza HV con las correlaciones de Pavlina "
+        "y Van Tyne (2008) para aceros hipoeutectoides no austeníticos (válidas entre 129 y 632 HV para fluencia y "
+        "129–592 HV para tracción). La banda solo refleja la de la dureza, no la dispersión de la correlación.",
+        "Tensile and yield strength computed from HV hardness with the Pavlina and Van Tyne (2008) correlations "
+        "for non-austenitic hypoeutectoid steels (valid 129–632 HV for yield and 129–592 HV for tensile). The band "
+        "only reflects the hardness band, not the scatter of the correlation.",
+    ),
+    "A48_CLASS_REFERENCE": (
+        "Fundición gris ASTM A48 clase 30: la norma define la clase por la resistencia mínima a tracción "
+        "(30 ksi ≈ 207 MPa) en barra de ensayo colada aparte, sin tratamiento térmico. Se muestra como referencia; "
+        "FERROLAB no calcula cómo la cambia el tratamiento.",
+        "ASTM A48 class 30 gray iron: the standard defines the class by its minimum tensile strength "
+        "(30 ksi ≈ 207 MPa) on a separately cast test bar, without heat treatment. It is shown as a reference; "
+        "FERROLAB does not compute how the treatment changes it.",
+    ),
+    "REVIEW_STATUS": (
+        "Estado de revisión: el catálogo y los textos aún no han sido revisados por una persona con formación "
+        "metalúrgica; cada cifra indica su fuente y su método.",
+        "Review status: the catalog and texts have not yet been reviewed by a person with metallurgical "
+        "training; each figure states its source and method.",
+    ),
     "GEOMETRY_OMITTED": (
         "Geometría omitida: simplificación educativa. No se predicen gradientes internos ni piezas reales.",
         "Geometry omitted: educational simplification. Internal gradients and real parts are not predicted.",

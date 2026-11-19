@@ -68,7 +68,6 @@ class HomeScreen extends ConsumerWidget {
       body: PageBody(children: [
         Text(t.homeGreeting, style: context.text.titleMedium?.copyWith(color: context.fl.textSecondary)),
         const Gap(FlSpace.m),
-        if (health.value?.unreviewed ?? false) ...[const UnreviewedBanner(), const Gap(FlSpace.m)],
         if (health.hasError) ...[
           ErrorView(error: health.error!, onRetry: () => ref.invalidate(healthProvider)),
           OutlinedButton.icon(

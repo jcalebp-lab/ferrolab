@@ -55,14 +55,16 @@ def test_simulation_envelope_and_nulls(client):
     assert r.status_code == 200
     body = r.json()
     assert ENVELOPE <= set(body)
-    assert body["simulation_status"] == "partial_result"
+    assert body["simulation_status"] == "completed"
     res = body["results"]
-    assert res["grain_size"] is None and res["mechanical_properties"] is None
+    assert res["grain_size"]["unit"] == "ASTM_G" and res["grain_size"]["method"] == "lee_2008_astm_e112"
+    assert res["mechanical_properties"]["tensile_strength"]["unit"] == "MPa"
     assert res["hardness"]["evidence_kind"] == "modeled" and res["hardness"]["model_version"]
     # Micrografía real comparable (martensita en SAE 1045), con licencia verificada.
     assert body["micrograph"]["match_quality"] == "comparable" and body["micrograph"]["license_verified"]
     assert body["related_micrographs"]
-    assert any(w["code"] == "MODEL_ESTIMATE_NOT_REVIEWED" for w in body["warnings"])
+    assert not any(w["code"] in ("MODEL_ESTIMATE_NOT_REVIEWED", "REVIEW_PENDING") for w in body["warnings"])
+    assert {"MODEL_ESTIMATES", "GRAIN_MODEL", "STRENGTH_FROM_HARDNESS"} <= {a["code"] for a in body["assumptions"]}
     assert body["thermal_history"] and body["schematic_cycle"] is None
     assert body["protocol_card"]["params"]["furnace_temperature"]["ref"] == 845
     assert body["result_level"] in ("A", "B") and body["headline"]["code"].startswith("HEADLINE_")
@@ -111,7 +113,10 @@ def test_all_pairs_answer_honestly(client, m, t):
         assert any(w["code"] == "DEPENDENCY_REFERENCE" for w in body["warnings"])
     else:
         assert body["simulation_status"] in ("insufficient_evidence", "unsupported")
-        assert all(v is None for v in body["results"].values())
+        res = dict(body["results"])
+        if m == "astm_a48_class_30":  # referencia de la norma, no un resultado del tratamiento
+            assert set(res.pop("mechanical_properties")) == {"tensile_strength_min"}
+        assert all(v is None for v in res.values())
     assert body["explanation"]["compatibility_reason"]
 
 
@@ -172,7 +177,20 @@ def test_simulation_offers_related_real_micrographs(client):
     assert rel and all("pearlite" in m["constituents"] or "proeutectoid_ferrite" in m["constituents"] for m in rel)
     gray = client.post("/api/v1/simulations", json={"material_id": "astm_a48_class_30", "treatment_id": "normalize",
                                                     "target_temperature_c": 900, "hold_time_min": 30}).json()
-    assert all(m["family"] == "gray_cast_iron" for m in gray["related_micrographs"])
+    grel = gray["related_micrographs"]
+    # Primero las fundiciones grises; después, ejemplos de la MATRIZ en otras muestras (nunca otra cosa).
+    fams = [m["family"] for m in grel]
+    assert fams[0] == "gray_cast_iron" and fams == sorted(fams, key=lambda f: f != "gray_cast_iron")
+    assert all(m["family"] == "gray_cast_iron" or "pearlite" in m["constituents"] for m in grel)
+
+
+@pytest.mark.parametrize("m,t", list(itertools.product(
+    ["aisi_1045", "aisi_8620", "astm_a48_class_30"], ["quench", "temper", "anneal", "normalize", "austemper", "martemper"])))
+def test_every_combination_shows_real_micrographs(client, m, t):
+    body = client.post("/api/v1/simulations", json={"material_id": m, "treatment_id": t,
+                                                    "target_temperature_c": 850, "hold_time_min": 30}).json()
+    rel = body["related_micrographs"]
+    assert rel and all(x["license_verified"] and x["page_url"] and x["author"] for x in rel)
 
 
 def test_openapi_exported_matches(client):

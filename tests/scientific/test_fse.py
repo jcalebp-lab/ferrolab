@@ -104,8 +104,13 @@ def test_sci03_all_seed_pairs_only_modeled_estimates(seed_snapshot, m, t):
     """Sin evidencia revisada, las únicas cifras son estimaciones de modelo (D-26), siempre etiquetadas."""
     r = ScientificEngine(seed_snapshot).simulate(req(m=m, t=t, temp=500, hold=30))
     res = r.results
-    assert res.grain_size is None and res.mechanical_properties is None
     assert r.protocol_version is None
+    if m == "astm_a48_class_30":
+        # Solo la referencia de la norma (colada, sin tratar), nunca un cálculo del tratamiento.
+        assert res.grain_size is None and set(res.mechanical_properties) == {"tensile_strength_min"}
+        assert res.mechanical_properties["tensile_strength_min"].evidence_kind == "literature"
+    elif t != "temper":
+        assert res.grain_size is None and res.mechanical_properties is None
     facts = [res.hardness] if res.hardness else []
     for group in (res.phase_fractions, res.microconstituent_fractions):
         facts += list((group or {}).values())
@@ -148,7 +153,11 @@ def test_temper_outside_model_validity_has_no_hardness(seed_snapshot):
 def test_model_estimates_at_recommended_practice(seed_snapshot):
     eng = ScientificEngine(seed_snapshot)
     r = eng.simulate(req(m="aisi_1045", t="quench", temp=845, hold=7.5))
-    assert r.simulation_status == SimulationStatus.PARTIAL_RESULT
+    assert r.simulation_status == SimulationStatus.COMPLETED
+    gs = r.results.grain_size
+    assert gs.unit == "ASTM_G" and 6 <= gs.value <= 10 and gs.uncertainty["austenite_um"] > 0
+    mp = r.results.mechanical_properties
+    assert mp["tensile_strength"].value > mp["yield_strength"].value > 0
     assert r.headline["code"] == "HEADLINE_VALID" and r.result_level == "A"
     micro = r.results.microconstituent_fractions
     assert micro and abs(sum(f.value for f in micro.values()) - 1) < 2e-3

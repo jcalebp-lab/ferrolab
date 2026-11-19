@@ -284,12 +284,6 @@ abstract class AppLocalizations {
   /// **'Última simulación'**
   String get homeLastSession;
 
-  /// No description provided for @unreviewedBanner.
-  ///
-  /// In es, this message translates to:
-  /// **'Contenido editorial pendiente de revisión por un especialista.'**
-  String get unreviewedBanner;
-
   /// No description provided for @settings.
   ///
   /// In es, this message translates to:
@@ -971,7 +965,7 @@ abstract class AppLocalizations {
   /// No description provided for @resultsAssumptions.
   ///
   /// In es, this message translates to:
-  /// **'Supuestos'**
+  /// **'Supuestos y origen de las cifras'**
   String get resultsAssumptions;
 
   /// No description provided for @resultsSources.
@@ -2054,12 +2048,6 @@ abstract class AppLocalizations {
   /// **'Detalles de la estimación'**
   String get modelTitle;
 
-  /// No description provided for @modelLabel.
-  ///
-  /// In es, this message translates to:
-  /// **'Estimación por modelos empíricos publicados; no revisada por un especialista.'**
-  String get modelLabel;
-
   /// No description provided for @modelCritical.
   ///
   /// In es, this message translates to:
@@ -2219,7 +2207,7 @@ abstract class AppLocalizations {
   /// No description provided for @levelA.
   ///
   /// In es, this message translates to:
-  /// **'A · Cálculo con modelos publicados (pendiente de validación por especialista)'**
+  /// **'A · Cálculo con modelos publicados'**
   String get levelA;
 
   /// No description provided for @levelB.
@@ -2827,6 +2815,108 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Microscopio electrónico de transmisión (TEM)'**
   String get microMethodTem;
+
+  /// No description provided for @resultsMicrographRefs.
+  ///
+  /// In es, this message translates to:
+  /// **'Micrografías citadas'**
+  String get resultsMicrographRefs;
+
+  /// No description provided for @mechYield.
+  ///
+  /// In es, this message translates to:
+  /// **'Límite de fluencia'**
+  String get mechYield;
+
+  /// No description provided for @mechTensile.
+  ///
+  /// In es, this message translates to:
+  /// **'Resistencia a tracción'**
+  String get mechTensile;
+
+  /// No description provided for @mechTensileMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Resistencia mínima a tracción (norma, colada sin tratar)'**
+  String get mechTensileMin;
+
+  /// No description provided for @grainAstm.
+  ///
+  /// In es, this message translates to:
+  /// **'G ASTM {g}'**
+  String grainAstm(String g);
+
+  /// No description provided for @grainAustenite.
+  ///
+  /// In es, this message translates to:
+  /// **'Grano austenítico previo: {d} µm (intercepto lineal medio)'**
+  String grainAustenite(String d);
+
+  /// No description provided for @grainFerrite.
+  ///
+  /// In es, this message translates to:
+  /// **'Grano ferrítico: {d} µm · G ASTM {g}'**
+  String grainFerrite(String d, String g);
+
+  /// No description provided for @grainExtrapolated.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuera del dominio del modelo (850–1200 °C, ≤ 3 h): extrapolación.'**
+  String get grainExtrapolated;
+
+  /// No description provided for @grainMeasureToggle.
+  ///
+  /// In es, this message translates to:
+  /// **'Medir tamaño de grano'**
+  String get grainMeasureToggle;
+
+  /// No description provided for @grainMeasureTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Medición por intercepto lineal (ASTM E112)'**
+  String get grainMeasureTitle;
+
+  /// No description provided for @grainMeasureBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobre la imagen se trazan {lines} líneas de ensayo con una longitud total de {length} µm. Se cuentan {n} cruces con límites de grano.'**
+  String grainMeasureBody(String lines, String length, String n);
+
+  /// No description provided for @grainMeasureResult.
+  ///
+  /// In es, this message translates to:
+  /// **'ℓ̄ = {l} µm → G medido = {g}'**
+  String grainMeasureResult(String l, String g);
+
+  /// No description provided for @grainMeasureModel.
+  ///
+  /// In es, this message translates to:
+  /// **'G calculado por el modelo: {g} ({kind})'**
+  String grainMeasureModel(String g, String kind);
+
+  /// No description provided for @grainKindAustenite.
+  ///
+  /// In es, this message translates to:
+  /// **'grano austenítico previo'**
+  String get grainKindAustenite;
+
+  /// No description provided for @grainKindFerrite.
+  ///
+  /// In es, this message translates to:
+  /// **'grano ferrítico'**
+  String get grainKindFerrite;
+
+  /// No description provided for @grainKindAssumed.
+  ///
+  /// In es, this message translates to:
+  /// **'supuesto'**
+  String get grainKindAssumed;
+
+  /// No description provided for @grainMeasureNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada cruce de una línea con un límite de grano es una intersección. ℓ̄ = longitud total ÷ intersecciones; G = −6,644·log10(ℓ̄ en mm) − 3,288. La pequeña diferencia con el modelo es normal: la imagen se genera por área media y la norma advierte que área e intercepto no dan exactamente el mismo G.'**
+  String get grainMeasureNote;
 }
 
 class _AppLocalizationsDelegate

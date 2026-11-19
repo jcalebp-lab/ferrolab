@@ -37,17 +37,64 @@ def is_public(m: Micrograph, snap: DatasetSnapshot | None = None) -> bool:
     return snap is not None and snap.contains_unreviewed_content and m.review_status == ReviewStatus.DRAFT
 
 
-def related(snap: DatasetSnapshot, family: str, constituents: list[str], limit: int = 6) -> list[Micrograph]:
-    """Ejemplos REALES de los constituyentes calculados (otras muestras). Nunca se presentan como la del estudiante."""
-    want = set(constituents)
-    scored = []
-    for m in snap.micrographs:
-        if not is_public(m, snap) or (m.family or "steel") != family:
-            continue
-        overlap = len(want & set(m.constituents))
-        if overlap:
-            scored.append((-overlap, m.imaging_method != "optical", m.id, m))
-    return [x[-1] for x in sorted(scored)[:limit]]
+# Constituyentes que la literatura asocia a cada tratamiento (para mostrar ejemplos aun sin cálculo).
+EXPECTED_STEEL = {
+    "quench": {"martensite": 1.0}, "martemper": {"martensite": 1.0},
+    "temper": {"tempered_martensite": 1.0}, "austemper": {"bainite": 1.0},
+    "anneal": {"proeutectoid_ferrite": 0.5, "pearlite": 0.5}, "normalize": {"proeutectoid_ferrite": 0.5, "pearlite": 0.5},
+}
+GRAY_MATRIX_CONSTITUENT = {"martensite": "martensite", "tempered_martensite": "tempered_martensite",
+                           "ausferrite": "ausferrite", "ferrite_pearlite": "proeutectoid_ferrite", "pearlite": "pearlite"}
+
+
+def related(snap: DatasetSnapshot, family: str, weights: dict[str, float], limit: int = 6,
+            other_families: bool = False) -> list[Micrograph]:
+    """Ejemplos REALES de los constituyentes (otras muestras), ordenados por la fracción que representan.
+
+    Nunca se presentan como la probeta del estudiante. Con `other_families` se aceptan muestras de otra familia
+    (p. ej. matriz martensítica de un acero para una fundición templada) por detrás de las de la misma familia.
+    """
+    pool = [m for m in snap.micrographs if is_public(m, snap)
+            and (other_families or (m.family or "steel") == family)]
+    # Una cola por constituyente (de mayor a menor fracción); dentro de cada cola, misma familia y óptica primero.
+    queues = []
+    for c, _w in sorted(weights.items(), key=lambda kv: (-kv[1], kv[0])):
+        q = sorted((m for m in pool if c in m.constituents),
+                   key=lambda m: ((m.family or "steel") != family, m.imaging_method != "optical", m.id))
+        if q:
+            queues.append(q)
+    out: list[Micrograph] = []
+    seen: set[str] = set()
+    while queues and len(out) < limit:  # turno rotatorio: todos los constituyentes quedan ilustrados
+        for q in list(queues):
+            while q and q[0].id in seen:
+                q.pop(0)
+            if not q:
+                queues.remove(q)
+                continue
+            m = q.pop(0)
+            seen.add(m.id)
+            out.append(m)
+            if len(out) >= limit:
+                break
+    return out
+
+
+def weights_for(illustration: dict, treatment_id: str) -> tuple[str, dict[str, float]]:
+    """Constituyentes a ilustrar: los calculados (fracciones ≥ 3 %) o, sin cálculo, los esperados del tratamiento."""
+    family = illustration.get("family", "steel")
+    if family == "gray_cast_iron":
+        matrix = GRAY_MATRIX_CONSTITUENT.get(illustration.get("matrix") or "", "pearlite")
+        w = {"graphite_flakes": 1.0, matrix: 0.8}
+        if matrix == "proeutectoid_ferrite":
+            w["pearlite"] = 0.6
+        return family, w
+    fr = illustration.get("fractions") or {}
+    w = {("tempered_martensite" if k == "martensite" and illustration.get("tempered") else k): float(v)
+         for k, v in fr.items() if v >= 0.03 and k != "retained_austenite"}
+    for c, v in EXPECTED_STEEL.get(treatment_id, {}).items():  # lo que busca el tratamiento, aunque no se forme
+        w[c] = max(w.get(c, 0.0), 0.35 * v)
+    return family, w
 
 
 def select(snap: DatasetSnapshot, material_id: str, treatment_id: str, ic_id: str | None) -> Micrograph | None:

@@ -44,6 +44,7 @@ class _GeneratedMicroscopeState extends State<GeneratedMicroscope> {
   final _tc = TransformationController();
   double _zoom = 1;
   bool _labels = false;
+  bool _measure = false;
   late _Micro _micro = _Micro.build(widget.spec);
 
   @override
@@ -106,6 +107,7 @@ class _GeneratedMicroscopeState extends State<GeneratedMicroscope> {
                     child: CustomPaint(
                       size: viewport,
                       painter: _MicroPainter(_micro),
+                      foregroundPainter: _measure ? _MeasurePainter(_micro.intercepts) : null,
                       isComplex: true,
                       willChange: false,
                     ),
@@ -163,6 +165,19 @@ class _GeneratedMicroscopeState extends State<GeneratedMicroscope> {
         ),
         if (_labels && _zoom >= 1.05)
           Text(t.microLabelsZoomHint, textAlign: TextAlign.center, style: context.text.bodySmall),
+        if (widget.spec['family'] != 'gray_cast_iron') ...[
+          const Gap(FlSpace.xs),
+          Center(
+            child: FilterChip(
+              key: const Key('grainMeasureToggle'),
+              avatar: const Icon(Icons.straighten, size: 18),
+              label: Text(t.grainMeasureToggle),
+              selected: _measure,
+              onSelected: (v) => setState(() => _measure = v),
+            ),
+          ),
+          if (_measure) ...[const Gap(FlSpace.s), _MeasurePanel(m: _micro)],
+        ],
         const Gap(FlSpace.xs),
         Text(t.microGesture, textAlign: TextAlign.center, style: context.text.bodySmall),
       ]);
@@ -235,7 +250,10 @@ List<Offset> _clip(List<Offset> poly, Offset a, Offset b) {
 }
 
 class _Micro {
-  _Micro(this.cells, this.spec, this.flakes, this.tempered, this.spacing, this.ra);
+  _Micro(this.cells, this.spec, this.flakes, this.tempered, this.spacing, this.ra, this.dGrain);
+  final double dGrain; // lado del grano de área media (µm)
+  _Intercepts? _intercepts;
+  _Intercepts get intercepts => _intercepts ??= _Intercepts.measure(this);
   ui.Picture? picture; // caché del dibujo (ver _MicroPainter.paint)
   double? pictureWidth;
   final List<_Cell> cells;
@@ -250,7 +268,7 @@ class _Micro {
     final g = (spec['astm_grain_size'] as num?)?.toDouble() ?? 7;
     // ASTM E112: granos por mm² a 1× = 2^(G−1)·15.5 → área media del grano.
     final grainArea = 1e6 / (math.pow(2, g - 1) * 15.5);
-    final n = (kFieldUm * kFieldUm / grainArea).round().clamp(12, 400);
+    final n = (kFieldUm * kFieldUm / grainArea).round().clamp(12, 700);
     final dGrain = math.sqrt(grainArea);
     // Sitios casi uniformes (Poisson con distancia mínima) para granos equiaxiales.
     final sites = <Offset>[];
@@ -325,7 +343,119 @@ class _Micro {
     }
     final ra = ((spec['fractions'] as Map?)?['retained_austenite'] as num?)?.toDouble() ?? 0;
     return _Micro(cells, spec, flakes, spec['tempered'] == true || spec['matrix'] == 'tempered_martensite',
-        spec['pearlite_spacing'] == 'coarse' ? 1.6 : 0.9, ra);
+        spec['pearlite_spacing'] == 'coarse' ? 1.6 : 0.9, ra, dGrain);
+  }
+}
+
+/// Medición del tamaño de grano por intercepto lineal (ASTM E112) sobre la imagen GENERADA.
+/// Tres líneas horizontales y tres verticales dentro del campo circular; cada cambio de grano a lo largo de una
+/// línea es una intersección con un límite de grano. ℓ̄ = L / N y G = −6.643856·log10(ℓ̄ mm) − 3.288.
+class _Intercepts {
+  _Intercepts(this.lines, this.points, this.totalUm);
+  final List<(Offset, Offset)> lines;
+  final List<Offset> points;
+  final double totalUm;
+  int get count => points.length;
+  double? get meanUm => count == 0 ? null : totalUm / count;
+  double? get g => meanUm == null ? null : -6.643856 * math.log(meanUm! / 1000) / math.ln10 - 3.288;
+
+  static _Intercepts measure(_Micro m) {
+    const half = kFieldUm * .31, c = kFieldUm / 2;
+    final lines = <(Offset, Offset)>[
+      for (final f in const [-.5, 0.0, .5]) ...[
+        (Offset(c - half, c + f * half), Offset(c + half, c + f * half)),
+        (Offset(c + f * half, c - half), Offset(c + f * half, c + half)),
+      ],
+    ];
+    final sites = [for (final cell in m.cells) cell.site];
+    int nearest(Offset p) {
+      var best = 0;
+      var bd = double.infinity;
+      for (var i = 0; i < sites.length; i++) {
+        final d = (sites[i] - p).distanceSquared;
+        if (d < bd) {
+          bd = d;
+          best = i;
+        }
+      }
+      return best;
+    }
+
+    final pts = <Offset>[];
+    var total = 0.0;
+    final step = m.dGrain / 40;
+    for (final (a, b) in lines) {
+      final len = (b - a).distance;
+      total += len;
+      final n = (len / step).ceil();
+      var prev = nearest(a);
+      var prevP = a;
+      for (var k = 1; k <= n; k++) {
+        final p = Offset.lerp(a, b, k / n)!;
+        final cur = nearest(p);
+        if (cur != prev) pts.add((prevP + p) / 2);
+        prev = cur;
+        prevP = p;
+      }
+    }
+    return _Intercepts(lines, pts, total);
+  }
+}
+
+class _MeasurePainter extends CustomPainter {
+  _MeasurePainter(this.m);
+  final _Intercepts m;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final s = size.width / kFieldUm;
+    final line = Paint()
+      ..color = const Color(0xFF00E5FF)
+      ..strokeWidth = 1.6;
+    for (final (a, b) in m.lines) {
+      canvas.drawLine(a * s, b * s, line);
+    }
+    final dot = Paint()..color = const Color(0xFFFF1744);
+    for (final p in m.points) {
+      canvas.drawCircle(p * s, 2.6, dot);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _MeasurePainter old) => old.m != m;
+}
+
+class _MeasurePanel extends StatelessWidget {
+  const _MeasurePanel({required this.m});
+  final _Micro m;
+  @override
+  Widget build(BuildContext context) {
+    final t = context.t;
+    final i = m.intercepts;
+    final spec = m.spec;
+    final g = (spec['astm_grain_size'] as num?)?.toDouble();
+    final kind = spec['grain_computed'] != true
+        ? t.grainKindAssumed
+        : (spec['grain_kind'] == 'ferrite' ? t.grainKindFerrite : t.grainKindAustenite);
+    return Container(
+      key: const Key('grainMeasurePanel'),
+      padding: const EdgeInsets.all(FlSpace.m),
+      decoration: BoxDecoration(
+        color: context.fl.surface,
+        borderRadius: BorderRadius.circular(FlRadius.input),
+        border: Border.all(color: context.fl.border),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(t.grainMeasureTitle, style: context.text.titleSmall),
+        const Gap(FlSpace.xs),
+        Text(t.grainMeasureBody(i.lines.length.toString(), i.totalUm.round().toString(), i.count.toString())),
+        if (i.meanUm != null)
+          Text(t.grainMeasureResult(i.meanUm!.toStringAsFixed(1), i.g!.toStringAsFixed(1)),
+              key: const Key('grainMeasured'), style: context.text.titleMedium),
+        if (g != null) Text(t.grainMeasureModel(g.toStringAsFixed(1), kind)),
+        const Gap(FlSpace.xs),
+        Text(t.grainMeasureNote, style: context.text.bodySmall),
+      ]),
+    );
   }
 }
 

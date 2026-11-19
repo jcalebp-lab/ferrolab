@@ -264,14 +264,6 @@ class SourceTile extends StatelessWidget {
   }
 }
 
-/// Banner global cuando la publicación activa contiene borradores.
-class UnreviewedBanner extends StatelessWidget {
-  const UnreviewedBanner({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      Notice(context.t.unreviewedBanner, kind: 'limitation', icon: Icons.rate_review_outlined);
-}
-
 String fmtNum(double v) => v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(1);
 
 String fmtDuration(double seconds) {

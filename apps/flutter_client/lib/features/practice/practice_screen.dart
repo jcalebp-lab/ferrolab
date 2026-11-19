@@ -33,8 +33,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
           return PageBody(maxWidth: 720, children: [
             Text(t.practiceIntro, style: context.text.bodySmall),
             const Gap(FlSpace.m),
-            const UnreviewedBanner(),
-            const Gap(FlSpace.l),
+            const Gap(FlSpace.s),
             if (done) ...[
               Text(t.practiceScore(_correct, list.length), style: context.text.headlineSmall),
               const Gap(FlSpace.l),

@@ -55,7 +55,7 @@ def test_ai_valid_reply_accepted(settings_factory, monkeypatch):
 
 
 @pytest.mark.parametrize("bad", [
-    {"summary": "La dureza es 58 HRC.", "explanations": [], "limitations": []},           # AI-01/03 cifra inventada
+    {"summary": "La dureza es 73 HRC.", "explanations": [], "limitations": []},           # AI-01/03 cifra inventada
     {"summary": "ok", "explanations": [{"claim": "x", "source_ids": ["fake_src"]}], "limitations": []},  # AI-08
     {"summary": "Hay 85 % de martensita.", "explanations": [], "limitations": []},          # AI-02
     {"nope": True},                                                                        # forma inválida
