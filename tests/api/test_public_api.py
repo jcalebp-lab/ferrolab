@@ -156,8 +156,11 @@ def test_micrograph_library_only_verified_licenses(client):
         assert m["license_verified"] is True and m["license_code"] and m["license_url"] and m["author"]
         assert m["page_url"].startswith("https://commons.wikimedia.org/") and m["specimen"]
         assert m["constituents"] and m["match_quality"] in ("illustrative", "comparable", "exact")
+    # Copia servida por FERROLAB cuando existe; si no, miniatura oficial de Commons (960 px).
+    assert all(m["display_url"] or m["thumbnail_url"].startswith(("https://upload.wikimedia.org/",
+                                                                     "https://thumb.wikimedia.org/")) for m in items)
     served = [m for m in items if m["display_url"]]
-    assert len(served) == len(items), "cada micrografía debe tener su copia servida por FERROLAB"
+    assert served
     r = client.get(served[0]["display_url"])
     assert r.status_code == 200 and r.headers["content-type"] == "image/jpeg" and len(r.content) < 600_000
 
