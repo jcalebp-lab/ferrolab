@@ -1050,8 +1050,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diagYourPath => 'Your practice (center)';
 
   @override
-  String get diagAxes =>
-      'x axis: time from start of cooling (s, log scale). y axis: temperature (°C). Li et al. (1998) model, nominal composition, ASTM G 7.';
+  String diagAxes(String g) {
+    return 'x axis: time from start of cooling (s, log scale). y axis: temperature (°C). Li et al. (1998) model, nominal composition, ASTM G $g (computed).';
+  }
 
   @override
   String get diagTable => 'View diagram data';
@@ -1565,4 +1566,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get factOtherSpecimen => 'Published value from another specimen';
+
+  @override
+  String microRelatedCount(String n) {
+    return '$n real micrographs of the constituents in your result, with author and license: open them in the microscope.';
+  }
 }

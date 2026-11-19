@@ -282,6 +282,8 @@ def simulate_temper(material_id: str, prior_steps: list[Step], prior_info: dict,
         return p
     f = dict(prior.fractions)
     f["tempered_martensite"] = f.pop("martensite", 0.0)
+    if temper_c >= TEMPER_CEMENTITE_C:  # la austenita retenida se descompone en el revenido alto (2.ª etapa)
+        f["tempered_martensite"] += f.pop("retained_austenite", 0.0)
     p.fractions = f
     if temper_c >= TEMPER_CEMENTITE_C:
         # Por encima de la 3.ª etapa del revenido el carbono de la martensita precipita como cementita y la austenita
@@ -307,6 +309,18 @@ def simulate_temper(material_id: str, prior_steps: list[Step], prior_info: dict,
     return p
 
 
+def simulate_quench_temper(material_id: str, quench_steps: list[Step], info: dict, temper_steps: list[Step],
+                           temper_c: float, hold_s: float, *, model: bool = True) -> Practice:
+    """Bonificado: temple + revenido alto en UNA secuencia. El cálculo es el de `simulate_temper` (Kang & Lee sobre el
+    temple calculado); la curva térmica que ve el estudiante es la del ciclo completo."""
+    p = simulate_temper(material_id, quench_steps, info, temper_steps, temper_c, hold_s, model=model)
+    full = simulate_steps(material_id, "quench_temper", quench_steps + temper_steps, model=False, diagrams=False)
+    p.runner_center, p.runner_surface, p.segments = full.runner_center, full.runner_surface, full.segments
+    p.cooling_start_index = full.cooling_start_index
+    p.medium_code = full.medium_code
+    return p
+
+
 def _critical_dict(c: dict[str, float]) -> dict[str, float]:
     if not c:
         return {}
@@ -322,6 +336,8 @@ def _diagrams(c, t_max, path_c, t_cool0, g=None) -> list[dict]:
     user = [[round(max(t - t_cool0, 0.01), 3), round(temp, 1)] for t, temp in thin(path_c, 300)]
     ttt = kin.ttt_diagram(c, grain)
     ttt["user_path"] = user
+    ttt["astm_grain_size"] = round(grain, 1)
     cct = kin.cct_diagram(c, grain, max(t_max, kin.li_temps(c).ae3 + 10))
     cct["user_path"] = user
+    cct["astm_grain_size"] = round(grain, 1)
     return [ttt, cct]

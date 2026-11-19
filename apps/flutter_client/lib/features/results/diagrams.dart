@@ -74,7 +74,7 @@ class _TransformationDiagramsState extends State<TransformationDiagrams> {
         Text(t.diagPoint(_fmtTime(d.userPath[_hover!].$1), fmtNum(d.userPath[_hover!].$2.roundToDouble())),
             style: context.text.bodyMedium),
       const Gap(FlSpace.xs),
-      Text(t.diagAxes, style: context.text.bodySmall),
+      Text(t.diagAxes((d.grain ?? 7).toStringAsFixed(1)), style: context.text.bodySmall),
       ExpansionTile(
         tilePadding: EdgeInsets.zero,
         title: Text(t.diagTable),

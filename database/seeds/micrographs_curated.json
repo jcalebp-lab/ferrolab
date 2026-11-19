@@ -553,7 +553,7 @@
   },
   {
    "id": "mg_gi_lamellar_graphite",
-   "material_id": "astm_a48_class_30",
+   "material_id": "en_gjl_250",
    "treatment_id": null,
    "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Gusseisen_mit_Lamellengraphit.jpg",
    "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Gusseisen_mit_Lamellengraphit.jpg/960px-Gusseisen_mit_Lamellengraphit.jpg",
@@ -580,7 +580,7 @@
   },
   {
    "id": "mg_gi_grey",
-   "material_id": "astm_a48_class_30",
+   "material_id": "en_gjl_250",
    "treatment_id": null,
    "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Cast_iron_grey.jpg",
    "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Cast_iron_grey.jpg/960px-Cast_iron_grey.jpg",
@@ -608,7 +608,7 @@
   },
   {
    "id": "mg_gi_pearlitic",
-   "material_id": "astm_a48_class_30",
+   "material_id": "en_gjl_250",
    "treatment_id": null,
    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Fundici%C3%B3n_perlitica.JPG",
    "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Fundici%C3%B3n_perlitica.JPG/500px-Fundici%C3%B3n_perlitica.JPG",
@@ -637,7 +637,7 @@
   },
   {
    "id": "mg_di_nodular",
-   "material_id": "astm_a48_class_30",
+   "material_id": "en_gjl_250",
    "treatment_id": null,
    "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Gusseisen_mit_Kugelgraphit.jpg",
    "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Gusseisen_mit_Kugelgraphit.jpg/960px-Gusseisen_mit_Kugelgraphit.jpg",
@@ -664,7 +664,7 @@
   },
   {
    "id": "mg_di_adi",
-   "material_id": "astm_a48_class_30",
+   "material_id": "en_gjl_250",
    "treatment_id": "austemper",
    "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/19/Austempered_Ductile_Iron_%28ADI%29.jpg",
    "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Austempered_Ductile_Iron_%28ADI%29.jpg/960px-Austempered_Ductile_Iron_%28ADI%29.jpg",

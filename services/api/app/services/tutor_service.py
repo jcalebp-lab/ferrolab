@@ -25,7 +25,7 @@ log = logging.getLogger("ferrolab.tutor")
 INTENTS: list[tuple[tuple[str, ...], str]] = [
     (("ttt", "cct", "isoterm", "isotherm", "continuo", "continuous"), "faq-ttt-cct"),
     (("martemper", "austemper", "bainita", "bainite", "bano", "bath"), "faq-martemper-austemper"),
-    (("fundicion", "cast iron", "a48", "grafito", "graphite"), "faq-fundicion-acero"),
+    (("fundicion", "cast iron", "a48", "gg25", "gjl", "grafito", "graphite"), "faq-fundicion-acero"),
     (("dureza", "hardness", "hrc", "hv", "hbw", "valor", "value", "numero", "number"), "faq-sin-dureza"),
     (("velocidad", "rapid", "rate", "fast", "lento", "slow", "enfria", "cool"), "faq-velocidad-enfriamiento"),
 ]

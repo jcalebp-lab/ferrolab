@@ -40,6 +40,8 @@ SOURCES = [
     src("src_angus", "book", "Cast Iron: Physical and Engineering Properties", authors="H. T. Angus"),
     src("src_astm_a48", "standard", "ASTM A48/A48M — Standard Specification for Gray Iron Castings",
         url="https://store.astm.org/standards/a48"),
+    src("src_en_1561", "standard", "EN 1561 — Founding: Grey cast irons (EN-GJL-250, antes GG-25 según DIN 1691)",
+        url="https://castingquality.com/wp-content/uploads/Casting-Material-gray-iron-in-EN-1561.pdf"),
     src("src_astm_a255", "standard", "ASTM A255 — Determining Hardenability of Steel (Jominy)",
         url="https://store.astm.org/standards/a255"),
     src("src_astm_e112", "standard", "ASTM E112 — Determining Average Grain Size", url="https://store.astm.org/standards/e112"),
@@ -139,37 +141,43 @@ MATERIALS = [
         "review_status": "draft",
     },
     {
-        "id": "astm_a48_class_30",
+        "id": "en_gjl_250",
         "family": "gray_cast_iron",
-        "display_name": "ASTM A48 Clase 30",
+        "display_name": "GG25 (EN-GJL-250)",
         "standard_note_es": (
-            "ASTM A48 clasifica fundiciones grises por un requisito de resistencia a la tracción; el número de "
-            "clase se refiere a ese requisito (consulta el texto oficial de la norma)."
+            "EN 1561 designa la fundición gris por su resistencia mínima a la tracción: EN-GJL-250 (antes GG-25, "
+            "DIN 1691; material 5.1301) exige 250 MPa en barra de ensayo de 30 mm. Equivale aproximadamente a ASTM "
+            "A48 clase 35 y a JIS FC250."
         ),
         "standard_note_en": (
-            "ASTM A48 classifies gray irons by a tensile strength requirement; the class number refers to that "
-            "requirement (see the official text of the standard)."
+            "EN 1561 designates gray iron by its minimum tensile strength: EN-GJL-250 (formerly GG-25, DIN 1691; "
+            "material 5.1301) requires 250 MPa on a 30 mm test bar. Roughly equivalent to ASTM A48 class 35 and JIS "
+            "FC250."
         ),
         "description_es": (
-            "Fundición gris: el carbono aparece en forma de láminas de grafito dentro de una matriz metálica. No "
-            "es un acero. Se usa en bancadas, carcasas y discos de freno por su colabilidad y amortiguación."
+            "Fundición gris de grafito laminar y matriz principalmente perlítica (≈ 160–240 HB en bruto de colada "
+            "según el espesor). No es un acero. Se usa en bancadas, carcasas, bloques de motor y discos de freno por "
+            "su colabilidad, maquinabilidad y amortiguación."
         ),
         "description_en": (
-            "Gray cast iron: carbon is present as graphite flakes within a metallic matrix. It is not a steel. "
-            "Used for machine beds, housings and brake discs for its castability and damping."
+            "Flake-graphite gray iron with a mainly pearlitic matrix (≈ 160–240 HB as cast, depending on section). "
+            "It is not a steel. Used for machine beds, housings, engine blocks and brake discs for its castability, "
+            "machinability and damping."
         ),
         "limitations_es": [
-            "La clase de resistencia no fija una composición química ni una microestructura únicas.",
+            "La norma EN 1561 no fija la composición química: la deja al fundidor y los catálogos de proveedores dan rangos distintos (C entre 2,8 y 3,5 %).",
+            "La resistencia baja con el espesor de la pieza (≈ 225 MPa a 20–40 mm y 195 MPa a 40–80 mm).",
             "La matriz y la morfología del grafito dependen del proceso de fundición y del espesor de la pieza.",
             "No se usan curvas ni modelos del acero para esta fundición.",
         ],
         "limitations_en": [
-            "The strength class does not define a unique chemical composition or microstructure.",
+            "EN 1561 does not fix the chemical composition: it is left to the foundry and supplier catalogs give different ranges (C between 2.8 and 3.5%).",
+            "Strength falls with section thickness (≈ 225 MPa at 20–40 mm and 195 MPa at 40–80 mm).",
             "The matrix and graphite morphology depend on the casting process and section thickness.",
             "Steel curves and models are not used for this cast iron.",
         ],
         "compositions": [],
-        "suggested_source_ids": ["src_astm_a48", "src_angus", "src_asm_15"],
+        "suggested_source_ids": ["src_en_1561", "src_astm_a48", "src_angus", "src_asm_15"],
         "review_status": "draft",
     },
 ]
@@ -198,8 +206,8 @@ INITIAL_CONDITIONS = [
         "review_status": "draft",
     },
     {
-        "id": "ic_astm_a48_as_cast_unspecified",
-        "material_id": "astm_a48_class_30",
+        "id": "ic_gjl250_as_cast_unspecified",
+        "material_id": "en_gjl_250",
         "name_es": "Bruto de colada, matriz no documentada",
         "name_en": "As-cast, matrix undocumented",
         "description_es": (
@@ -235,6 +243,10 @@ OUTLINES = {
     "austemper": [tpl("heat", "heat_to_austenitizing", "target"), tpl("hold", "hold_austenitizing", "target", True),
                   tpl("transfer", "transfer_to_bath", "target"), tpl("cool", "cool_to_bath", "bath"),
                   tpl("isothermal_hold", "isothermal_bath_hold", "bath"), tpl("cool", "final_cool", "ambient")],
+    "quench_temper": [tpl("heat", "heat_to_austenitizing", "target"), tpl("hold", "hold_austenitizing", "target"),
+                      tpl("transfer", "transfer_to_medium", "target"), tpl("cool", "quench_cool", "ambient"),
+                      tpl("heat", "heat_to_temper", "target"), tpl("hold", "hold_temper", "target", True),
+                      tpl("cool", "controlled_cool", "ambient")],
     "martemper": [tpl("heat", "heat_to_austenitizing", "target"), tpl("hold", "hold_austenitizing", "target", True),
                   tpl("transfer", "transfer_to_bath", "target"), tpl("cool", "cool_to_bath", "bath"),
                   tpl("isothermal_hold", "equalization_hold", "bath"), tpl("cool", "final_cool", "ambient")],
@@ -343,7 +355,28 @@ TREATMENTS = [
         ),
         "suggested_source_ids": ["src_asm_4a", "src_totten"],
     },
+    {
+        "id": "quench_temper", "name_es": "Bonificado", "name_en": "Quench and temper",
+        "purpose_es": "Temple seguido de un revenido a alta temperatura (≈ 550–650 °C en aceros): busca la mejor "
+                      "combinación de resistencia y tenacidad.",
+        "purpose_en": "Hardening followed by a high-temperature temper (≈ 550–650 °C in steels): it seeks the best "
+                      "combination of strength and toughness.",
+        "prerequisites_es": "Templabilidad suficiente para formar martensita en la sección y un revenido por debajo de Ac1.",
+        "prerequisites_en": "Enough hardenability to form martensite across the section and a temper below Ac1.",
+        "qualitative_outcome_es": (
+            "Martensita revenida a alta temperatura (sorbita): menos dureza que el temple, mucha más tenacidad y "
+            "resistencia a la fatiga. Es el tratamiento habitual de ejes, bielas y engranajes no cementados."
+        ),
+        "qualitative_outcome_en": (
+            "Martensite tempered at high temperature (sorbite): lower hardness than as-quenched, much higher "
+            "toughness and fatigue strength. It is the usual treatment for shafts, connecting rods and "
+            "non-carburized gears."
+        ),
+        "suggested_source_ids": ["src_krauss", "src_asm_4a"],
+    },
 ]
+_ORDER = ["quench", "temper", "quench_temper", "anneal", "normalize", "austemper", "martemper"]
+TREATMENTS.sort(key=lambda t: _ORDER.index(t["id"]))
 for t in TREATMENTS:
     t["stage_outline"] = OUTLINES[t["id"]]
     t["review_status"] = "draft"
@@ -355,6 +388,7 @@ MEDIUM = {
     "normalize": ("Aire en calma (definición del proceso)", "Still air (process definition)"),
     "austemper": ("Baño isotérmico: tipo y temperatura pendientes", "Isothermal bath: type and temperature pending"),
     "martemper": ("Baño cercano a Ms: tipo y temperatura pendientes", "Bath near Ms: type and temperature pending"),
+    "quench_temper": ("Medio de temple y revenido según el protocolo", "Quench and temper media per protocol"),
 }
 
 
@@ -514,7 +548,7 @@ PRACTICE = [
       ["That it is a steel", "That it has a carburized surface case", "That it contains iron"], 1,
       "La cementación es un proceso aparte; sin él no hay capa de alto carbono.",
       "Carburizing is a separate process; without it there is no high-carbon case.", None),
-    q("pq_a48", "ASTM A48 Clase 30 define…", "ASTM A48 Class 30 defines…",
+    q("pq_gjl250", "La designación EN-GJL-250 (GG25) define…", "The EN-GJL-250 (GG25) designation defines…",
       ["Una composición química única", "Una clase de fundición gris por requisito de resistencia", "Un acero al carbono"],
       ["A unique chemical composition", "A gray iron class by strength requirement", "A carbon steel"], 1,
       "La clase se refiere a un requisito de resistencia; la composición y la matriz pueden variar.",

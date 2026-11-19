@@ -322,7 +322,7 @@
   "diagTttNote": "TTT: time to start (1%) and finish (99%) each transformation at constant temperature. Your curve shows the actual cooling of the specimen center.",
   "diagCctNote": "CCT: start of each transformation under continuous cooling at constant rates. Where your curve crosses a region, that constituent forms.",
   "diagYourPath": "Your practice (center)",
-  "diagAxes": "x axis: time from start of cooling (s, log scale). y axis: temperature (°C). Li et al. (1998) model, nominal composition, ASTM G 7.",
+  "diagAxes": "x axis: time from start of cooling (s, log scale). y axis: temperature (°C). Li et al. (1998) model, nominal composition, ASTM G {g} (computed).",
   "diagTable": "View diagram data",
   "modelTitle": "Estimate details",
   "modelCritical": "Critical temperatures (computed)",
@@ -599,5 +599,6 @@
   "grainKindAssumed": "assumed",
   "grainMeasureNote": "Each crossing of a line with a grain boundary is an intersection. ℓ̄ = total length ÷ intersections; G = −6.644·log10(ℓ̄ in mm) − 3.288. A small difference from the model is normal: the image is generated from the mean area and the standard notes that area and intercept do not give exactly the same G.",
   "sourceModel": "Reference for the model used in the computation",
-  "factOtherSpecimen": "Published value from another specimen"
+  "factOtherSpecimen": "Published value from another specimen",
+  "microRelatedCount": "{n} real micrographs of the constituents in your result, with author and license: open them in the microscope."
 }

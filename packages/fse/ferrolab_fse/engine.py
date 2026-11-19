@@ -248,7 +248,8 @@ class ScientificEngine:
     def _model_outside(resolved: PR.Resolved, treatment_id: TreatmentId, is_steel: bool) -> bool:
         """¿Algún parámetro fuera de rango invalida el modelo? En aceros, el sostenimiento de austenización no
         cambia la cinética (se supone austenización completa): solo avisa. En el revenido sí cuenta (Kang & Lee)."""
-        return any(p.outside and not (p.key == "hold_time" and is_steel and treatment_id != TreatmentId.TEMPER)
+        return any(p.outside and not (p.key == "hold_time" and is_steel
+                                      and treatment_id not in (TreatmentId.TEMPER, TreatmentId.QUENCH_TEMPER))
                    for p in resolved.params.values())
 
     @staticmethod
@@ -468,6 +469,21 @@ class ScientificEngine:
         raw = json.dumps(canonical, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(raw.encode()).hexdigest()
 
+    def _quench_temper(self, req: SimulationRequest, k: _Checked, model_ok: bool):
+        """Bonificado: el temple del propio protocolo (cifras fijas con fuente) seguido del revenido del estudiante."""
+        steps = k.resolved.steps
+        q = next(i for i, s in enumerate(steps) if s.kind == "quench")
+        i = next(j for j in range(q + 1, len(steps)) if steps[j].kind == "heat")
+        aust = next((s for s in steps[:q] if s.kind == "heat"), None)
+        soak = next((s for s in steps[:q] if s.kind == "hold"), None)
+        hp = k.resolved.params.get("hold_time")
+        info = {"source": "protocol", "protocol_id": k.protocol.id,
+                "quench_temperature_c": aust.temperature_c if aust else None,
+                "quench_hold_min": None if soak is None or soak.duration_s is None else soak.duration_s / 60}
+        return metallurgy_practice.simulate_quench_temper(
+            k.material.id, steps[:i], info, steps[i:], req.target_temperature_c, (hp.value or 0) * 60 if hp else 0.0,
+            model=model_ok)
+
     def _prior(self, req: SimulationRequest, k: _Checked):
         """Estado templado de partida del revenido: protocolo de referencia o una práctica del historial."""
         snap = self.snapshot
@@ -526,6 +542,8 @@ class ScientificEngine:
                         practice = metallurgy_practice.simulate_temper(
                             material.id, prior_steps, prior_info, k.resolved.steps, req.target_temperature_c,
                             (hp.value or 0) * 60 if hp else 0.0, model=model_ok)
+                elif treatment.id == TreatmentId.QUENCH_TEMPER:
+                    practice = self._quench_temper(req, k, model_ok)
                 else:
                     practice = metallurgy_practice.simulate_steps(material.id, treatment.id, k.resolved.steps,
                                                                   model=model_ok, diagrams=is_steel)
@@ -560,7 +578,7 @@ class ScientificEngine:
             if material.family == MaterialFamily.GRAY_CAST_IRON and "mechanical_properties" not in facts:
                 # Referencia de la norma para la clase (colada, sin tratar): no cuenta como resultado del tratamiento.
                 facts["mechanical_properties"] = ME.gray_iron_mechanical(self.snapshot.dataset_version)
-                model_sources.append("src_astm_a48_class")
+                model_sources.append("src_en1561_gjl250")
             if material.family == MaterialFamily.GRAY_CAST_IRON and "hardness" not in facts \
                     and (hl := ME.gray_iron_hardness(treatment.id.value, self.snapshot.dataset_version)) is not None:
                 facts["hardness"] = hl
@@ -659,7 +677,7 @@ class ScientificEngine:
         if any(k in mech for k in ("yield_strength", "tensile_strength")):
             codes.append("STRENGTH_FROM_HARDNESS")
         if "tensile_strength_min" in mech:
-            codes.append("A48_CLASS_REFERENCE")
+            codes.append("GJL250_CLASS_REFERENCE")
         hd = facts.get("hardness")
         if hd is not None and hd.method == "literature_reference_other_specimen":
             codes.append("GRAY_HARDNESS_LITERATURE")

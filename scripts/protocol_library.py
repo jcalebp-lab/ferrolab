@@ -73,6 +73,11 @@ SOURCES = [
          url="https://www.sciencedirect.com/science/article/pii/S2238785422017331",
          notes="J. Mater. Res. Technol. Acceso abierto, pero el texto no se pudo abrir desde el entorno; "
                "condiciones aportadas por el propietario."),
+    _src("src_saarstahl_c45", "web", "Material specification sheet Saarstahl — C45 (equivalente europeo del 1045)",
+         verified=False, authors="Saarstahl AG",
+         url="https://en.saarstahl.com/app/uploads/2024/03/20160401102929-0503_C45.pdf",
+         notes="Leído como extracto de un buscador: temple 820–860 °C agua/aceite y revenido 550–660 °C (bonificado). "
+               "Solo se usa para justificar el límite inferior del revenido de bonificado."),
     _src("src_bodycote_austempering", "web", "Austempering — Bodycote", verified=False, authors="Bodycote",
          url="https://www.bodycote.com/services/heat-treatment/hardening-and-tempering/austempering/",
          notes="Leído solo como extracto de un buscador; la página bloquea la descarga automática."),
@@ -87,6 +92,10 @@ def _ev(id, source, locator, es, en):
 
 
 EVIDENCE = [
+    # bonificado (temple + revenido alto)
+    _ev("ev_sa_c45_qt", "src_saarstahl_c45", "Heat treatment: hardening / tempering (extracto)",
+        "C45: temple 820–860 °C en agua o aceite; revenido de bonificado 550–660 °C.",
+        "C45: hardening 820–860 °C in water or oil; quench-and-temper tempering 550–660 °C."),
     # voestalpine 1045
     _ev("ev_vo_1045_normalize", "src_voestalpine_1045", "Heat Treatment: Normalize",
         "Normalizar a 850 °C, enfriar al aire.", "Normalize at 850 °C, air cool."),
@@ -352,6 +361,35 @@ def temper_soak(d, ev, rule):
                          "Martensite tempers: carbides precipitate, hardness drops and toughness rises."))
 
 
+def aust_heat_fixed(t, ev, purpose=None):
+    """Austenización con cifra fija del protocolo (el estudiante edita el revenido, no el temple)."""
+    st = heat(t=t, ev=ev, purpose=purpose)
+    st["end_temperature_mode"] = "value"
+    st["end_temperature_c"] = t[2]
+    return st
+
+
+def aust_soak_fixed(d, ev, rule, purpose=None, *, t, t_ev):
+    """Sostenimiento de austenización con cifras fijas: a la temperatura de la etapa anterior (misma evidencia)."""
+    st = soak(d, ev, rule, purpose=purpose)
+    st["duration_mode"] = "value" if d and d[2] is not None else "unpublished"
+    st["duration_s"] = d[2] if d else None
+    st["end_temperature_mode"] = "value"
+    st["end_temperature_c"] = t
+    st["end_temperature_evidence_id"] = t_ev
+    return st
+
+
+QT_RULE = ("Bonificado = temple + revenido ALTO. El límite inferior de 550 °C es el del bonificado del C45 (Saarstahl, "
+           "equivalente europeo del 1045); el superior es el máximo publicado para este material.",
+           "Quench and temper (bonificado) = hardening + HIGH tempering. The 550 °C lower limit is that of C45 quench and "
+           "temper (Saarstahl, European equivalent of 1045); the upper one is the maximum published for this material.")
+QT_EXPECTED = ("Martensita revenida (sorbita): menos dureza que el templado y mucha más tenacidad; la combinación de "
+               "resistencia y tenacidad propia de ejes y piezas de maquinaria.",
+               "Tempered martensite (sorbite): less hardness than as-quenched and much higher toughness; the strength-"
+               "toughness combination typical of shafts and machine parts.")
+
+
 def _ordered(stages):
     return [dict(s, ordinal=i) for i, s in enumerate(stages, start=1)]
 
@@ -421,10 +459,10 @@ GRAY_NO_MODEL = ("La fundición gris no tiene modelo cinético validado en FERRO
                  "matriz de forma cualitativa y la curva térmica es ilustrativa.",
                  "Gray iron has no validated kinetic model in FERROLAB: matrix transformation is described qualitatively and "
                  "the thermal curve is illustrative.")
-GRAY_COMP = ("ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de "
-             "aplicar el protocolo.",
-             "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the "
-             "protocol.")
+GRAY_COMP = ("La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes "
+             "de aplicar el protocolo.",
+             "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying "
+             "the protocol.")
 GRAY_TIME_PENDING = ("Tiempo de austenización: la fuente lo hace depender del tamaño y la composición, sin cifra.",
                      "Austenitizing time: the source makes it depend on size and composition, without a number.")
 
@@ -766,8 +804,70 @@ PROTOCOLS = [
           missing=[("Temperatura de austenización del caso citado.", "Austenitizing temperature of the cited case.")],
           restrictions=[NO_CASE, ("205 °C está por debajo del Ms del núcleo: el núcleo se templa durante el baño.",
                                   "205 °C is below the core Ms: the core hardens during the bath.")]),
-    # ===================================================================== ASTM A48 clase 30
-    proto("prot_a48_quench_tm", "astm_a48_class_30", "quench", "oil_tm", ("Temple en aceite (Total Materia / Compraco)",
+    # ===================================================================== bonificado (temple + revenido alto)
+    proto("prot_1045_qt_azom", "aisi_1045", "quench_temper", "azom_qt",
+          ("Temple 845 °C en agua + revenido 550–650 °C (AZoM)",
+           "845 °C water quench + 550–650 °C temper (AZoM)"),
+          ("Máxima tenacidad con resistencia alta en una sola secuencia.", "Highest toughness with high strength in one sequence."),
+          [aust_heat_fixed((820, 850, 845), "ev_az_1045_harden"),
+           aust_soak_fixed(*AZ_HARDEN_SOAK, t=845, t_ev="ev_az_1045_harden"), transfer(),
+           quench("water", "ev_az_1045_harden"),
+           dict(temper_heat((550, 650, 600), "ev_az_1045_temper"), rule_es=QT_RULE[0], rule_en=QT_RULE[1]),
+           temper_soak((30 * MIN, None, 30 * MIN), "ev_az_1045_temper_soak",
+                       ("AZoM: 1 h por cada 25 mm. " + PROBE_NOTE_ES + " → 30 min como mínimo.",
+                        "AZoM: 1 h per 25 mm. " + PROBE_NOTE_EN + " → at least 30 min.")),
+           air_cool()],
+          sources=["src_azom_1045", "src_saarstahl_c45", "src_kang_lee_2014"], status="source_verified", reference=True,
+          goal="toughness", medium=("Agua (temple) y aire (revenido)", "Water (quench) and air (temper)"),
+          default_ic="ic_aisi_1045_unspecified", expected=QT_EXPECTED,
+          restrictions=[("El revenido debe quedar por debajo de Ac1 (≈ 725 °C).", "Tempering must stay below Ac1 (≈ 725 °C).")],
+          model=True),
+    proto("prot_8620_qt_vanguard", "aisi_8620", "quench_temper", "vanguard_qt",
+          ("Temple 845 °C en aceite + revenido 550–650 °C (Vanguard)",
+           "845 °C oil quench + 550–650 °C temper (Vanguard)"),
+          ("Núcleo tenaz y resistente sin cementar.", "Tough and strong core without carburizing."),
+          [aust_heat_fixed((815, 855, 845), "ev_vg_8620_harden"),
+           aust_soak_fixed(*AZ_HARDEN_SOAK_8620, t=845, t_ev="ev_vg_8620_harden"), transfer(),
+           quench("oil", "ev_vg_8620_harden"),
+           dict(temper_heat((550, 650, 600), "ev_vg_8620_harden"), rule_es=QT_RULE[0], rule_en=QT_RULE[1]),
+           temper_soak((30 * MIN, 60 * MIN, 30 * MIN), "ev_vg_8620_draw",
+                       ("Vanguard: al menos 1–2 h por pulgada. " + PROBE_NOTE_ES + " → 30–60 min.",
+                        "Vanguard: at least 1–2 h per inch. " + PROBE_NOTE_EN + " → 30–60 min.")),
+           air_cool()],
+          sources=["src_vanguard_8620", "src_saarstahl_c45", "src_kang_lee_2014"], status="source_verified", reference=True,
+          goal="toughness", medium=("Aceite (temple) y aire (revenido)", "Oil (quench) and air (temper)"),
+          default_ic="ic_aisi_8620_not_carburized", expected=QT_EXPECTED,
+          restrictions=[NO_CASE, ("El revenido debe quedar por debajo de Ac1.", "Tempering must stay below Ac1.")], model=True),
+    proto("prot_gjl250_qt_tm", "en_gjl_250", "quench_temper", "tm_qt",
+          ("Temple en aceite 870 °C + revenido ≤ 550 °C (Total Materia / Compraco)",
+           "870 °C oil quench + temper ≤ 550 °C (Total Materia / Compraco)"),
+          ("Matriz resistente y tenaz con grafito laminar.", "Strong and tough matrix with flake graphite."),
+          [preheat(650.0, "ev_tm_gray_harden", ("Calentamiento lento hasta ~650 °C para evitar fisuras.",
+                                                "Slow heating to ~650 °C to avoid cracking.")),
+           aust_heat_fixed((850, 900, 870), "ev_cp_gray_quench",
+                           purpose=("La matriz se austeniza; el grafito no cambia de forma.",
+                                    "The matrix austenitizes; graphite keeps its shape.")),
+           aust_soak_fixed(None, None, None, purpose=("El carbono del grafito se disuelve en la austenita.",
+                                                     "Carbon from graphite dissolves into austenite."),
+                           t=870, t_ev="ev_cp_gray_quench"),
+           transfer(), quench("oil", "ev_cp_gray_quench"),
+           temper_heat((None, 550, None), "ev_cp_gray_temper"),
+           temper_soak((30 * MIN, None, 30 * MIN), "ev_tm_gray_temper",
+                       ("Total Materia: ~1 h por pulgada. " + PROBE_NOTE_ES + " → 30 min.",
+                        "Total Materia: ~1 h per inch. " + PROBE_NOTE_EN + " → 30 min.")),
+           air_cool()],
+          sources=["src_totalmateria_gray_2", "src_compraco_gray"], status="source_verified", reference=True,
+          goal="toughness", medium=("Aceite (temple) y aire (revenido)", "Oil (quench) and air (temper)"),
+          default_ic="ic_gjl250_as_cast_unspecified",
+          expected=("Martensita revenida en la matriz con grafito laminar sin cambios: más tenacidad que el templado.",
+                    "Tempered martensite matrix with unchanged flake graphite: tougher than as-quenched."),
+          restrictions=[GRAY_COMP, ("Revenir por debajo de 550 °C para evitar la grafitización (Compraco).",
+                                    "Temper below 550 °C to avoid graphitization (Compraco).")],
+          missing=[GRAY_TIME_PENDING, ("Temperatura mínima del revenido: las fuentes solo dan el máximo.",
+                                       "Minimum tempering temperature: sources only give the maximum.")],
+          assumptions=[GRAY_NO_MODEL]),
+    # ===================================================================== GG25 (EN-GJL-250)
+    proto("prot_gjl250_quench_tm", "en_gjl_250", "quench", "oil_tm", ("Temple en aceite (Total Materia / Compraco)",
                                                                           "Oil hardening (Total Materia / Compraco)"),
           ("Endurecer la matriz para mejorar la resistencia al desgaste.", "Harden the matrix to improve wear resistance."),
           [preheat(650.0, "ev_tm_gray_harden", ("Calentamiento lento hasta ~650 °C para evitar fisuras.",
@@ -777,13 +877,13 @@ PROTOCOLS = [
            soak(purpose=("El carbono del grafito se disuelve en la austenita.", "Carbon from graphite dissolves into austenite.")),
            transfer(), quench("oil", "ev_cp_gray_quench")],
           sources=["src_totalmateria_gray_2", "src_compraco_gray"], status="source_verified", reference=True,
-          medium=("Aceite", "Oil"), default_ic="ic_astm_a48_as_cast_unspecified",
+          medium=("Aceite", "Oil"), default_ic="ic_gjl250_as_cast_unspecified",
           expected=("Matriz martensítica con grafito laminar sin cambios; revenir siempre.",
                     "Martensitic matrix with unchanged flake graphite; always temper."),
           restrictions=[GRAY_COMP, ("La fundición gris no aleada puede necesitar Mn suficiente para templar en el centro.",
                                     "Unalloyed gray iron may need enough Mn to harden at the center.")],
           missing=[GRAY_TIME_PENDING], assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_temper_tm", "astm_a48_class_30", "temper", "tm", ("Revenido (Total Materia)", "Tempering (Total Materia)"),
+    proto("prot_gjl250_temper_tm", "en_gjl_250", "temper", "tm", ("Revenido (Total Materia)", "Tempering (Total Materia)"),
           ("Reducir fragilidad de la matriz templada.", "Reduce brittleness of the hardened matrix."),
           [temper_heat((None, 550, None), "ev_cp_gray_temper"),
            temper_soak((30 * MIN, None, 30 * MIN), "ev_tm_gray_temper",
@@ -791,13 +891,13 @@ PROTOCOLS = [
                         "Total Materia: ~1 h per inch. " + PROBE_NOTE_EN + " → 30 min. Compraco gives thickness/25 + 1 h.")),
            air_cool()],
           sources=["src_totalmateria_gray_2", "src_compraco_gray"], status="source_verified", reference=True,
-          medium=("Aire", "Air"), required={"hardened": True}, default_ic="ic_astm_a48_hardened_ref", prior="prot_a48_quench_tm",
+          medium=("Aire", "Air"), required={"hardened": True}, default_ic="ic_gjl250_hardened_ref", prior="prot_gjl250_quench_tm",
           expected=("Martensita revenida en la matriz; grafito sin cambios.", "Tempered martensite in the matrix; unchanged graphite."),
           restrictions=[("Por debajo de 550 °C para evitar la grafitización (Compraco).",
                          "Below 550 °C to avoid graphitization (Compraco).")],
           missing=[("Temperatura mínima y valor de referencia: las fuentes solo dan el máximo.",
                     "Minimum and reference temperature: sources only give the maximum.")], assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_anneal_ferritize", "astm_a48_class_30", "anneal", "ferritizing", ("Recocido ferritizante (Total Materia)",
+    proto("prot_gjl250_anneal_ferritize", "en_gjl_250", "anneal", "ferritizing", ("Recocido ferritizante (Total Materia)",
                                                                                       "Ferritizing anneal (Total Materia)"),
           ("Mejorar la maquinabilidad convirtiendo la perlita en ferrita + grafito.",
            "Improve machinability by turning pearlite into ferrite + graphite."),
@@ -808,12 +908,12 @@ PROTOCOLS = [
            furnace_cool(28.0, 400.0, "ev_cp_1045_anneal_rate", illustrative=True,
                         purpose=("Enfriamiento lento.", "Slow cooling.")), air_cool()],
           sources=["src_totalmateria_gray_1"], status="source_verified", reference=True, goal="machinability",
-          medium=("Horno", "Furnace"), default_ic="ic_astm_a48_as_cast_unspecified",
+          medium=("Horno", "Furnace"), default_ic="ic_gjl250_as_cast_unspecified",
           expected=("Matriz más ferrítica, menor dureza y resistencia (≈ una clase menos).",
                     "More ferritic matrix, lower hardness and strength (≈ one grade lower)."),
           restrictions=[GRAY_COMP], missing=[("Tiempo de sostenimiento y velocidad de enfriamiento.", "Holding time and cooling rate.")],
           assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_anneal_full", "astm_a48_class_30", "anneal", "full", ("Recocido medio/completo 790–900 °C (Total Materia)",
+    proto("prot_gjl250_anneal_full", "en_gjl_250", "anneal", "full", ("Recocido medio/completo 790–900 °C (Total Materia)",
                                                                           "Medium/full anneal 790–900 °C (Total Materia)"),
           ("Ablandar fundiciones aleadas cuando el ferritizante no basta.", "Soften alloyed irons when ferritizing is not enough."),
           [heat(t=(790, 900, 845), ev="ev_tm_gray_full"), soak(),
@@ -821,19 +921,19 @@ PROTOCOLS = [
                         purpose=("Enfriamiento lento de 790 a 675 °C a través del rango de transformación.",
                                  "Slow cooling from 790 to 675 °C through the transformation range.")), air_cool()],
           sources=["src_totalmateria_gray_1"], status="source_verified", goal="softening", medium=("Horno", "Furnace"),
-          default_ic="ic_astm_a48_as_cast_unspecified", restrictions=[GRAY_COMP],
+          default_ic="ic_gjl250_as_cast_unspecified", restrictions=[GRAY_COMP],
           missing=[("Velocidad de enfriamiento (solo «lento»).", "Cooling rate (only «slow»).")], assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_anneal_graphitize", "astm_a48_class_30", "anneal", "graphitizing", ("Recocido grafitizante 900–955 °C",
+    proto("prot_gjl250_anneal_graphitize", "en_gjl_250", "anneal", "graphitizing", ("Recocido grafitizante 900–955 °C",
                                                                                         "Graphitizing anneal 900–955 °C"),
           ("Descomponer carburos masivos.", "Break down massive carbides."),
           [heat(t=(900, 955, 925), ev="ev_tm_gray_graphitize"), soak(),
            furnace_cool(28.0, 675.0, "ev_cp_1045_anneal_rate", illustrative=True), air_cool()],
           sources=["src_totalmateria_gray_1"], status="source_verified", goal="softening", medium=("Horno", "Furnace"),
-          default_ic="ic_astm_a48_as_cast_unspecified",
+          default_ic="ic_gjl250_as_cast_unspecified",
           restrictions=[("Solo si hay carburos masivos (fundición moteada o mal inoculada).",
                          "Only if there are massive carbides (mottled or poorly inoculated iron).")],
           missing=[("Tiempo y enfriamiento.", "Time and cooling.")], assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_stress_relief", "astm_a48_class_30", "anneal", "stress_relief", ("Alivio de tensiones 550 °C (Compraco)",
+    proto("prot_gjl250_stress_relief", "en_gjl_250", "anneal", "stress_relief", ("Alivio de tensiones 550 °C (Compraco)",
                                                                                      "Stress relief 550 °C (Compraco)"),
           ("Reducir tensiones de colada sin cambiar la matriz.", "Reduce casting stresses without changing the matrix."),
           [heat(role="subcritical", label="heat_to_target", t=(550, 550, 550), ev="ev_cp_gray_stress",
@@ -843,11 +943,11 @@ PROTOCOLS = [
                         purpose=("Enfriamiento lento (20–40 °C/h) hasta 150–200 °C para no crear nuevas tensiones.",
                                  "Slow cooling (20–40 °C/h) down to 150–200 °C to avoid new stresses.")), air_cool()],
           sources=["src_compraco_gray"], status="source_verified", goal="stress_relief", medium=("Horno, luego aire", "Furnace, then air"),
-          default_ic="ic_astm_a48_as_cast_unspecified",
+          default_ic="ic_gjl250_as_cast_unspecified",
           missing=[("Tiempo de sostenimiento (depende de la pieza).", "Holding time (part-dependent).")],
           assumptions=[("Velocidad de enfriamiento: centro del intervalo publicado (30 °C/h) y fin a 175 °C (centro de 150–200).",
                         "Cooling rate: middle of the published interval (30 °C/h), ending at 175 °C (middle of 150–200).")]),
-    proto("prot_a48_normalize_tm", "astm_a48_class_30", "normalize", "tm", ("Normalizado 885–925 °C (Total Materia)",
+    proto("prot_gjl250_normalize_tm", "en_gjl_250", "normalize", "tm", ("Normalizado 885–925 °C (Total Materia)",
                                                                             "Normalizing 885–925 °C (Total Materia)"),
           ("Aumentar dureza y resistencia con una matriz perlítica fina.", "Increase hardness and strength with a fine pearlitic matrix."),
           [heat(t=(885, 925, 900), ev="ev_tm_gray_normalize"),
@@ -855,33 +955,33 @@ PROTOCOLS = [
                 ("Total Materia: ~1 h por pulgada de sección máxima. " + PROBE_NOTE_ES + " → 30 min.",
                  "Total Materia: ~1 h per inch of maximum section. " + PROBE_NOTE_EN + " → 30 min.")), air_cool()],
           sources=["src_totalmateria_gray_1"], status="source_verified", reference=True, medium=("Aire en calma", "Still air"),
-          default_ic="ic_astm_a48_as_cast_unspecified",
+          default_ic="ic_gjl250_as_cast_unspecified",
           expected=("Matriz perlítica más fina; la dureza depende del carbono combinado y del espaciado perlítico.",
                     "Finer pearlitic matrix; hardness depends on combined carbon and pearlite spacing."),
           restrictions=[GRAY_COMP], assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_austemper_tm", "astm_a48_class_30", "austemper", "tm_general", ("Austemperizado 230–425 °C (Total Materia)",
+    proto("prot_gjl250_austemper_tm", "en_gjl_250", "austemper", "tm_general", ("Austemperizado 230–425 °C (Total Materia)",
                                                                                     "Austempering 230–425 °C (Total Materia)"),
           ("Matriz de ferrita acicular/bainítica con austenita retenida.", "Acicular/bainitic ferrite matrix with retained austenite."),
           [heat(t=(840, 900, 870), ev="ev_tm_gray_austenitize"), soak(), transfer("bath"),
            bath("user_bath", t=(230, 425, 330), ev="ev_tm_gray_austemper", purpose=AUSTEMPER_BATH_PURPOSE),
            air_cool("final_cool", FINAL_AFTER_BAINITE)],
           sources=["src_totalmateria_gray_2"], status="source_verified", reference=True,
-          medium=("Sal, aceite o plomo", "Salt, oil or lead"), default_ic="ic_astm_a48_as_cast_unspecified",
+          medium=("Sal, aceite o plomo", "Salt, oil or lead"), default_ic="ic_gjl250_as_cast_unspecified",
           expected=("Matriz ausferrítica; no confundir con ADI (fundición nodular austemperizada).",
                     "Ausferritic matrix; do not confuse with ADI (austempered ductile iron)."),
           restrictions=[GRAY_COMP], missing=[GRAY_TIME_PENDING, ("Tiempo de baño: depende de la composición; sin cifra.",
                                                                  "Bath time: composition-dependent; no number.")],
           assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_austemper_hard", "astm_a48_class_30", "austemper", "tm_hardness", ("Austemperizado 230–290 °C (dureza)",
+    proto("prot_gjl250_austemper_hard", "en_gjl_250", "austemper", "tm_hardness", ("Austemperizado 230–290 °C (dureza)",
                                                                                        "Austempering 230–290 °C (hardness)"),
           ("Máxima dureza y resistencia al desgaste.", "Maximum hardness and wear resistance."),
           [heat(t=(840, 900, 870), ev="ev_tm_gray_austenitize"), soak(), transfer("bath"),
            bath("user_bath", t=(230, 290, 260), ev="ev_tm_gray_austemper", purpose=AUSTEMPER_BATH_PURPOSE),
            air_cool("final_cool", FINAL_AFTER_BAINITE)],
           sources=["src_totalmateria_gray_2"], status="source_verified", goal="hardness",
-          medium=("Sal, aceite o plomo", "Salt, oil or lead"), default_ic="ic_astm_a48_as_cast_unspecified",
+          medium=("Sal, aceite o plomo", "Salt, oil or lead"), default_ic="ic_gjl250_as_cast_unspecified",
           restrictions=[GRAY_COMP], missing=[GRAY_TIME_PENDING, ("Tiempo de baño.", "Bath time.")], assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_austemper_jmrt", "astm_a48_class_30", "austemper", "jmrt_2022_unverified",
+    proto("prot_gjl250_austemper_jmrt", "en_gjl_250", "austemper", "jmrt_2022_unverified",
           ("AGI experimental 870 °C 2 h → 360 °C 1 h (fuente no verificada)", "Experimental AGI 870 °C 2 h → 360 °C 1 h (unverified)"),
           ("Caso experimental de fundición gris austemperizada.", "Experimental austempered gray iron case."),
           [heat(t=(870, 870, 870), ev="ev_jmrt_agi"), soak((2 * HOUR, 2 * HOUR, 2 * HOUR), "ev_jmrt_agi",
@@ -890,13 +990,13 @@ PROTOCOLS = [
                                   d_ev="ev_jmrt_agi", purpose=AUSTEMPER_BATH_PURPOSE),
            air_cool("final_cool", FINAL_AFTER_BAINITE)],
           sources=["src_jmrt_2022_agi"], status="source_unverified", goal="experimental", medium=("Baño", "Bath"),
-          default_ic="ic_astm_a48_as_cast_unspecified",
+          default_ic="ic_gjl250_as_cast_unspecified",
           restrictions=[GRAY_COMP, ("Condiciones de un estudio concreto (360 °C 1 h o 260 °C 2 h); no se asignan a cualquier "
-                                    "A48 clase 30.", "Conditions of a specific study (360 °C 1 h or 260 °C 2 h); not assigned "
-                                    "to every A48 class 30.")],
+                                    "GG25.", "Conditions of a specific study (360 °C 1 h or 260 °C 2 h); not assigned "
+                                    "to every GG25.")],
           missing=[("Verificar el artículo (no se pudo abrir desde el entorno).", "Verify the paper (could not be opened).")],
           assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_martemper_tm", "astm_a48_class_30", "martemper", "tm", ("Martemperizado 200–260 °C (Total Materia)",
+    proto("prot_gjl250_martemper_tm", "en_gjl_250", "martemper", "tm", ("Martemperizado 200–260 °C (Total Materia)",
                                                                             "Martempering 200–260 °C (Total Materia)"),
           ("Martensita en la matriz con menos tensiones; revenir después.", "Martensitic matrix with fewer stresses; temper afterwards."),
           [heat(t=(840, 900, 870), ev="ev_tm_gray_austenitize"), soak(), transfer("bath"),
@@ -905,10 +1005,10 @@ PROTOCOLS = [
            air_cool("final_cool", FINAL_MARTENSITE)],
           sources=["src_totalmateria_gray_2"], status="source_verified", reference=True,
           medium=("Sal, aceite o plomo hasta igualar, luego aire", "Salt, oil or lead until equalized, then air"),
-          default_ic="ic_astm_a48_as_cast_unspecified",
+          default_ic="ic_gjl250_as_cast_unspecified",
           expected=("Matriz martensítica frágil: revenir casi siempre.", "Brittle martensitic matrix: tempering almost always needed."),
           restrictions=[GRAY_COMP], missing=[GRAY_TIME_PENDING], assumptions=[GRAY_NO_MODEL]),
-    proto("prot_a48_martemper_asm", "astm_a48_class_30", "martemper", "asm_liners_unverified",
+    proto("prot_gjl250_martemper_asm", "en_gjl_250", "martemper", "asm_liners_unverified",
           ("Camisas de cilindro 870 °C 1 h → 245 °C 1 min (fuente no verificada)", "Cylinder liners 870 °C 1 h → 245 °C 1 min (unverified)"),
           ("Caso industrial citado por ASM.", "Industrial case cited by ASM."),
           [heat(t=(870, 870, 870), ev="ev_asm_gray_liner"),
@@ -917,14 +1017,14 @@ PROTOCOLS = [
                 label="equalization_hold", role="equalize", purpose=MARTEMPER_BATH_PURPOSE),
            air_cool("final_cool", FINAL_MARTENSITE)],
           sources=["src_asm_gray_ht"], status="source_unverified", goal="experimental", medium=("Baño a 245 °C", "Bath at 245 °C"),
-          default_ic="ic_astm_a48_as_cast_unspecified",
+          default_ic="ic_gjl250_as_cast_unspecified",
           restrictions=[GRAY_COMP, ("Revenido posterior del caso: 200 °C, 2 h.", "Subsequent temper of the case: 200 °C, 2 h.")],
           missing=[("Verificar el capítulo ASM (no se pudo abrir).", "Verify the ASM chapter (could not be opened).")],
           assumptions=[GRAY_NO_MODEL]),
 ]
 
 
-# ------------------------------------------------------------------------------------------- matriz 18
+# ------------------------------------------------------------------------------------------- matriz 21
 def _pair(m, t, status, es, en):
     return {"material_id": m, "treatment_id": t, "compatibility_status": status, "reason_es": es, "reason_en": en,
             "quantitative_outputs_enabled": False, "required_initial_state": {"hardened": True} if t == "temper" else {},
@@ -943,6 +1043,8 @@ PAIRS = [
           "Limited by hardenability and kinetics: the bath is bounded with the TTT model."),
     _pair("aisi_1045", "martemper", "conditional", "Condicionado: el baño debe quedar sobre el Ms del 1045 y retirarse antes de la bainita.",
           "Conditional: the bath must stay above 1045's Ms and be left before bainite."),
+    _pair("aisi_1045", "quench_temper", "supported", "Bonificado documentado: temple en agua (AZoM) y revenido alto 550–650 °C.",
+          "Quench and temper documented: water hardening (AZoM) and high temper 550–650 °C."),
     _pair("aisi_8620", "quench", "supported", "Temple documentado sin cementar (Vanguard); las variantes cementadas son aparte.",
           "Hardening documented uncarburized (Vanguard); carburized variants are separate."),
     _pair("aisi_8620", "temper", "conditional", "Requiere un estado templado (Vanguard: 200–650 °C).", "Requires a hardened state (Vanguard: 200–650 °C)."),
@@ -952,16 +1054,20 @@ PAIRS = [
           "Conditional; includes carbo-austempering variants (MRS 2024) for the carburized state."),
     _pair("aisi_8620", "martemper", "conditional", "Condicionado; industrialmente se aplica a piezas cementadas.",
           "Conditional; industrially applied to carburized parts."),
-    _pair("astm_a48_class_30", "quench", "conditional", "Posible si la composición y la matriz lo permiten (Total Materia, Compraco).",
+    _pair("aisi_8620", "quench_temper", "supported", "Bonificado del acero sin cementar: temple en aceite (Vanguard) y revenido alto.",
+          "Quench and temper of the uncarburized steel: oil hardening (Vanguard) and high temper."),
+    _pair("en_gjl_250", "quench", "conditional", "Posible si la composición y la matriz lo permiten (Total Materia, Compraco).",
           "Possible if composition and matrix allow it (Total Materia, Compraco)."),
-    _pair("astm_a48_class_30", "temper", "conditional", "Requiere una matriz previamente endurecida.", "Requires a previously hardened matrix."),
-    _pair("astm_a48_class_30", "anneal", "supported", "Recocido ferritizante, completo, grafitizante y alivio de tensiones documentados.",
+    _pair("en_gjl_250", "temper", "conditional", "Requiere una matriz previamente endurecida.", "Requires a previously hardened matrix."),
+    _pair("en_gjl_250", "anneal", "supported", "Recocido ferritizante, completo, grafitizante y alivio de tensiones documentados.",
           "Ferritizing, full, graphitizing and stress-relief annealing documented."),
-    _pair("astm_a48_class_30", "normalize", "conditional", "Aplicable según la fundición (Total Materia: 885–925 °C).",
+    _pair("en_gjl_250", "normalize", "conditional", "Aplicable según la fundición (Total Materia: 885–925 °C).",
           "Applicable depending on the iron (Total Materia: 885–925 °C)."),
-    _pair("astm_a48_class_30", "austemper", "conditional", "Documentado para ciertas fundiciones grises; no se asume para cualquier A48.",
-          "Documented for certain gray irons; not assumed for every A48."),
-    _pair("astm_a48_class_30", "martemper", "conditional", "Documentado para fundiciones no aleadas (200–260 °C); revenir después.",
+    _pair("en_gjl_250", "austemper", "conditional", "Documentado para ciertas fundiciones grises; no se asume para cualquier GG25.",
+          "Documented for certain gray irons; not assumed for every GG25."),
+    _pair("en_gjl_250", "quench_temper", "conditional", "Temple en aceite y revenido por debajo de 550 °C (Total Materia, Compraco).",
+          "Oil hardening and tempering below 550 °C (Total Materia, Compraco)."),
+    _pair("en_gjl_250", "martemper", "conditional", "Documentado para fundiciones no aleadas (200–260 °C); revenir después.",
           "Documented for unalloyed irons (200–260 °C); temper afterwards."),
 ]
 _REF = {(p["material_id"], p["treatment_id"]): p["id"] for p in PROTOCOLS if p["is_reference"]}
@@ -994,7 +1100,7 @@ INITIAL_CONDITIONS = [
      "description_es": "Pieza cementada previamente. FERROLAB no conoce la composición ni la profundidad de la capa.",
      "description_en": "Previously carburized part. FERROLAB does not know the case composition or depth.",
      "hardened": None, "carburized": True, "review_status": "draft"},
-    {"id": "ic_astm_a48_hardened_ref", "material_id": "astm_a48_class_30", "name_es": "Matriz templada de referencia",
+    {"id": "ic_gjl250_hardened_ref", "material_id": "en_gjl_250", "name_es": "Matriz templada de referencia",
      "name_en": "Reference hardened matrix",
      "description_es": "Fundición gris templada con el protocolo de referencia (aceite). Matriz martensítica supuesta, "
                        "composición no documentada.",

@@ -1054,8 +1054,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get diagYourPath => 'Tu práctica (centro)';
 
   @override
-  String get diagAxes =>
-      'Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM 7.';
+  String diagAxes(String g) {
+    return 'Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM $g (calculado).';
+  }
 
   @override
   String get diagTable => 'Ver datos del diagrama';
@@ -1571,4 +1572,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get factOtherSpecimen => 'Valor publicado de otra muestra';
+
+  @override
+  String microRelatedCount(String n) {
+    return '$n micrografías reales de los constituyentes de tu resultado, con autor y licencia: ábrelas en el microscopio.';
+  }
 }

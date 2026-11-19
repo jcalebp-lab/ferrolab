@@ -68,21 +68,29 @@ def main() -> int:
                 current = repo.get(ent, key)
                 clean = {k: v for k, v in current.items() if not k.startswith("_")}
                 wanted = ent.model.model_validate(item).model_dump(mode="json")
-                have = ent.model.model_validate({**clean, "review_status": "draft"}).model_dump(mode="json")
+                try:
+                    have = ent.model.model_validate({**clean, "review_status": "draft"}).model_dump(mode="json")
+                except ValueError:  # registro de una versión anterior que ya no cumple el esquema actual
+                    have = None
                 if have != wanted:
                     repo.update(ent, key, item, row.revision, actor=None)
                     updated += 1
-    # Protocolos de la semilla anterior que ya no existen: se RETIRAN (nunca se borran; quedan en el historial).
+    # Registros de la semilla anterior que ya no existen (p. ej. ASTM A48 clase 30, reemplazada por GG25): se RETIRAN
+    # (nunca se borran; quedan en el historial). Solo los que siguen siendo del catálogo semilla (sin editar, borrador).
     retired = 0
-    ent = ENTITIES["protocols"]
-    wanted_ids = {p["id"] for p in seed.get("protocols", [])}
-    with engine.connect() as c:
-        stale = c.execute(text("select id, revision from protocols where updated_by is null and review_status = 'draft'")).all()
-    for pid, rev in stale:
-        if pid not in wanted_ids:
-            repo.transition(ent, pid, "retired", rev, None, False)
-            retired += 1
-    print(f"Catálogo: {created} creados, {updated} actualizados, {retired} protocolos retirados desde la semilla")
+    for name in reversed(INSERT_ORDER):
+        ent = ENTITIES[name]
+        wanted = {ent.key_of(ent.model.model_validate(item)) for item in seed.get(ent.snapshot_key, [])}
+        cols = ", ".join(ent.key_fields)
+        with engine.connect() as c:
+            stale = c.execute(text(f"select {cols}, revision from {ent.table} "
+                                   "where updated_by is null and review_status = 'draft'")).all()
+        for row in stale:
+            key = ":".join(str(v) for v in row[:-1])
+            if key not in wanted:
+                repo.transition(ent, key, "retired", row[-1], None, False)
+                retired += 1
+    print(f"Catálogo: {created} creados, {updated} actualizados, {retired} registros retirados desde la semilla")
     with engine.connect() as c:
         active = c.execute(text("select semantic_version, checksum, contains_unreviewed_content from dataset_releases "
                                 "where is_active")).first()

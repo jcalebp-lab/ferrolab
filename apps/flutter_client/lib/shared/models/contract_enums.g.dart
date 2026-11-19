@@ -4,7 +4,7 @@
 enum MaterialId {
   aisi1045('aisi_1045'),
   aisi8620('aisi_8620'),
-  astmA48Class30('astm_a48_class_30');
+  enGjl250('en_gjl_250');
 
   const MaterialId(this.wire);
   final String wire;
@@ -23,7 +23,8 @@ enum TreatmentId {
   anneal('anneal'),
   normalize('normalize'),
   austemper('austemper'),
-  martemper('martemper');
+  martemper('martemper'),
+  quenchTemper('quench_temper');
 
   const TreatmentId(this.wire);
   final String wire;

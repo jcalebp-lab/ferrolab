@@ -73,10 +73,11 @@ MODEL_SOURCE_CATALOG: dict[str, dict[str, Any]] = {
     "src_pavlina_2008": {"title": "Correlation of yield strength and tensile strength with hardness for steels",
                          "authors": "E. J. Pavlina, C. J. Van Tyne", "year": 2008, "doi": "10.1007/s11665-008-9225-5",
                          "url": "https://doi.org/10.1007/s11665-008-9225-5", "kind": "journal_article"},
-    "src_astm_a48_class": {"title": "ASTM A48/A48M — Gray iron castings: el número de clase es la resistencia mínima "
-                           "a tracción en ksi (clase 30 ≥ 30 ksi ≈ 207 MPa)", "authors": "ASTM International "
-                           "(tabla reproducida por Portland Bolt y Total Materia)", "year": None, "doi": None,
-                           "url": "https://www.portlandbolt.com/technical/specifications/astm-a48/", "kind": "standard"},
+    "src_en1561_gjl250": {"title": "EN 1561 — Grey cast irons: EN-GJL-250 (GG-25) exige 250 MPa de resistencia mínima "
+                          "a tracción en barra de ensayo de 30 mm (tabla reproducida por Casting Quality y fichas de "
+                          "fundiciones)", "authors": "CEN", "year": None, "doi": None,
+                          "url": "https://castingquality.com/wp-content/uploads/Casting-Material-gray-iron-in-EN-1561.pdf",
+                          "kind": "standard"},
     "src_appsci_2026_agi": {"title": "Effect of Different Austenitizing Temperatures on the Microstructure and "
                             "Mechanical Properties of Austempering Gray Cast Iron (Applied Sciences 16(4):1828)",
                             "authors": "Applied Sciences (MDPI)", "year": 2026, "doi": "10.3390/app16041828",
@@ -192,7 +193,7 @@ def facts(p: P.Practice, dataset_version: str) -> dict[str, Any]:
 GRAIN_SOURCES = ["src_lee_2008", "src_gorni_handbook", "src_astm_e112_g"]
 PAVLINA_YS = (-90.7, 2.876, (129.0, 632.0))  # MPa = a + b·HV; dominio de HV de los datos
 PAVLINA_TS = (-99.8, 3.734, (129.0, 592.0))
-A48_CLASS30_MIN_MPA = 207.0  # 30 ksi
+GJL250_MIN_MPA = 250.0  # EN 1561, barra de ensayo de 30 mm
 
 
 def _src_fact(value: float, unit: str, dataset_version: str, sources: list[str], method: str, validity: dict,
@@ -244,8 +245,8 @@ def mechanical_facts(p: P.Practice, dataset_version: str) -> dict[str, ResultFac
 
 def gray_iron_mechanical(dataset_version: str) -> dict[str, ResultFact]:
     return {"tensile_strength_min": _src_fact(
-        A48_CLASS30_MIN_MPA, "MPa", dataset_version, ["src_astm_a48_class"], "astm_a48_class_minimum",
-        {"condition": "as_cast_separately_cast_test_bar", "applies_after_heat_treatment": False}, None,
+        GJL250_MIN_MPA, "MPa", dataset_version, ["src_en1561_gjl250"], "en1561_gjl250_minimum",
+        {"condition": "as_cast_30mm_test_bar", "applies_after_heat_treatment": False}, None,
         kind=EvidenceKind.LITERATURE, level=EvidenceLevel.QUALITATIVE)}
 
 
@@ -284,7 +285,8 @@ def _r(v):
 
 
 GRAY_MATRIX = {"quench": "martensite", "temper": "tempered_martensite", "normalize": "pearlite",
-               "anneal": "ferrite_pearlite", "austemper": "ausferrite", "martemper": "martensite"}
+               "anneal": "ferrite_pearlite", "austemper": "ausferrite", "martemper": "martensite",
+               "quench_temper": "tempered_martensite"}
 
 
 GRAY_VARIANT_MATRIX = {"ferritizing": "ferrite_pearlite", "full": "ferrite_pearlite", "graphitizing": "pearlite",
@@ -311,7 +313,7 @@ def illustration(material_id: str, treatment_id: str, request_hash: str, p: P.Pr
         spec["astm_grain_size"] = round(p.grain["ferrite_g"] if shown_ferrite else p.grain["austenite_g"], 2)
         spec["grain_kind"] = "ferrite" if shown_ferrite else "prior_austenite"
         spec["grain_computed"] = True
-    if treatment_id == "temper" and p.prior and p.prior.get("fractions"):
+    if treatment_id in ("temper", "quench_temper") and p.prior and p.prior.get("fractions"):
         spec.update({"fractions": _normalized(p.prior["fractions"]), "tempered": True, "quantitative": True,
                      "tempering_temperature_c": round(p.max_center_c)})
     elif p.fractions:

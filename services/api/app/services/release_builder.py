@@ -12,6 +12,7 @@ import copy
 from typing import Any
 
 from ferrolab_fse import DatasetSnapshot
+from ferrolab_fse.enums import MaterialId, TreatmentId
 from pydantic import ValidationError
 
 OFFICIAL = {"reviewed", "published"}
@@ -41,10 +42,10 @@ def build_snapshot(rows: dict[str, list[dict[str, Any]]], *, version: str, inclu
 
     mats = {m["id"] for m in d.get("materials", [])}
     trts = {t["id"] for t in d.get("treatments", [])}
-    if len(mats) != 3:
-        problems.append("Los 3 materiales deben estar revisados antes de publicar")
-    if len(trts) != 6:
-        problems.append("Los 6 tratamientos deben estar revisados antes de publicar")
+    if len(mats) != len(MaterialId):
+        problems.append(f"Los {len(MaterialId)} materiales deben estar revisados antes de publicar")
+    if len(trts) != len(TreatmentId):
+        problems.append(f"Los {len(TreatmentId)} tratamientos deben estar revisados antes de publicar")
 
     for m in d.get("materials", []):
         keep = [c for c in m.get("compositions", []) if c["evidence_id"] in ev_ids]
@@ -92,8 +93,9 @@ def build_snapshot(rows: dict[str, list[dict[str, Any]]], *, version: str, inclu
             report.append(f"{mt['material_id']}/{mt['treatment_id']}: salidas numéricas desactivadas (sin protocolo)")
         pairs.append(mt)
     d["material_treatments"] = pairs
-    if len(pairs) != 18 and not problems:
-        problems.append(f"Se esperaban 18 parejas revisadas, hay {len(pairs)}")
+    n_pairs = len(MaterialId) * len(TreatmentId)
+    if len(pairs) != n_pairs and not problems:
+        problems.append(f"Se esperaban {n_pairs} parejas revisadas, hay {len(pairs)}")
 
     guards = [g for g in d.get("physical_guards", []) if g["evidence_id"] in ev_ids]
     families = {g["applies_to_family"] for g in guards}

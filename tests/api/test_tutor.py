@@ -25,7 +25,7 @@ def test_ai07_disabled_falls_back_to_editorial(client):
     assert body["notice"] and body["explanations"]
 
 
-@pytest.mark.parametrize("q,slug", [("¿TTT = CCT?", "faq-ttt-cct"), ("¿A48 Clase 30 es acero?", "faq-fundicion-acero"),
+@pytest.mark.parametrize("q,slug", [("¿TTT = CCT?", "faq-ttt-cct"), ("¿La fundición GG25 es acero?", "faq-fundicion-acero"),
                                     ("Dame la dureza exacta del 1045 a 850 °C", "faq-sin-dureza"),
                                     ("martempering vs austempering", "faq-martemper-austemper")])
 def test_ai01_04_05_editorial_intents(client, q, slug):

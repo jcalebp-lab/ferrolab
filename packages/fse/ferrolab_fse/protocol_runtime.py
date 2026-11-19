@@ -225,7 +225,7 @@ def resolve(snap: DatasetSnapshot, protocol: Protocol, *, furnace_c: float, hold
         if role == "preheat":
             steps.append(Step("preheat", s.label_key, temperature_c=s.end_temperature_c))
         elif s.kind.value == "heat":
-            if s.end_temperature_mode == "user_target" and not heat_seen:
+            if s is heat_st or (s.end_temperature_mode == "user_target" and not heat_seen):
                 t = t_furnace
             else:  # segundo calentamiento (p. ej. doble refinado): centro del rango publicado, declarado
                 t = s.temperature_ref_c or (None if s.temperature_min_c is None or s.temperature_max_c is None
@@ -235,9 +235,13 @@ def resolve(snap: DatasetSnapshot, protocol: Protocol, *, furnace_c: float, hold
             heat_seen = True
             steps.append(Step("heat", s.label_key, temperature_c=t))
         elif s.kind.value == "hold":
-            hp = params.get("hold_time")
+            if s.duration_mode == "user_hold":
+                hp = params.get("hold_time")
+                dur = (hp.value or 0) * 60 if hp else 0
+            else:  # sostenimiento fijo del protocolo (p. ej. la austenización del bonificado)
+                dur = s.duration_s or s.duration_ref_s or 0.0
             steps.append(Step("hold", s.label_key, temperature_c=steps[-1].temperature_c if steps else t_furnace,
-                              duration_s=(hp.value or 0) * 60 if hp else 0))
+                              duration_s=dur))
         elif s.kind.value == "transfer":
             steps.append(Step("transfer", s.label_key, duration_s=ASSUMPTIONS["transfer_s"], medium="air"))
         elif s.kind.value == "isothermal_hold":

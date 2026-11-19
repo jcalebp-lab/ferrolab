@@ -14,9 +14,9 @@ from ferrolab_fse.engine import SimulationRequest  # noqa: E402
 
 snap = DatasetSnapshot.model_validate(json.loads((ROOT / "database/seeds/catalog_seed.json").read_text("utf-8")))
 eng = ScientificEngine(snap)
-MAT = {"aisi_1045": "AISI 1045", "aisi_8620": "AISI 8620", "astm_a48_class_30": "ASTM A48 Cl. 30"}
+MAT = {"aisi_1045": "AISI 1045", "aisi_8620": "AISI 8620", "en_gjl_250": "GG25 (EN-GJL-250)"}
 TR = {"quench": "Temple", "temper": "Revenido", "anneal": "Recocido", "normalize": "Normalizado",
-      "austemper": "Austempering", "martemper": "Martempering"}
+      "austemper": "Austempering", "martemper": "Martempering", "quench_temper": "Bonificado"}
 COMPAT = {"supported": "Compatible", "conditional": "Condicional", "educational_only": "Educativo", "unsupported": "No"}
 LEVEL = {"A": "A (modelo publicado)", "B": "B (cualitativo)", "C": "C (ilustrativo)"}
 

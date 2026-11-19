@@ -130,7 +130,9 @@ class ResultsBody extends ConsumerWidget {
         title: t.microRealTitle,
         icon: Icons.photo_library_outlined,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (r.micrograph == null)
+          if (r.micrograph == null && r.relatedMicrographs.isNotEmpty)
+            Text(t.microRelatedCount(r.relatedMicrographs.length.toString()))
+          else if (r.micrograph == null)
             Notice(t.microNoMatch, kind: 'limitation', icon: Icons.image_not_supported_outlined)
           else
             Text('${r.micrograph!.attribution} · ${r.micrograph!.licenseCode}'),
@@ -478,7 +480,7 @@ class _KeepLearning extends ConsumerWidget {
               initialConditionId: i.initialConditionId, targetTemperatureC: i.targetTemperatureC + d, holdTimeMin: i.holdTimeMin)),
       ('${t.paramsHold} ×2', SimulationInput(materialId: i.materialId, treatmentId: i.treatmentId,
           initialConditionId: i.initialConditionId, targetTemperatureC: i.targetTemperatureC, holdTimeMin: i.holdTimeMin * 2)),
-      for (final tr in const ['quench', 'temper', 'anneal', 'normalize', 'austemper', 'martemper'])
+      for (final tr in const ['quench', 'temper', 'quench_temper', 'anneal', 'normalize', 'austemper', 'martemper'])
         if (tr != i.treatmentId)
           (tr, SimulationInput(materialId: i.materialId, treatmentId: tr, initialConditionId: i.initialConditionId,
               targetTemperatureC: i.targetTemperatureC, holdTimeMin: i.holdTimeMin)),
@@ -565,7 +567,7 @@ class _ModelDetails extends StatelessWidget {
         if (est['cooling_rate_700c_k_s'] != null)
           Text(t.modelCooling(fmtNum(((est['cooling_rate_700c_k_s'] as num) * 100).round() / 100))),
         if (est['bath_temperature_c'] != null) Text(t.modelBath(fmtNum((est['bath_temperature_c'] as num).toDouble()))),
-        if (est['austenite_fraction_at_hold'] != null)
+        if (est['austenite_fraction_at_hold'] != null && est['prior_state'] == null)
           Text(t.modelAustenite(((est['austenite_fraction_at_hold'] as num) * 100).toStringAsFixed(0))),
         if (prior != null && prior['fractions'] != null) ...[
           const Gap(FlSpace.s),

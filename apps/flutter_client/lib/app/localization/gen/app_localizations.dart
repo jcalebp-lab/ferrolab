@@ -2033,8 +2033,8 @@ abstract class AppLocalizations {
   /// No description provided for @diagAxes.
   ///
   /// In es, this message translates to:
-  /// **'Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM 7.'**
-  String get diagAxes;
+  /// **'Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM {g} (calculado).'**
+  String diagAxes(String g);
 
   /// No description provided for @diagTable.
   ///
@@ -2929,6 +2929,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Valor publicado de otra muestra'**
   String get factOtherSpecimen;
+
+  /// No description provided for @microRelatedCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} micrografías reales de los constituyentes de tu resultado, con autor y licencia: ábrelas en el microscopio.'**
+  String microRelatedCount(String n);
 }
 
 class _AppLocalizationsDelegate

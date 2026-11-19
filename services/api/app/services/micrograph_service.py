@@ -40,7 +40,7 @@ def is_public(m: Micrograph, snap: DatasetSnapshot | None = None) -> bool:
 # Constituyentes que la literatura asocia a cada tratamiento (para mostrar ejemplos aun sin cálculo).
 EXPECTED_STEEL = {
     "quench": {"martensite": 1.0}, "martemper": {"martensite": 1.0},
-    "temper": {"tempered_martensite": 1.0}, "austemper": {"bainite": 1.0},
+    "temper": {"tempered_martensite": 1.0}, "quench_temper": {"tempered_martensite": 1.0}, "austemper": {"bainite": 1.0},
     "anneal": {"proeutectoid_ferrite": 0.5, "pearlite": 0.5}, "normalize": {"proeutectoid_ferrite": 0.5, "pearlite": 0.5},
 }
 GRAY_MATRIX_CONSTITUENT = {"martensite": "martensite", "tempered_martensite": "tempered_martensite",

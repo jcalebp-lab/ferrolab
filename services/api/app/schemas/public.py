@@ -6,8 +6,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-MaterialCode = Literal["aisi_1045", "aisi_8620", "astm_a48_class_30"]
-TreatmentCode = Literal["quench", "temper", "anneal", "normalize", "austemper", "martemper"]
+MaterialCode = Literal["aisi_1045", "aisi_8620", "en_gjl_250"]
+TreatmentCode = Literal["quench", "temper", "anneal", "normalize", "austemper", "martemper", "quench_temper"]
 Locale = Literal["es", "en"]
 
 

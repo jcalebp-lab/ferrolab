@@ -739,8 +739,10 @@ class DiagramCurve {
 }
 
 class DiagramDto {
-  DiagramDto({required this.kind, required this.curves, required this.lines, required this.userPath, required this.runs});
+  DiagramDto({required this.kind, required this.curves, required this.lines, required this.userPath, required this.runs,
+      this.grain});
   final String kind; // TTT | CCT
+  final double? grain; // G ASTM con el que se calculó el diagrama
   final List<DiagramCurve> curves;
   final Map<String, double> lines;
   final List<(double, double)> userPath;
@@ -751,5 +753,6 @@ class DiagramDto {
         lines: ((j['lines'] as Json?) ?? const {}).map((k, v) => MapEntry(k, _d(v)!)),
         userPath: ((j['user_path'] as List?) ?? const []).map((p) => (_d((p as List)[0])!, _d(p[1])!)).toList(),
         runs: ((j['runs'] as List?) ?? const []).cast<Json>(),
+        grain: _d(j['astm_grain_size']),
       );
 }

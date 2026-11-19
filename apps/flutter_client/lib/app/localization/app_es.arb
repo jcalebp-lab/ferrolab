@@ -395,7 +395,7 @@
   "diagTttNote": "TTT: tiempo para empezar (1 %) y terminar (99 %) cada transformación si la temperatura se mantiene constante. Tu curva muestra el enfriamiento real del centro de la probeta.",
   "diagCctNote": "CCT: inicio de cada transformación en enfriamiento continuo a velocidades constantes. Donde tu curva cruza una zona, se forma ese constituyente.",
   "diagYourPath": "Tu práctica (centro)",
-  "diagAxes": "Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM 7.",
+  "diagAxes": "Eje x: tiempo desde el inicio del enfriamiento (s, escala logarítmica). Eje y: temperatura (°C). Modelo de Li et al. (1998), composición nominal, G ASTM {g} (calculado).",
   "diagTable": "Ver datos del diagrama",
   "modelTitle": "Detalles de la estimación",
   "modelCritical": "Temperaturas críticas (calculadas)",
@@ -729,5 +729,20 @@
   "grainKindAssumed": "supuesto",
   "grainMeasureNote": "Cada cruce de una línea con un límite de grano es una intersección. ℓ̄ = longitud total ÷ intersecciones; G = −6,644·log10(ℓ̄ en mm) − 3,288. La pequeña diferencia con el modelo es normal: la imagen se genera por área media y la norma advierte que área e intercepto no dan exactamente el mismo G.",
   "sourceModel": "Referencia del modelo usado en el cálculo",
-  "factOtherSpecimen": "Valor publicado de otra muestra"
+  "factOtherSpecimen": "Valor publicado de otra muestra",
+  "microRelatedCount": "{n} micrografías reales de los constituyentes de tu resultado, con autor y licencia: ábrelas en el microscopio.",
+  "@diagAxes": {
+    "placeholders": {
+      "g": {
+        "type": "String"
+      }
+    }
+  },
+  "@microRelatedCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  }
 }

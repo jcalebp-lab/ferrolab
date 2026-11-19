@@ -87,6 +87,13 @@
       "url": "https://store.astm.org/standards/a48"
     },
     {
+      "id": "src_en_1561",
+      "kind": "standard",
+      "title": "EN 1561 — Founding: Grey cast irons (EN-GJL-250, antes GG-25 según DIN 1691)",
+      "verification_status": "unverified",
+      "url": "https://castingquality.com/wp-content/uploads/Casting-Material-gray-iron-in-EN-1561.pdf"
+    },
+    {
       "id": "src_astm_a255",
       "kind": "standard",
       "title": "ASTM A255 — Determining Hardenability of Steel (Jominy)",
@@ -276,6 +283,15 @@
       "notes": "J. Mater. Res. Technol. Acceso abierto, pero el texto no se pudo abrir desde el entorno; condiciones aportadas por el propietario."
     },
     {
+      "id": "src_saarstahl_c45",
+      "kind": "web",
+      "title": "Material specification sheet Saarstahl — C45 (equivalente europeo del 1045)",
+      "verification_status": "unverified",
+      "authors": "Saarstahl AG",
+      "url": "https://en.saarstahl.com/app/uploads/2024/03/20160401102929-0503_C45.pdf",
+      "notes": "Leído como extracto de un buscador: temple 820–860 °C agua/aceite y revenido 550–660 °C (bonificado). Solo se usa para justificar el límite inferior del revenido de bonificado."
+    },
+    {
       "id": "src_bodycote_austempering",
       "kind": "web",
       "title": "Austempering — Bodycote",
@@ -297,6 +313,17 @@
       "method": "physical_constant_guard",
       "value": 1538.0,
       "unit": "°C",
+      "review_status": "draft"
+    },
+    {
+      "id": "ev_sa_c45_qt",
+      "source_id": "src_saarstahl_c45",
+      "locator": "Heat treatment: hardening / tempering (extracto)",
+      "claim_es": "C45: temple 820–860 °C en agua o aceite; revenido de bonificado 550–660 °C.",
+      "claim_en": "C45: hardening 820–860 °C in water or oil; quench-and-temper tempering 550–660 °C.",
+      "evidence_kind": "literature",
+      "evidence_level": "bounded_estimate",
+      "method": "protocol_parameter",
       "review_status": "draft"
     },
     {
@@ -1014,25 +1041,28 @@
       "review_status": "draft"
     },
     {
-      "id": "astm_a48_class_30",
+      "id": "en_gjl_250",
       "family": "gray_cast_iron",
-      "display_name": "ASTM A48 Clase 30",
-      "standard_note_es": "ASTM A48 clasifica fundiciones grises por un requisito de resistencia a la tracción; el número de clase se refiere a ese requisito (consulta el texto oficial de la norma).",
-      "standard_note_en": "ASTM A48 classifies gray irons by a tensile strength requirement; the class number refers to that requirement (see the official text of the standard).",
-      "description_es": "Fundición gris: el carbono aparece en forma de láminas de grafito dentro de una matriz metálica. No es un acero. Se usa en bancadas, carcasas y discos de freno por su colabilidad y amortiguación.",
-      "description_en": "Gray cast iron: carbon is present as graphite flakes within a metallic matrix. It is not a steel. Used for machine beds, housings and brake discs for its castability and damping.",
+      "display_name": "GG25 (EN-GJL-250)",
+      "standard_note_es": "EN 1561 designa la fundición gris por su resistencia mínima a la tracción: EN-GJL-250 (antes GG-25, DIN 1691; material 5.1301) exige 250 MPa en barra de ensayo de 30 mm. Equivale aproximadamente a ASTM A48 clase 35 y a JIS FC250.",
+      "standard_note_en": "EN 1561 designates gray iron by its minimum tensile strength: EN-GJL-250 (formerly GG-25, DIN 1691; material 5.1301) requires 250 MPa on a 30 mm test bar. Roughly equivalent to ASTM A48 class 35 and JIS FC250.",
+      "description_es": "Fundición gris de grafito laminar y matriz principalmente perlítica (≈ 160–240 HB en bruto de colada según el espesor). No es un acero. Se usa en bancadas, carcasas, bloques de motor y discos de freno por su colabilidad, maquinabilidad y amortiguación.",
+      "description_en": "Flake-graphite gray iron with a mainly pearlitic matrix (≈ 160–240 HB as cast, depending on section). It is not a steel. Used for machine beds, housings, engine blocks and brake discs for its castability, machinability and damping.",
       "limitations_es": [
-        "La clase de resistencia no fija una composición química ni una microestructura únicas.",
+        "La norma EN 1561 no fija la composición química: la deja al fundidor y los catálogos de proveedores dan rangos distintos (C entre 2,8 y 3,5 %).",
+        "La resistencia baja con el espesor de la pieza (≈ 225 MPa a 20–40 mm y 195 MPa a 40–80 mm).",
         "La matriz y la morfología del grafito dependen del proceso de fundición y del espesor de la pieza.",
         "No se usan curvas ni modelos del acero para esta fundición."
       ],
       "limitations_en": [
-        "The strength class does not define a unique chemical composition or microstructure.",
+        "EN 1561 does not fix the chemical composition: it is left to the foundry and supplier catalogs give different ranges (C between 2.8 and 3.5%).",
+        "Strength falls with section thickness (≈ 225 MPa at 20–40 mm and 195 MPa at 40–80 mm).",
         "The matrix and graphite morphology depend on the casting process and section thickness.",
         "Steel curves and models are not used for this cast iron."
       ],
       "compositions": [],
       "suggested_source_ids": [
+        "src_en_1561",
         "src_astm_a48",
         "src_angus",
         "src_asm_15"
@@ -1064,8 +1094,8 @@
       "review_status": "draft"
     },
     {
-      "id": "ic_astm_a48_as_cast_unspecified",
-      "material_id": "astm_a48_class_30",
+      "id": "ic_gjl250_as_cast_unspecified",
+      "material_id": "en_gjl_250",
       "name_es": "Bruto de colada, matriz no documentada",
       "name_en": "As-cast, matrix undocumented",
       "description_es": "Grafito laminar (propio de la fundición gris); tipo y tamaño de láminas y composición de la matriz no documentados.",
@@ -1110,8 +1140,8 @@
       "review_status": "draft"
     },
     {
-      "id": "ic_astm_a48_hardened_ref",
-      "material_id": "astm_a48_class_30",
+      "id": "ic_gjl250_hardened_ref",
+      "material_id": "en_gjl_250",
       "name_es": "Matriz templada de referencia",
       "name_en": "Reference hardened matrix",
       "description_es": "Fundición gris templada con el protocolo de referencia (aceite). Matriz martensítica supuesta, composición no documentada.",
@@ -1182,6 +1212,66 @@
         "src_asm_4a"
       ],
       "stage_outline": [
+        {
+          "kind": "heat",
+          "label_key": "heat_to_temper",
+          "end_level": "target",
+          "user_hold": false
+        },
+        {
+          "kind": "hold",
+          "label_key": "hold_temper",
+          "end_level": "target",
+          "user_hold": true
+        },
+        {
+          "kind": "cool",
+          "label_key": "controlled_cool",
+          "end_level": "ambient",
+          "user_hold": false
+        }
+      ],
+      "review_status": "draft"
+    },
+    {
+      "id": "quench_temper",
+      "name_es": "Bonificado",
+      "name_en": "Quench and temper",
+      "purpose_es": "Temple seguido de un revenido a alta temperatura (≈ 550–650 °C en aceros): busca la mejor combinación de resistencia y tenacidad.",
+      "purpose_en": "Hardening followed by a high-temperature temper (≈ 550–650 °C in steels): it seeks the best combination of strength and toughness.",
+      "prerequisites_es": "Templabilidad suficiente para formar martensita en la sección y un revenido por debajo de Ac1.",
+      "prerequisites_en": "Enough hardenability to form martensite across the section and a temper below Ac1.",
+      "qualitative_outcome_es": "Martensita revenida a alta temperatura (sorbita): menos dureza que el temple, mucha más tenacidad y resistencia a la fatiga. Es el tratamiento habitual de ejes, bielas y engranajes no cementados.",
+      "qualitative_outcome_en": "Martensite tempered at high temperature (sorbite): lower hardness than as-quenched, much higher toughness and fatigue strength. It is the usual treatment for shafts, connecting rods and non-carburized gears.",
+      "suggested_source_ids": [
+        "src_krauss",
+        "src_asm_4a"
+      ],
+      "stage_outline": [
+        {
+          "kind": "heat",
+          "label_key": "heat_to_austenitizing",
+          "end_level": "target",
+          "user_hold": false
+        },
+        {
+          "kind": "hold",
+          "label_key": "hold_austenitizing",
+          "end_level": "target",
+          "user_hold": false
+        },
+        {
+          "kind": "transfer",
+          "label_key": "transfer_to_medium",
+          "end_level": "target",
+          "user_hold": false
+        },
+        {
+          "kind": "cool",
+          "label_key": "quench_cool",
+          "end_level": "ambient",
+          "user_hold": false
+        },
         {
           "kind": "heat",
           "label_key": "heat_to_temper",
@@ -1454,6 +1544,17 @@
       "protocol_id": "prot_1045_martemper_model"
     },
     {
+      "material_id": "aisi_1045",
+      "treatment_id": "quench_temper",
+      "compatibility_status": "supported",
+      "reason_es": "Bonificado documentado: temple en agua (AZoM) y revenido alto 550–650 °C.",
+      "reason_en": "Quench and temper documented: water hardening (AZoM) and high temper 550–650 °C.",
+      "quantitative_outputs_enabled": false,
+      "required_initial_state": {},
+      "review_status": "draft",
+      "protocol_id": "prot_1045_qt_azom"
+    },
+    {
       "material_id": "aisi_8620",
       "treatment_id": "quench",
       "compatibility_status": "supported",
@@ -1522,7 +1623,18 @@
       "protocol_id": "prot_8620_martemper_model"
     },
     {
-      "material_id": "astm_a48_class_30",
+      "material_id": "aisi_8620",
+      "treatment_id": "quench_temper",
+      "compatibility_status": "supported",
+      "reason_es": "Bonificado del acero sin cementar: temple en aceite (Vanguard) y revenido alto.",
+      "reason_en": "Quench and temper of the uncarburized steel: oil hardening (Vanguard) and high temper.",
+      "quantitative_outputs_enabled": false,
+      "required_initial_state": {},
+      "review_status": "draft",
+      "protocol_id": "prot_8620_qt_vanguard"
+    },
+    {
+      "material_id": "en_gjl_250",
       "treatment_id": "quench",
       "compatibility_status": "conditional",
       "reason_es": "Posible si la composición y la matriz lo permiten (Total Materia, Compraco).",
@@ -1530,10 +1642,10 @@
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_a48_quench_tm"
+      "protocol_id": "prot_gjl250_quench_tm"
     },
     {
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "temper",
       "compatibility_status": "conditional",
       "reason_es": "Requiere una matriz previamente endurecida.",
@@ -1543,10 +1655,10 @@
         "hardened": true
       },
       "review_status": "draft",
-      "protocol_id": "prot_a48_temper_tm"
+      "protocol_id": "prot_gjl250_temper_tm"
     },
     {
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "anneal",
       "compatibility_status": "supported",
       "reason_es": "Recocido ferritizante, completo, grafitizante y alivio de tensiones documentados.",
@@ -1554,10 +1666,10 @@
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_a48_anneal_ferritize"
+      "protocol_id": "prot_gjl250_anneal_ferritize"
     },
     {
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "normalize",
       "compatibility_status": "conditional",
       "reason_es": "Aplicable según la fundición (Total Materia: 885–925 °C).",
@@ -1565,21 +1677,32 @@
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_a48_normalize_tm"
+      "protocol_id": "prot_gjl250_normalize_tm"
     },
     {
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "austemper",
       "compatibility_status": "conditional",
-      "reason_es": "Documentado para ciertas fundiciones grises; no se asume para cualquier A48.",
-      "reason_en": "Documented for certain gray irons; not assumed for every A48.",
+      "reason_es": "Documentado para ciertas fundiciones grises; no se asume para cualquier GG25.",
+      "reason_en": "Documented for certain gray irons; not assumed for every GG25.",
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_a48_austemper_tm"
+      "protocol_id": "prot_gjl250_austemper_tm"
     },
     {
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
+      "treatment_id": "quench_temper",
+      "compatibility_status": "conditional",
+      "reason_es": "Temple en aceite y revenido por debajo de 550 °C (Total Materia, Compraco).",
+      "reason_en": "Oil hardening and tempering below 550 °C (Total Materia, Compraco).",
+      "quantitative_outputs_enabled": false,
+      "required_initial_state": {},
+      "review_status": "draft",
+      "protocol_id": "prot_gjl250_qt_tm"
+    },
+    {
+      "material_id": "en_gjl_250",
       "treatment_id": "martemper",
       "compatibility_status": "conditional",
       "reason_es": "Documentado para fundiciones no aleadas (200–260 °C); revenir después.",
@@ -1587,7 +1710,7 @@
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_a48_martemper_tm"
+      "protocol_id": "prot_gjl250_martemper_tm"
     }
   ],
   "protocols": [
@@ -5027,9 +5150,535 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_quench_tm",
+      "id": "prot_1045_qt_azom",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "aisi_1045",
+      "treatment_id": "quench_temper",
+      "variant_code": "azom_qt",
+      "variant_es": "Temple 845 °C en agua + revenido 550–650 °C (AZoM)",
+      "variant_en": "845 °C water quench + 550–650 °C temper (AZoM)",
+      "name_es": "Temple 845 °C en agua + revenido 550–650 °C (AZoM)",
+      "name_en": "845 °C water quench + 550–650 °C temper (AZoM)",
+      "objective_es": "Máxima tenacidad con resistencia alta en una sola secuencia.",
+      "objective_en": "Highest toughness with high strength in one sequence.",
+      "goal": "toughness",
+      "is_reference": true,
+      "medium_es": "Agua (temple) y aire (revenido)",
+      "medium_en": "Water (quench) and air (temper)",
+      "material_condition_es": null,
+      "material_condition_en": null,
+      "required_initial_state": {},
+      "default_initial_condition_id": "ic_aisi_1045_unspecified",
+      "prior_protocol_id": null,
+      "evidence_status": "source_verified",
+      "source_ids": [
+        "src_azom_1045",
+        "src_saarstahl_c45",
+        "src_kang_lee_2014"
+      ],
+      "validity": {
+        "specimen": "probeta de referencia educativa, cilindro de 12,7 mm"
+      },
+      "expected_es": "Martensita revenida (sorbita): menos dureza que el templado y mucha más tenacidad; la combinación de resistencia y tenacidad propia de ejes y piezas de maquinaria.",
+      "expected_en": "Tempered martensite (sorbite): less hardness than as-quenched and much higher toughness; the strength-toughness combination typical of shafts and machine parts.",
+      "restrictions_es": [
+        "El revenido debe quedar por debajo de Ac1 (≈ 725 °C)."
+      ],
+      "restrictions_en": [
+        "Tempering must stay below Ac1 (≈ 725 °C)."
+      ],
+      "assumptions_es": [],
+      "assumptions_en": [],
+      "missing_es": [],
+      "missing_en": [],
+      "published_results": [],
+      "model_applicable": true,
+      "published_on": "2026-11-19",
+      "stages": [
+        {
+          "kind": "heat",
+          "label_key": "heat_to_austenitizing",
+          "end_level": "target",
+          "end_temperature_mode": "value",
+          "duration_mode": "unpublished",
+          "role": "austenitize",
+          "medium": "furnace",
+          "temperature_min_c": 820,
+          "temperature_max_c": 850,
+          "temperature_ref_c": 845,
+          "end_temperature_evidence_id": "ev_az_1045_harden",
+          "purpose_es": "La pieza se calienta en el horno; al superar Ac1 empieza a formarse austenita y por encima de Ac3 es toda austenita.",
+          "purpose_en": "The part heats in the furnace; above Ac1 austenite starts forming and above Ac3 it is fully austenitic.",
+          "end_temperature_c": 845,
+          "ordinal": 1
+        },
+        {
+          "kind": "hold",
+          "label_key": "hold_austenitizing",
+          "end_level": "target",
+          "end_temperature_mode": "value",
+          "duration_mode": "value",
+          "role": "soak",
+          "medium": "furnace",
+          "duration_min_s": 300.0,
+          "duration_max_s": 450.0,
+          "duration_ref_s": 450.0,
+          "duration_evidence_id": "ev_az_1045_harden_soak",
+          "rule_es": "AZoM: 10–15 min por cada 25 mm, desde que la temperatura es uniforme. Aplicado a la probeta de referencia educativa de 12,7 mm. → 5–7,5 min.",
+          "rule_en": "AZoM: 10–15 min per 25 mm, once the temperature is uniform. Applied to the 12.7 mm educational reference specimen. → 5–7.5 min.",
+          "start_condition_es": "El tiempo cuenta desde que el centro de la probeta alcanza la temperatura del horno (no desde que el horno la alcanza).",
+          "start_condition_en": "Time counts from when the specimen center reaches the furnace temperature (not when the furnace reaches it).",
+          "purpose_es": "Sostenimiento: el carbono se disuelve y la austenita se homogeneiza en toda la sección.",
+          "purpose_en": "Holding: carbon dissolves and austenite homogenizes across the section.",
+          "duration_s": 450.0,
+          "end_temperature_c": 845,
+          "end_temperature_evidence_id": "ev_az_1045_harden",
+          "ordinal": 2
+        },
+        {
+          "kind": "transfer",
+          "label_key": "transfer_to_medium",
+          "end_level": "target",
+          "end_temperature_mode": "unpublished",
+          "duration_mode": "unpublished",
+          "role": "transfer",
+          "medium": "air",
+          "purpose_es": "Traslado del horno al medio: la superficie empieza a enfriarse en el aire.",
+          "purpose_en": "Transfer from furnace to medium: the surface starts cooling in air.",
+          "ordinal": 3
+        },
+        {
+          "kind": "cool",
+          "label_key": "quench_cool",
+          "end_level": "ambient",
+          "end_temperature_mode": "ambient",
+          "duration_mode": "until_ambient",
+          "role": "quench",
+          "medium": "water",
+          "end_temperature_evidence_id": null,
+          "duration_evidence_id": null,
+          "medium_note_es": null,
+          "medium_note_en": null,
+          "purpose_es": "Enfriamiento rápido: si se cruza Ms sin transformaciones previas, la austenita se convierte en martensita (dura y frágil).",
+          "purpose_en": "Rapid cooling: if Ms is crossed without prior transformations, austenite turns into martensite (hard and brittle).",
+          "ordinal": 4
+        },
+        {
+          "kind": "heat",
+          "label_key": "heat_to_temper",
+          "end_level": "target",
+          "end_temperature_mode": "user_target",
+          "duration_mode": "unpublished",
+          "role": "temper",
+          "medium": "furnace",
+          "temperature_min_c": 550,
+          "temperature_max_c": 650,
+          "temperature_ref_c": 600,
+          "end_temperature_evidence_id": "ev_az_1045_temper",
+          "purpose_es": "Calentamiento por debajo de Ac1: no se forma austenita nueva.",
+          "purpose_en": "Heating below Ac1: no new austenite forms.",
+          "rule_es": "Bonificado = temple + revenido ALTO. El límite inferior de 550 °C es el del bonificado del C45 (Saarstahl, equivalente europeo del 1045); el superior es el máximo publicado para este material.",
+          "rule_en": "Quench and temper (bonificado) = hardening + HIGH tempering. The 550 °C lower limit is that of C45 quench and temper (Saarstahl, European equivalent of 1045); the upper one is the maximum published for this material.",
+          "ordinal": 5
+        },
+        {
+          "kind": "hold",
+          "label_key": "hold_temper",
+          "end_level": "target",
+          "end_temperature_mode": "user_target",
+          "duration_mode": "user_hold",
+          "role": "soak",
+          "medium": "furnace",
+          "duration_min_s": 1800.0,
+          "duration_max_s": null,
+          "duration_ref_s": 1800.0,
+          "duration_evidence_id": "ev_az_1045_temper_soak",
+          "rule_es": "AZoM: 1 h por cada 25 mm. Aplicado a la probeta de referencia educativa de 12,7 mm. → 30 min como mínimo.",
+          "rule_en": "AZoM: 1 h per 25 mm. Applied to the 12.7 mm educational reference specimen. → at least 30 min.",
+          "start_condition_es": "El tiempo cuenta desde que el centro de la probeta alcanza la temperatura del horno (no desde que el horno la alcanza).",
+          "start_condition_en": "Time counts from when the specimen center reaches the furnace temperature (not when the furnace reaches it).",
+          "purpose_es": "La martensita se revierte: precipitan carburos, baja la dureza y sube la tenacidad.",
+          "purpose_en": "Martensite tempers: carbides precipitate, hardness drops and toughness rises.",
+          "ordinal": 6
+        },
+        {
+          "kind": "cool",
+          "label_key": "air_cool",
+          "end_level": "ambient",
+          "end_temperature_mode": "ambient",
+          "duration_mode": "until_ambient",
+          "role": "air_cool",
+          "medium": "air",
+          "purpose_es": "Enfriamiento en aire en calma hasta temperatura ambiente.",
+          "purpose_en": "Cooling in still air down to room temperature.",
+          "ordinal": 7
+        }
+      ],
+      "review_status": "draft"
+    },
+    {
+      "id": "prot_8620_qt_vanguard",
+      "version": "1.0.0",
+      "material_id": "aisi_8620",
+      "treatment_id": "quench_temper",
+      "variant_code": "vanguard_qt",
+      "variant_es": "Temple 845 °C en aceite + revenido 550–650 °C (Vanguard)",
+      "variant_en": "845 °C oil quench + 550–650 °C temper (Vanguard)",
+      "name_es": "Temple 845 °C en aceite + revenido 550–650 °C (Vanguard)",
+      "name_en": "845 °C oil quench + 550–650 °C temper (Vanguard)",
+      "objective_es": "Núcleo tenaz y resistente sin cementar.",
+      "objective_en": "Tough and strong core without carburizing.",
+      "goal": "toughness",
+      "is_reference": true,
+      "medium_es": "Aceite (temple) y aire (revenido)",
+      "medium_en": "Oil (quench) and air (temper)",
+      "material_condition_es": null,
+      "material_condition_en": null,
+      "required_initial_state": {},
+      "default_initial_condition_id": "ic_aisi_8620_not_carburized",
+      "prior_protocol_id": null,
+      "evidence_status": "source_verified",
+      "source_ids": [
+        "src_vanguard_8620",
+        "src_saarstahl_c45",
+        "src_kang_lee_2014"
+      ],
+      "validity": {
+        "specimen": "probeta de referencia educativa, cilindro de 12,7 mm"
+      },
+      "expected_es": "Martensita revenida (sorbita): menos dureza que el templado y mucha más tenacidad; la combinación de resistencia y tenacidad propia de ejes y piezas de maquinaria.",
+      "expected_en": "Tempered martensite (sorbite): less hardness than as-quenched and much higher toughness; the strength-toughness combination typical of shafts and machine parts.",
+      "restrictions_es": [
+        "No se modela la capa cementada: el modelo cinético describe el núcleo con la composición base.",
+        "El revenido debe quedar por debajo de Ac1."
+      ],
+      "restrictions_en": [
+        "The carburized case is not modeled: the kinetic model describes the core with the base composition.",
+        "Tempering must stay below Ac1."
+      ],
+      "assumptions_es": [],
+      "assumptions_en": [],
+      "missing_es": [],
+      "missing_en": [],
+      "published_results": [],
+      "model_applicable": true,
+      "published_on": "2026-11-19",
+      "stages": [
+        {
+          "kind": "heat",
+          "label_key": "heat_to_austenitizing",
+          "end_level": "target",
+          "end_temperature_mode": "value",
+          "duration_mode": "unpublished",
+          "role": "austenitize",
+          "medium": "furnace",
+          "temperature_min_c": 815,
+          "temperature_max_c": 855,
+          "temperature_ref_c": 845,
+          "end_temperature_evidence_id": "ev_vg_8620_harden",
+          "purpose_es": "La pieza se calienta en el horno; al superar Ac1 empieza a formarse austenita y por encima de Ac3 es toda austenita.",
+          "purpose_en": "The part heats in the furnace; above Ac1 austenite starts forming and above Ac3 it is fully austenitic.",
+          "end_temperature_c": 845,
+          "ordinal": 1
+        },
+        {
+          "kind": "hold",
+          "label_key": "hold_austenitizing",
+          "end_level": "target",
+          "end_temperature_mode": "value",
+          "duration_mode": "value",
+          "role": "soak",
+          "medium": "furnace",
+          "duration_min_s": 300.0,
+          "duration_max_s": 450.0,
+          "duration_ref_s": 450.0,
+          "duration_evidence_id": "ev_az_1045_harden_soak",
+          "rule_es": "Vanguard no indica tiempo. Se aplica la regla general de AZoM para temple (10–15 min por 25 mm), publicada para el 1045: es un supuesto declarado. Aplicado a la probeta de referencia educativa de 12,7 mm. → 5–7,5 min.",
+          "rule_en": "Vanguard gives no time. AZoM's general hardening rule (10–15 min per 25 mm), published for 1045, is applied as a declared assumption. Applied to the 12.7 mm educational reference specimen. → 5–7.5 min.",
+          "start_condition_es": "El tiempo cuenta desde que el centro de la probeta alcanza la temperatura del horno (no desde que el horno la alcanza).",
+          "start_condition_en": "Time counts from when the specimen center reaches the furnace temperature (not when the furnace reaches it).",
+          "purpose_es": "Sostenimiento: el carbono se disuelve y la austenita se homogeneiza en toda la sección.",
+          "purpose_en": "Holding: carbon dissolves and austenite homogenizes across the section.",
+          "duration_s": 450.0,
+          "end_temperature_c": 845,
+          "end_temperature_evidence_id": "ev_vg_8620_harden",
+          "ordinal": 2
+        },
+        {
+          "kind": "transfer",
+          "label_key": "transfer_to_medium",
+          "end_level": "target",
+          "end_temperature_mode": "unpublished",
+          "duration_mode": "unpublished",
+          "role": "transfer",
+          "medium": "air",
+          "purpose_es": "Traslado del horno al medio: la superficie empieza a enfriarse en el aire.",
+          "purpose_en": "Transfer from furnace to medium: the surface starts cooling in air.",
+          "ordinal": 3
+        },
+        {
+          "kind": "cool",
+          "label_key": "quench_cool",
+          "end_level": "ambient",
+          "end_temperature_mode": "ambient",
+          "duration_mode": "until_ambient",
+          "role": "quench",
+          "medium": "oil",
+          "end_temperature_evidence_id": null,
+          "duration_evidence_id": null,
+          "medium_note_es": null,
+          "medium_note_en": null,
+          "purpose_es": "Enfriamiento rápido: si se cruza Ms sin transformaciones previas, la austenita se convierte en martensita (dura y frágil).",
+          "purpose_en": "Rapid cooling: if Ms is crossed without prior transformations, austenite turns into martensite (hard and brittle).",
+          "ordinal": 4
+        },
+        {
+          "kind": "heat",
+          "label_key": "heat_to_temper",
+          "end_level": "target",
+          "end_temperature_mode": "user_target",
+          "duration_mode": "unpublished",
+          "role": "temper",
+          "medium": "furnace",
+          "temperature_min_c": 550,
+          "temperature_max_c": 650,
+          "temperature_ref_c": 600,
+          "end_temperature_evidence_id": "ev_vg_8620_harden",
+          "purpose_es": "Calentamiento por debajo de Ac1: no se forma austenita nueva.",
+          "purpose_en": "Heating below Ac1: no new austenite forms.",
+          "rule_es": "Bonificado = temple + revenido ALTO. El límite inferior de 550 °C es el del bonificado del C45 (Saarstahl, equivalente europeo del 1045); el superior es el máximo publicado para este material.",
+          "rule_en": "Quench and temper (bonificado) = hardening + HIGH tempering. The 550 °C lower limit is that of C45 quench and temper (Saarstahl, European equivalent of 1045); the upper one is the maximum published for this material.",
+          "ordinal": 5
+        },
+        {
+          "kind": "hold",
+          "label_key": "hold_temper",
+          "end_level": "target",
+          "end_temperature_mode": "user_target",
+          "duration_mode": "user_hold",
+          "role": "soak",
+          "medium": "furnace",
+          "duration_min_s": 1800.0,
+          "duration_max_s": 3600.0,
+          "duration_ref_s": 1800.0,
+          "duration_evidence_id": "ev_vg_8620_draw",
+          "rule_es": "Vanguard: al menos 1–2 h por pulgada. Aplicado a la probeta de referencia educativa de 12,7 mm. → 30–60 min.",
+          "rule_en": "Vanguard: at least 1–2 h per inch. Applied to the 12.7 mm educational reference specimen. → 30–60 min.",
+          "start_condition_es": "El tiempo cuenta desde que el centro de la probeta alcanza la temperatura del horno (no desde que el horno la alcanza).",
+          "start_condition_en": "Time counts from when the specimen center reaches the furnace temperature (not when the furnace reaches it).",
+          "purpose_es": "La martensita se revierte: precipitan carburos, baja la dureza y sube la tenacidad.",
+          "purpose_en": "Martensite tempers: carbides precipitate, hardness drops and toughness rises.",
+          "ordinal": 6
+        },
+        {
+          "kind": "cool",
+          "label_key": "air_cool",
+          "end_level": "ambient",
+          "end_temperature_mode": "ambient",
+          "duration_mode": "until_ambient",
+          "role": "air_cool",
+          "medium": "air",
+          "purpose_es": "Enfriamiento en aire en calma hasta temperatura ambiente.",
+          "purpose_en": "Cooling in still air down to room temperature.",
+          "ordinal": 7
+        }
+      ],
+      "review_status": "draft"
+    },
+    {
+      "id": "prot_gjl250_qt_tm",
+      "version": "1.0.0",
+      "material_id": "en_gjl_250",
+      "treatment_id": "quench_temper",
+      "variant_code": "tm_qt",
+      "variant_es": "Temple en aceite 870 °C + revenido ≤ 550 °C (Total Materia / Compraco)",
+      "variant_en": "870 °C oil quench + temper ≤ 550 °C (Total Materia / Compraco)",
+      "name_es": "Temple en aceite 870 °C + revenido ≤ 550 °C (Total Materia / Compraco)",
+      "name_en": "870 °C oil quench + temper ≤ 550 °C (Total Materia / Compraco)",
+      "objective_es": "Matriz resistente y tenaz con grafito laminar.",
+      "objective_en": "Strong and tough matrix with flake graphite.",
+      "goal": "toughness",
+      "is_reference": true,
+      "medium_es": "Aceite (temple) y aire (revenido)",
+      "medium_en": "Oil (quench) and air (temper)",
+      "material_condition_es": null,
+      "material_condition_en": null,
+      "required_initial_state": {},
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "prior_protocol_id": null,
+      "evidence_status": "source_verified",
+      "source_ids": [
+        "src_totalmateria_gray_2",
+        "src_compraco_gray"
+      ],
+      "validity": {
+        "specimen": "probeta de referencia educativa, cilindro de 12,7 mm"
+      },
+      "expected_es": "Martensita revenida en la matriz con grafito laminar sin cambios: más tenacidad que el templado.",
+      "expected_en": "Tempered martensite matrix with unchanged flake graphite: tougher than as-quenched.",
+      "restrictions_es": [
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
+        "Revenir por debajo de 550 °C para evitar la grafitización (Compraco)."
+      ],
+      "restrictions_en": [
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
+        "Temper below 550 °C to avoid graphitization (Compraco)."
+      ],
+      "assumptions_es": [
+        "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
+      ],
+      "assumptions_en": [
+        "Gray iron has no validated kinetic model in FERROLAB: matrix transformation is described qualitatively and the thermal curve is illustrative."
+      ],
+      "missing_es": [
+        "Tiempo de austenización: la fuente lo hace depender del tamaño y la composición, sin cifra.",
+        "Temperatura mínima del revenido: las fuentes solo dan el máximo."
+      ],
+      "missing_en": [
+        "Austenitizing time: the source makes it depend on size and composition, without a number.",
+        "Minimum tempering temperature: sources only give the maximum."
+      ],
+      "published_results": [],
+      "model_applicable": false,
+      "published_on": "2026-11-19",
+      "stages": [
+        {
+          "kind": "heat",
+          "label_key": "preheat",
+          "end_level": "target",
+          "end_temperature_mode": "value",
+          "duration_mode": "unpublished",
+          "role": "preheat",
+          "medium": "furnace",
+          "end_temperature_c": 650.0,
+          "end_temperature_evidence_id": "ev_tm_gray_harden",
+          "purpose_es": "Calentamiento lento hasta ~650 °C para evitar fisuras.",
+          "purpose_en": "Slow heating to ~650 °C to avoid cracking.",
+          "ordinal": 1
+        },
+        {
+          "kind": "heat",
+          "label_key": "heat_to_austenitizing",
+          "end_level": "target",
+          "end_temperature_mode": "value",
+          "duration_mode": "unpublished",
+          "role": "austenitize",
+          "medium": "furnace",
+          "temperature_min_c": 850,
+          "temperature_max_c": 900,
+          "temperature_ref_c": 870,
+          "end_temperature_evidence_id": "ev_cp_gray_quench",
+          "purpose_es": "La matriz se austeniza; el grafito no cambia de forma.",
+          "purpose_en": "The matrix austenitizes; graphite keeps its shape.",
+          "end_temperature_c": 870,
+          "ordinal": 2
+        },
+        {
+          "kind": "hold",
+          "label_key": "hold_austenitizing",
+          "end_level": "target",
+          "end_temperature_mode": "value",
+          "duration_mode": "unpublished",
+          "role": "soak",
+          "medium": "furnace",
+          "duration_min_s": null,
+          "duration_max_s": null,
+          "duration_ref_s": null,
+          "duration_evidence_id": null,
+          "rule_es": null,
+          "rule_en": null,
+          "start_condition_es": "El tiempo cuenta desde que el centro de la probeta alcanza la temperatura del horno (no desde que el horno la alcanza).",
+          "start_condition_en": "Time counts from when the specimen center reaches the furnace temperature (not when the furnace reaches it).",
+          "purpose_es": "El carbono del grafito se disuelve en la austenita.",
+          "purpose_en": "Carbon from graphite dissolves into austenite.",
+          "duration_s": null,
+          "end_temperature_c": 870,
+          "end_temperature_evidence_id": "ev_cp_gray_quench",
+          "ordinal": 3
+        },
+        {
+          "kind": "transfer",
+          "label_key": "transfer_to_medium",
+          "end_level": "target",
+          "end_temperature_mode": "unpublished",
+          "duration_mode": "unpublished",
+          "role": "transfer",
+          "medium": "air",
+          "purpose_es": "Traslado del horno al medio: la superficie empieza a enfriarse en el aire.",
+          "purpose_en": "Transfer from furnace to medium: the surface starts cooling in air.",
+          "ordinal": 4
+        },
+        {
+          "kind": "cool",
+          "label_key": "quench_cool",
+          "end_level": "ambient",
+          "end_temperature_mode": "ambient",
+          "duration_mode": "until_ambient",
+          "role": "quench",
+          "medium": "oil",
+          "end_temperature_evidence_id": null,
+          "duration_evidence_id": null,
+          "medium_note_es": null,
+          "medium_note_en": null,
+          "purpose_es": "Enfriamiento rápido: si se cruza Ms sin transformaciones previas, la austenita se convierte en martensita (dura y frágil).",
+          "purpose_en": "Rapid cooling: if Ms is crossed without prior transformations, austenite turns into martensite (hard and brittle).",
+          "ordinal": 5
+        },
+        {
+          "kind": "heat",
+          "label_key": "heat_to_temper",
+          "end_level": "target",
+          "end_temperature_mode": "user_target",
+          "duration_mode": "unpublished",
+          "role": "temper",
+          "medium": "furnace",
+          "temperature_min_c": null,
+          "temperature_max_c": 550,
+          "temperature_ref_c": null,
+          "end_temperature_evidence_id": "ev_cp_gray_temper",
+          "purpose_es": "Calentamiento por debajo de Ac1: no se forma austenita nueva.",
+          "purpose_en": "Heating below Ac1: no new austenite forms.",
+          "ordinal": 6
+        },
+        {
+          "kind": "hold",
+          "label_key": "hold_temper",
+          "end_level": "target",
+          "end_temperature_mode": "user_target",
+          "duration_mode": "user_hold",
+          "role": "soak",
+          "medium": "furnace",
+          "duration_min_s": 1800.0,
+          "duration_max_s": null,
+          "duration_ref_s": 1800.0,
+          "duration_evidence_id": "ev_tm_gray_temper",
+          "rule_es": "Total Materia: ~1 h por pulgada. Aplicado a la probeta de referencia educativa de 12,7 mm. → 30 min.",
+          "rule_en": "Total Materia: ~1 h per inch. Applied to the 12.7 mm educational reference specimen. → 30 min.",
+          "start_condition_es": "El tiempo cuenta desde que el centro de la probeta alcanza la temperatura del horno (no desde que el horno la alcanza).",
+          "start_condition_en": "Time counts from when the specimen center reaches the furnace temperature (not when the furnace reaches it).",
+          "purpose_es": "La martensita se revierte: precipitan carburos, baja la dureza y sube la tenacidad.",
+          "purpose_en": "Martensite tempers: carbides precipitate, hardness drops and toughness rises.",
+          "ordinal": 7
+        },
+        {
+          "kind": "cool",
+          "label_key": "air_cool",
+          "end_level": "ambient",
+          "end_temperature_mode": "ambient",
+          "duration_mode": "until_ambient",
+          "role": "air_cool",
+          "medium": "air",
+          "purpose_es": "Enfriamiento en aire en calma hasta temperatura ambiente.",
+          "purpose_en": "Cooling in still air down to room temperature.",
+          "ordinal": 8
+        }
+      ],
+      "review_status": "draft"
+    },
+    {
+      "id": "prot_gjl250_quench_tm",
+      "version": "1.0.0",
+      "material_id": "en_gjl_250",
       "treatment_id": "quench",
       "variant_code": "oil_tm",
       "variant_es": "Temple en aceite (Total Materia / Compraco)",
@@ -5045,7 +5694,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5058,11 +5707,11 @@
       "expected_es": "Matriz martensítica con grafito laminar sin cambios; revenir siempre.",
       "expected_en": "Martensitic matrix with unchanged flake graphite; always temper.",
       "restrictions_es": [
-        "ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
         "La fundición gris no aleada puede necesitar Mn suficiente para templar en el centro."
       ],
       "restrictions_en": [
-        "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
         "Unalloyed gray iron may need enough Mn to harden at the center."
       ],
       "assumptions_es": [
@@ -5163,9 +5812,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_temper_tm",
+      "id": "prot_gjl250_temper_tm",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "temper",
       "variant_code": "tm",
       "variant_es": "Revenido (Total Materia)",
@@ -5183,8 +5832,8 @@
       "required_initial_state": {
         "hardened": true
       },
-      "default_initial_condition_id": "ic_astm_a48_hardened_ref",
-      "prior_protocol_id": "prot_a48_quench_tm",
+      "default_initial_condition_id": "ic_gjl250_hardened_ref",
+      "prior_protocol_id": "prot_gjl250_quench_tm",
       "evidence_status": "source_verified",
       "source_ids": [
         "src_totalmateria_gray_2",
@@ -5269,9 +5918,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_anneal_ferritize",
+      "id": "prot_gjl250_anneal_ferritize",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "anneal",
       "variant_code": "ferritizing",
       "variant_es": "Recocido ferritizante (Total Materia)",
@@ -5287,7 +5936,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5299,10 +5948,10 @@
       "expected_es": "Matriz más ferrítica, menor dureza y resistencia (≈ una clase menos).",
       "expected_en": "More ferritic matrix, lower hardness and strength (≈ one grade lower).",
       "restrictions_es": [
-        "ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -5391,9 +6040,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_anneal_full",
+      "id": "prot_gjl250_anneal_full",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "anneal",
       "variant_code": "full",
       "variant_es": "Recocido medio/completo 790–900 °C (Total Materia)",
@@ -5409,7 +6058,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5421,10 +6070,10 @@
       "expected_es": null,
       "expected_en": null,
       "restrictions_es": [
-        "ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -5513,9 +6162,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_anneal_graphitize",
+      "id": "prot_gjl250_anneal_graphitize",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "anneal",
       "variant_code": "graphitizing",
       "variant_es": "Recocido grafitizante 900–955 °C",
@@ -5531,7 +6180,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5635,9 +6284,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_stress_relief",
+      "id": "prot_gjl250_stress_relief",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "anneal",
       "variant_code": "stress_relief",
       "variant_es": "Alivio de tensiones 550 °C (Compraco)",
@@ -5653,7 +6302,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5751,9 +6400,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_normalize_tm",
+      "id": "prot_gjl250_normalize_tm",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "normalize",
       "variant_code": "tm",
       "variant_es": "Normalizado 885–925 °C (Total Materia)",
@@ -5769,7 +6418,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5781,10 +6430,10 @@
       "expected_es": "Matriz perlítica más fina; la dureza depende del carbono combinado y del espaciado perlítico.",
       "expected_en": "Finer pearlitic matrix; hardness depends on combined carbon and pearlite spacing.",
       "restrictions_es": [
-        "ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -5850,9 +6499,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_austemper_tm",
+      "id": "prot_gjl250_austemper_tm",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "austemper",
       "variant_code": "tm_general",
       "variant_es": "Austemperizado 230–425 °C (Total Materia)",
@@ -5868,7 +6517,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5880,10 +6529,10 @@
       "expected_es": "Matriz ausferrítica; no confundir con ADI (fundición nodular austemperizada).",
       "expected_en": "Ausferritic matrix; do not confuse with ADI (austempered ductile iron).",
       "restrictions_es": [
-        "ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -5989,9 +6638,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_austemper_hard",
+      "id": "prot_gjl250_austemper_hard",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "austemper",
       "variant_code": "tm_hardness",
       "variant_es": "Austemperizado 230–290 °C (dureza)",
@@ -6007,7 +6656,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -6019,10 +6668,10 @@
       "expected_es": null,
       "expected_en": null,
       "restrictions_es": [
-        "ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -6128,9 +6777,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_austemper_jmrt",
+      "id": "prot_gjl250_austemper_jmrt",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "austemper",
       "variant_code": "jmrt_2022_unverified",
       "variant_es": "AGI experimental 870 °C 2 h → 360 °C 1 h (fuente no verificada)",
@@ -6146,7 +6795,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_unverified",
       "source_ids": [
@@ -6158,12 +6807,12 @@
       "expected_es": null,
       "expected_en": null,
       "restrictions_es": [
-        "ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
-        "Condiciones de un estudio concreto (360 °C 1 h o 260 °C 2 h); no se asignan a cualquier A48 clase 30."
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
+        "Condiciones de un estudio concreto (360 °C 1 h o 260 °C 2 h); no se asignan a cualquier GG25."
       ],
       "restrictions_en": [
-        "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
-        "Conditions of a specific study (360 °C 1 h or 260 °C 2 h); not assigned to every A48 class 30."
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
+        "Conditions of a specific study (360 °C 1 h or 260 °C 2 h); not assigned to every GG25."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -6267,9 +6916,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_martemper_tm",
+      "id": "prot_gjl250_martemper_tm",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "martemper",
       "variant_code": "tm",
       "variant_es": "Martemperizado 200–260 °C (Total Materia)",
@@ -6285,7 +6934,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -6297,10 +6946,10 @@
       "expected_es": "Matriz martensítica frágil: revenir casi siempre.",
       "expected_en": "Brittle martensitic matrix: tempering almost always needed.",
       "restrictions_es": [
-        "ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -6404,9 +7053,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_a48_martemper_asm",
+      "id": "prot_gjl250_martemper_asm",
       "version": "1.0.0",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "martemper",
       "variant_code": "asm_liners_unverified",
       "variant_es": "Camisas de cilindro 870 °C 1 h → 245 °C 1 min (fuente no verificada)",
@@ -6422,7 +7071,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_astm_a48_as_cast_unspecified",
+      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_unverified",
       "source_ids": [
@@ -6434,11 +7083,11 @@
       "expected_es": null,
       "expected_en": null,
       "restrictions_es": [
-        "ASTM A48 clase 30 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
+        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
         "Revenido posterior del caso: 200 °C, 2 h."
       ],
       "restrictions_en": [
-        "ASTM A48 class 30 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
+        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
         "Subsequent temper of the case: 200 °C, 2 h."
       ],
       "assumptions_es": [
@@ -7117,7 +7766,7 @@
     },
     {
       "id": "mg_gi_lamellar_graphite",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": null,
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Gusseisen_mit_Lamellengraphit.jpg",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Gusseisen_mit_Lamellengraphit.jpg/960px-Gusseisen_mit_Lamellengraphit.jpg",
@@ -7144,7 +7793,7 @@
     },
     {
       "id": "mg_gi_grey",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": null,
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Cast_iron_grey.jpg",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Cast_iron_grey.jpg/960px-Cast_iron_grey.jpg",
@@ -7172,7 +7821,7 @@
     },
     {
       "id": "mg_gi_pearlitic",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": null,
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Fundici%C3%B3n_perlitica.JPG",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Fundici%C3%B3n_perlitica.JPG/500px-Fundici%C3%B3n_perlitica.JPG",
@@ -7201,7 +7850,7 @@
     },
     {
       "id": "mg_di_nodular",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": null,
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Gusseisen_mit_Kugelgraphit.jpg",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Gusseisen_mit_Kugelgraphit.jpg/960px-Gusseisen_mit_Kugelgraphit.jpg",
@@ -7228,7 +7877,7 @@
     },
     {
       "id": "mg_di_adi",
-      "material_id": "astm_a48_class_30",
+      "material_id": "en_gjl_250",
       "treatment_id": "austemper",
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/19/Austempered_Ductile_Iron_%28ADI%29.jpg",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Austempered_Ductile_Iron_%28ADI%29.jpg/960px-Austempered_Ductile_Iron_%28ADI%29.jpg",
@@ -7639,9 +8288,9 @@
       "review_status": "draft"
     },
     {
-      "id": "pq_a48",
-      "prompt_es": "ASTM A48 Clase 30 define…",
-      "prompt_en": "ASTM A48 Class 30 defines…",
+      "id": "pq_gjl250",
+      "prompt_es": "La designación EN-GJL-250 (GG25) define…",
+      "prompt_en": "The EN-GJL-250 (GG25) designation defines…",
       "options_es": [
         "Una composición química única",
         "Una clase de fundición gris por requisito de resistencia",

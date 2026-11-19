@@ -2,7 +2,7 @@
   "material_id": [
     "aisi_1045",
     "aisi_8620",
-    "astm_a48_class_30"
+    "en_gjl_250"
   ],
   "treatment_id": [
     "quench",
@@ -10,7 +10,8 @@
     "anneal",
     "normalize",
     "austemper",
-    "martemper"
+    "martemper",
+    "quench_temper"
   ],
   "material_family": [
     "steel",

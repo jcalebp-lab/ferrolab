@@ -68,10 +68,10 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "carburized: no case-hardened properties are attributed.",
     ),
     "CAST_IRON_NO_STEEL_MODELS": (
-        "ASTM A48 Clase 30 es una fundición gris, no un acero: no se aplican curvas ni modelos de "
-        "acero. La clase de resistencia no fija una composición ni una matriz únicas.",
-        "ASTM A48 Class 30 is a gray cast iron, not a steel: steel curves and models are not applied. "
-        "The strength class does not define a unique composition or matrix.",
+        "La GG25 (EN-GJL-250) es una fundición gris, no un acero: no se aplican curvas ni modelos de "
+        "acero. La norma EN 1561 fija la resistencia, no una composición ni una matriz únicas.",
+        "GG25 (EN-GJL-250) is a gray cast iron, not a steel: steel curves and models are not applied. "
+        "EN 1561 sets the strength, not a unique composition or matrix.",
     ),
     "ANNEAL_VARIANT_REQUIRED": (
         "«Recocido» agrupa variantes distintas (completo, subcrítico, etc.); el protocolo debe "
@@ -423,12 +423,12 @@ ASSUMPTIONS: dict[str, tuple[str, str]] = {
         "for non-austenitic hypoeutectoid steels (valid 129–632 HV for yield and 129–592 HV for tensile). The band "
         "only reflects the hardness band, not the scatter of the correlation.",
     ),
-    "A48_CLASS_REFERENCE": (
-        "Fundición gris ASTM A48 clase 30: la norma define la clase por la resistencia mínima a tracción "
-        "(30 ksi ≈ 207 MPa) en barra de ensayo colada aparte, sin tratamiento térmico. Se muestra como referencia; "
-        "FERROLAB no calcula cómo la cambia el tratamiento.",
-        "ASTM A48 class 30 gray iron: the standard defines the class by its minimum tensile strength "
-        "(30 ksi ≈ 207 MPa) on a separately cast test bar, without heat treatment. It is shown as a reference; "
+    "GJL250_CLASS_REFERENCE": (
+        "Fundición gris GG25 (EN-GJL-250): la norma EN 1561 define el grado por la resistencia mínima a tracción "
+        "(250 MPa) en barra de ensayo de 30 mm, sin tratamiento térmico (equivale a ASTM A48 clase 35). Se muestra "
+        "como referencia; FERROLAB no calcula cómo la cambia el tratamiento.",
+        "GG25 (EN-GJL-250) gray iron: EN 1561 defines the grade by its minimum tensile strength (250 MPa) on a "
+        "30 mm test bar, without heat treatment (equivalent to ASTM A48 class 35). It is shown as a reference; "
         "FERROLAB does not compute how the treatment changes it.",
     ),
     "GRAY_HARDNESS_LITERATURE": (

@@ -72,11 +72,11 @@ async function flow(viewport, tag) {
   check(`${tag}: inicio`, await waitText(page, 'Iniciar simulación'));
   await page.screenshot({ path: `${OUT}${tag}-02-inicio.png` });
   await click(page, 'Iniciar simulación');
-  check(`${tag}: tres materiales`, (await waitText(page, 'ASTM A48 Clase 30')) && (await text(page)).includes('AISI 8620'));
+  check(`${tag}: tres materiales`, (await waitText(page, 'GG25 (EN-GJL-250)')) && (await text(page)).includes('AISI 8620'));
   await click(page, 'AISI 1045');
   await page.screenshot({ path: `${OUT}${tag}-03-material.png` });
   await click(page, 'Continuar');
-  check(`${tag}: seis tratamientos`, (await waitText(page, 'Martempering')) && (await text(page)).includes('Austempering'));
+  check(`${tag}: siete tratamientos (con bonificado)`, (await waitText(page, 'Martempering')) && (await text(page)).includes('Austempering') && (await text(page)).includes('Bonificado'));
   const tt = await text(page);
   check(`${tag}: estados de compatibilidad visibles`, tt.includes('Condicional') && tt.includes('Compatible'));
   await click(page, 'Temple');

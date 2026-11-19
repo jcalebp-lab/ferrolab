@@ -174,7 +174,7 @@
             "enum": [
               "aisi_1045",
               "aisi_8620",
-              "astm_a48_class_30"
+              "en_gjl_250"
             ],
             "title": "Material Id",
             "type": "string"
@@ -254,7 +254,8 @@
               "anneal",
               "normalize",
               "austemper",
-              "martemper"
+              "martemper",
+              "quench_temper"
             ],
             "title": "Treatment Id",
             "type": "string"
