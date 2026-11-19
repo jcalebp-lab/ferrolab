@@ -363,7 +363,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resultsTitle => 'What the evidence supports';
 
   @override
-  String get status_completed => 'Complete supported result';
+  String get status_completed => 'Complete result';
 
   @override
   String get status_partial_result => 'Partial result';

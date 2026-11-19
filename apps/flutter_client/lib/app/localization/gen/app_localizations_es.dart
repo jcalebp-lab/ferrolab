@@ -365,7 +365,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resultsTitle => 'Esto podemos concluir';
 
   @override
-  String get status_completed => 'Resultado completo respaldado';
+  String get status_completed => 'Resultado completo';
 
   @override
   String get status_partial_result => 'Resultado parcial';

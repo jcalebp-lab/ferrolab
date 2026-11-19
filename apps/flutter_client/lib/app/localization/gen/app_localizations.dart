@@ -755,7 +755,7 @@ abstract class AppLocalizations {
   /// No description provided for @status_completed.
   ///
   /// In es, this message translates to:
-  /// **'Resultado completo respaldado'**
+  /// **'Resultado completo'**
   String get status_completed;
 
   /// No description provided for @status_partial_result.
