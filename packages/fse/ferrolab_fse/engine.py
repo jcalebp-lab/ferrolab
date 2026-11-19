@@ -561,6 +561,10 @@ class ScientificEngine:
                 # Referencia de la norma para la clase (colada, sin tratar): no cuenta como resultado del tratamiento.
                 facts["mechanical_properties"] = ME.gray_iron_mechanical(self.snapshot.dataset_version)
                 model_sources.append("src_astm_a48_class")
+            if material.family == MaterialFamily.GRAY_CAST_IRON and "hardness" not in facts \
+                    and (hl := ME.gray_iron_hardness(treatment.id.value, self.snapshot.dataset_version)) is not None:
+                facts["hardness"] = hl
+                model_sources += [s for s in hl.source_ids if s not in model_sources]
             if n_facts == 0:
                 status = SimulationStatus.INSUFFICIENT_EVIDENCE
                 if level == "A":
@@ -656,6 +660,9 @@ class ScientificEngine:
             codes.append("STRENGTH_FROM_HARDNESS")
         if "tensile_strength_min" in mech:
             codes.append("A48_CLASS_REFERENCE")
+        hd = facts.get("hardness")
+        if hd is not None and hd.method == "literature_reference_other_specimen":
+            codes.append("GRAY_HARDNESS_LITERATURE")
         codes.append("EDUCATIONAL_NOT_INDUSTRIAL")
         return codes
 

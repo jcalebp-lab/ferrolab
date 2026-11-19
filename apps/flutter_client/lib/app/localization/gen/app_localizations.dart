@@ -2923,6 +2923,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Referencia del modelo usado en el cálculo'**
   String get sourceModel;
+
+  /// No description provided for @factOtherSpecimen.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor publicado de otra muestra'**
+  String get factOtherSpecimen;
 }
 
 class _AppLocalizationsDelegate

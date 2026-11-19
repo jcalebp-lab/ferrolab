@@ -87,7 +87,11 @@ def test_reference_simulation_is_coherent(seed_snapshot, m, t):
     if r.result_level == "A":
         assert v.result_level == "A"
     # 9. no se inventan resultados: cifras solo con modelo declarado y etiquetadas
-    facts = [r.results.hardness] if r.results.hardness else []
+    hd = r.results.hardness
+    if hd is not None and hd.method == "literature_reference_other_specimen":  # dureza publicada de otra muestra
+        assert m == MaterialId.ASTM_A48_CLASS_30 and hd.evidence_kind == "literature" and hd.validity["locator"]
+        hd = None
+    facts = [hd] if hd else []
     for g in (r.results.phase_fractions, r.results.microconstituent_fractions):
         facts += list((g or {}).values())
     if m == MaterialId.ASTM_A48_CLASS_30:
@@ -113,7 +117,7 @@ def test_every_variant_runs(seed_snapshot):
         assert r.thermal_history, pr.id
         if pr.evidence_status == "source_unverified":
             assert r.result_level == "C" and r.headline["code"] == "HEADLINE_UNVERIFIED"
-            assert r.results.hardness is None
+            assert r.results.hardness is None or r.results.hardness.method == "literature_reference_other_specimen"
 
 
 # --------------------------------------------------------------------------------- casos específicos
@@ -145,7 +149,8 @@ def test_8620_uncarburized_vs_carburized(seed_snapshot):
 def test_gray_iron_unknown_composition(seed_snapshot):
     eng = ScientificEngine(seed_snapshot)
     r = eng.simulate(_req("astm_a48_class_30", "quench", target_temperature_c=870, hold_time_min=30))
-    assert r.results.hardness is None and r.diagrams == []
+    assert (r.results.hardness is None or r.results.hardness.method == "literature_reference_other_specimen") \
+        and r.diagrams == []
     assert r.model_estimate.get("critical_temperatures_c") is None
     assert any("ASTM A48" in x for x in r.protocol_card["restrictions"])
     assert r.thermal_history and any(w.code == "THERMAL_CURVE_ILLUSTRATIVE" for w in r.warnings)

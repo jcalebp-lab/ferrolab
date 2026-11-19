@@ -300,6 +300,8 @@ class ResultFactCard extends StatelessWidget {
         ]),
         Text('${f.method}${f.fractionBasis != null ? ' · ${f.fractionBasis}' : ''} · ${f.sourceIds.join(', ')}'
             '${f.modelVersion != null ? ' · ${f.modelVersion}' : ''}', style: context.text.bodySmall),
+        if (f.validity?['locator'] != null)
+          Text('${t.factOtherSpecimen}: ${f.validity!['locator']}', style: context.text.bodySmall),
       ]),
     );
   }

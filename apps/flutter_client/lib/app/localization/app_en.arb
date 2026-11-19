@@ -598,5 +598,6 @@
   "grainKindFerrite": "ferrite grain",
   "grainKindAssumed": "assumed",
   "grainMeasureNote": "Each crossing of a line with a grain boundary is an intersection. ℓ̄ = total length ÷ intersections; G = −6.644·log10(ℓ̄ in mm) − 3.288. A small difference from the model is normal: the image is generated from the mean area and the standard notes that area and intercept do not give exactly the same G.",
-  "sourceModel": "Reference for the model used in the computation"
+  "sourceModel": "Reference for the model used in the computation",
+  "factOtherSpecimen": "Published value from another specimen"
 }

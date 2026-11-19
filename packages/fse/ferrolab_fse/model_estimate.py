@@ -77,6 +77,10 @@ MODEL_SOURCE_CATALOG: dict[str, dict[str, Any]] = {
                            "a tracción en ksi (clase 30 ≥ 30 ksi ≈ 207 MPa)", "authors": "ASTM International "
                            "(tabla reproducida por Portland Bolt y Total Materia)", "year": None, "doi": None,
                            "url": "https://www.portlandbolt.com/technical/specifications/astm-a48/", "kind": "standard"},
+    "src_appsci_2026_agi": {"title": "Effect of Different Austenitizing Temperatures on the Microstructure and "
+                            "Mechanical Properties of Austempering Gray Cast Iron (Applied Sciences 16(4):1828)",
+                            "authors": "Applied Sciences (MDPI)", "year": 2026, "doi": "10.3390/app16041828",
+                            "url": "https://doi.org/10.3390/app16041828", "kind": "journal_article"},
     "src_wiki_austempering": {"title": "Austempering", "authors": "Wikipedia", "year": None, "doi": None,
                               "url": "https://en.wikipedia.org/wiki/Austempering", "kind": "encyclopedia"},
 }
@@ -243,6 +247,29 @@ def gray_iron_mechanical(dataset_version: str) -> dict[str, ResultFact]:
         A48_CLASS30_MIN_MPA, "MPa", dataset_version, ["src_astm_a48_class"], "astm_a48_class_minimum",
         {"condition": "as_cast_separately_cast_test_bar", "applies_after_heat_treatment": False}, None,
         kind=EvidenceKind.LITERATURE, level=EvidenceLevel.QUALITATIVE)}
+
+
+# Durezas PUBLICADAS de fundición gris tratada (otra muestra, condición indicada). Se muestran como referencia
+# bibliográfica, no como cálculo de la probeta del estudiante.
+GRAY_HARDNESS_LITERATURE = {
+    "quench": {"value": 450.0, "min": 400.0, "max": 500.0, "unit": "HB", "source": "src_totalmateria_gray_2",
+               "condition": "surface_flame_hardened_unalloyed_3C_1.7Si",
+               "locator": "Total Materia, Heat Treating of Gray Irons, Part Two (flame hardening)"},
+    "austemper": {"value": 247.6, "min": 187.6, "max": 247.6, "unit": "HBW", "source": "src_appsci_2026_agi",
+                  "condition": "austenitized_930C_austempered_vs_187.6HBW_as_cast",
+                  "locator": "Applied Sciences 2026, 16(4):1828, resumen"},
+}
+
+
+def gray_iron_hardness(treatment_id: str, dataset_version: str) -> ResultFact | None:
+    d = GRAY_HARDNESS_LITERATURE.get(treatment_id)
+    if d is None:
+        return None
+    return ResultFact(value=d["value"], unit=d["unit"], scale=d["unit"], method="literature_reference_other_specimen",
+                      evidence_kind=EvidenceKind.LITERATURE, evidence_level=EvidenceLevel.QUALITATIVE,
+                      source_ids=[d["source"]], dataset_version=dataset_version,
+                      validity={"condition": d["condition"], "locator": d["locator"], "same_specimen": False},
+                      uncertainty={"min": d["min"], "max": d["max"], "basis": "published_range"})
 
 
 def _normalized(d: dict[str, float]) -> dict[str, float]:

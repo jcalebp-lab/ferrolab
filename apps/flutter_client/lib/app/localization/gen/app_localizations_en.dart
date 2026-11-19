@@ -1562,4 +1562,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sourceModel => 'Reference for the model used in the computation';
+
+  @override
+  String get factOtherSpecimen => 'Published value from another specimen';
 }

@@ -111,7 +111,11 @@ def test_sci03_all_seed_pairs_only_modeled_estimates(seed_snapshot, m, t):
         assert res.mechanical_properties["tensile_strength_min"].evidence_kind == "literature"
     elif t != "temper":
         assert res.grain_size is None and res.mechanical_properties is None
-    facts = [res.hardness] if res.hardness else []
+    hd = res.hardness
+    if m == "astm_a48_class_30" and hd is not None:  # dureza publicada de otra muestra, nunca un cálculo
+        assert hd.method == "literature_reference_other_specimen" and hd.evidence_kind == "literature"
+        hd = None
+    facts = [hd] if hd else []
     for group in (res.phase_fractions, res.microconstituent_fractions):
         facts += list((group or {}).values())
     for f in facts:
@@ -240,7 +244,8 @@ def test_sci07_a48_is_cast_iron_without_steel_models(seed_snapshot):
         r = ScientificEngine(seed_snapshot).simulate(req(m="astm_a48_class_30", t=t, temp=500))
         assert r.compatibility_status in (CompatibilityStatus.CONDITIONAL, CompatibilityStatus.SUPPORTED)
         assert any(w.code == "CAST_IRON_NO_STEEL_MODELS" for w in r.warnings)
-        assert r.diagrams == [] and r.results.hardness is None and r.results.microconstituent_fractions is None
+        assert r.diagrams == [] and r.results.microconstituent_fractions is None
+        assert r.results.hardness is None or r.results.hardness.method == "literature_reference_other_specimen"
         assert r.microstructure_illustration["graphite"] == "type_a_flakes"
 
 

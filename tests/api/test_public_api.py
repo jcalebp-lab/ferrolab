@@ -116,6 +116,8 @@ def test_all_pairs_answer_honestly(client, m, t):
         res = dict(body["results"])
         if m == "astm_a48_class_30":  # referencia de la norma, no un resultado del tratamiento
             assert set(res.pop("mechanical_properties")) == {"tensile_strength_min"}
+            hd = res.pop("hardness")
+            assert hd is None or hd["method"] == "literature_reference_other_specimen"
         assert all(v is None for v in res.values())
     assert body["explanation"]["compatibility_reason"]
 

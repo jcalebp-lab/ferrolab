@@ -1,13 +1,13 @@
 # Estado del proyecto FERROLAB
 
-**Fecha:** 19-11-2026 · **Engine:** 0.4.0 (modelos `ferrolab_metallurgy@1.1.0`) · **App:** 0.5.1 · **Dataset:** `0.2.0-dev+unreviewed` · **Protocolos:** 41 (ver `docs/PROTOCOLOS.md`)
+**Fecha:** 19-11-2026 · **Engine:** 0.4.0 (modelos `ferrolab_metallurgy@1.1.0`) · **App:** 0.5.2 · **Dataset:** `0.2.0-dev+unreviewed` · **Protocolos:** 41 (ver `docs/PROTOCOLOS.md`)
 
 ## 0. Publicado
 
 - **App web pública:** https://ferrolab-ckzk.onrender.com (Render, plan gratuito; se duerme tras ~15 min sin visitas y tarda ~1 min en despertar).
 - **Base de datos:** Supabase (us-east-1), usuario propio `ferrolab_app` sin privilegios de superusuario; 27 tablas con RLS de denegación por defecto. Se pausa tras una semana sin uso (plan gratuito).
 - **Modo:** `staging` (piloto público con contenido marcado «pendiente de revisión»; sin tokens de desarrollo).
-- **APK Android:** `dist/FERROLAB-0.5.1.apk` (solo HTTPS, servidor público preconfigurado, firma de pruebas; no se sube al repositorio).
+- **APK Android:** `dist/FERROLAB-0.5.2.apk` (solo HTTPS, servidor público preconfigurado, firma de pruebas; no se sube al repositorio).
 
 ## 1. Qué funciona (probado en este entorno)
 
@@ -20,7 +20,7 @@
 | App Flutter | Asistente, horno animado, resultados, **microscopio con microestructura generada, zoom ≈ 560×–3700×, barra de escala y medición de grano por intercepto** (D-28, D-35), **diagramas TTT/CCT interactivos**, aprender, práctica, historial, comparación, modo docente, ES/EN, claro/oscuro, panel admin. Web y Android. | `flutter analyze` sin problemas, pruebas Flutter, `flutter build web` y `flutter build apk` OK |
 | Recorrido completo | Estudiante en escritorio y móvil, local y contra la URL pública; panel admin con token de desarrollo. | E2E en Chromium: 40/40 y 4/4 |
 
-Totales de la última ejecución: **Python 216/216**, **Flutter 14/14**, **E2E 40/40 + 4/4**.
+Totales de la última ejecución: **Python 234/234**, **Flutter 14/14**, **E2E 40/40 + 4/4**.
 
 ## 2. Limitaciones conocidas
 

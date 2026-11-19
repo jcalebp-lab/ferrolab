@@ -431,6 +431,16 @@ ASSUMPTIONS: dict[str, tuple[str, str]] = {
         "(30 ksi ≈ 207 MPa) on a separately cast test bar, without heat treatment. It is shown as a reference; "
         "FERROLAB does not compute how the treatment changes it.",
     ),
+    "GRAY_HARDNESS_LITERATURE": (
+        "Dureza de la fundición gris: valor PUBLICADO de otra muestra en una condición parecida (se indica cuál), no "
+        "un cálculo de tu probeta. Temple: 400–500 HB en superficie templada a la llama de una fundición sin alear "
+        "(3 % C, 1,7 % Si; Total Materia). Austemperizado: 247,6 HBW tras austenizar a 930 °C frente a 187,6 HBW en "
+        "bruto de colada (Applied Sciences 2026, 16:1828).",
+        "Gray iron hardness: PUBLISHED value from another specimen in a similar condition (stated), not a "
+        "computation for your specimen. Quench: 400–500 HB on a flame-hardened surface of an unalloyed iron (3% C, "
+        "1.7% Si; Total Materia). Austempering: 247.6 HBW after austenitizing at 930 °C versus 187.6 HBW as cast "
+        "(Applied Sciences 2026, 16:1828).",
+    ),
     "REVIEW_STATUS": (
         "Estado de revisión: el catálogo y los textos aún no han sido revisados por una persona con formación "
         "metalúrgica; cada cifra indica su fuente y su método.",
