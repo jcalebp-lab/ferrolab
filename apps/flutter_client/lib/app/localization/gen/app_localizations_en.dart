@@ -1409,4 +1409,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get microReasonNotComputed =>
       'Not drawn: there are no computed fractions for this practice.';
+
+  @override
+  String get settingsVersion => 'Version';
+
+  @override
+  String get settingsAppVersion => 'Installed app';
+
+  @override
+  String get settingsEngineVersion => 'Server engine';
+
+  @override
+  String get settingsDatasetVersion => 'Scientific catalog';
 }

@@ -9,4 +9,6 @@ abstract final class AppConfig {
   static String get apiBaseUrl =>
       _configured.isNotEmpty ? _configured : (kIsWeb ? Uri.base.origin : 'http://localhost:8000');
   static const requestTimeout = Duration(seconds: 15);
+  /// Versión visible de la app (igual a `version` de pubspec.yaml); permite comprobar qué APK está instalado.
+  static const appVersion = '0.4.2';
 }

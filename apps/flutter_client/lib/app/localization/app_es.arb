@@ -606,5 +606,9 @@
   "microReasonUnverified": "No se dibuja: la variante tiene una fuente no verificada y no se calculan fracciones.",
   "microReasonTheory": "No se dibuja: en modo «solo teoría» no hay estado templado de partida.",
   "microReasonInvalid": "No se dibuja: corrige la entrada para continuar.",
-  "microReasonNotComputed": "No se dibuja: no hay fracciones calculadas para esta práctica."
+  "microReasonNotComputed": "No se dibuja: no hay fracciones calculadas para esta práctica.",
+  "settingsVersion": "Versión",
+  "settingsAppVersion": "App instalada",
+  "settingsEngineVersion": "Motor del servidor",
+  "settingsDatasetVersion": "Catálogo científico"
 }

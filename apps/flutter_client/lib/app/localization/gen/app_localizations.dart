@@ -2659,6 +2659,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se dibuja: no hay fracciones calculadas para esta práctica.'**
   String get microReasonNotComputed;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión'**
+  String get settingsVersion;
+
+  /// No description provided for @settingsAppVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'App instalada'**
+  String get settingsAppVersion;
+
+  /// No description provided for @settingsEngineVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Motor del servidor'**
+  String get settingsEngineVersion;
+
+  /// No description provided for @settingsDatasetVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Catálogo científico'**
+  String get settingsDatasetVersion;
 }
 
 class _AppLocalizationsDelegate

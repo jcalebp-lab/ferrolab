@@ -533,5 +533,9 @@
   "microReasonUnverified": "Not drawn: the variant has an unverified source and no fractions are computed.",
   "microReasonTheory": "Not drawn: in theory-only mode there is no hardened starting state.",
   "microReasonInvalid": "Not drawn: correct the input to continue.",
-  "microReasonNotComputed": "Not drawn: there are no computed fractions for this practice."
+  "microReasonNotComputed": "Not drawn: there are no computed fractions for this practice.",
+  "settingsVersion": "Version",
+  "settingsAppVersion": "Installed app",
+  "settingsEngineVersion": "Server engine",
+  "settingsDatasetVersion": "Scientific catalog"
 }

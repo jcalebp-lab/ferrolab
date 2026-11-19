@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/l10n.dart';
+import '../../core/config.dart';
 import '../../app/providers.dart';
 import '../../core/design_system/tokens.dart';
 import '../../shared/widgets/widgets.dart';
@@ -28,6 +29,7 @@ class SettingsScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(t.settings)),
       body: PageBody(maxWidth: 720, children: [
         const ServerCard(),
+        const _VersionCard(),
         const Gap(FlSpace.m),
         SectionCard(
           title: t.settingsLanguage,
@@ -136,6 +138,30 @@ class SourcesScreen extends ConsumerWidget {
           data: (list) => Column(children: [for (final s in list) SourceTile(s)]),
         ),
       ]),
+    );
+  }
+}
+
+
+/// Versión instalada de la app y versión del servidor (para comprobar que la actualización se instaló).
+class _VersionCard extends ConsumerWidget {
+  const _VersionCard();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.t;
+    final h = ref.watch(healthProvider).value;
+    return Padding(
+      padding: const EdgeInsets.only(top: FlSpace.m),
+      child: SectionCard(
+        key: const Key('versionCard'),
+        title: t.settingsVersion,
+        icon: Icons.info_outline,
+        child: Column(children: [
+          KeyValue(t.settingsAppVersion, AppConfig.appVersion),
+          KeyValue(t.settingsEngineVersion, h?.engineVersion ?? '—'),
+          KeyValue(t.settingsDatasetVersion, h?.datasetVersion ?? '—'),
+        ]),
+      ),
     );
   }
 }
