@@ -6,7 +6,6 @@ import '../../app/l10n.dart';
 import '../../app/providers.dart';
 import '../../core/design_system/tokens.dart';
 import '../../shared/widgets/widgets.dart';
-import '../simulation/furnace_painter.dart';
 
 /// Bienvenida y tutorial de 3 pasos, siempre saltable (doc 07 §3.1). No pide cuenta ni permisos.
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -45,7 +44,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       body: PageBody(maxWidth: 560, children: [
         const Gap(FlSpace.l),
         if (step == 0) ...[
-          SizedBox(height: 220, child: CustomPaint(painter: FurnacePainter.idle(Theme.of(context).brightness))),
+          Center(child: Image.asset('assets/logo.png', height: 200, semanticLabel: 'FERROLAB')),
           const Gap(FlSpace.xl),
           Text(t.welcomeHeadline, style: context.text.displaySmall),
           const Gap(FlSpace.m),

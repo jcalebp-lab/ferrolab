@@ -1,7 +1,10 @@
-"""Genera el icono ORIGINAL de FERROLAB (horno estilizado) para web, Android e iOS.
+"""Genera los íconos de FERROLAB (web, Android, iOS) a partir del logo del propietario.
 
 Uso: uv run python scripts/gen_icons.py
-Colores del Design System (doc 08): Sulphur Yellow, Ink, Peach Red, Light Green.
+Fuente: docs/assets/ferrolab_logo_source.png (tarjeta gris oscura redondeada sobre fondo blanco).
+- Versión redondeada con transparencia fuera de la tarjeta: favicon, web e ícono de Android.
+- Versión «a sangre» (fondo gris hasta el borde): iOS (no admite transparencia), apple-touch-icon y maskable,
+  porque el sistema recorta su propia forma.
 """
 
 from __future__ import annotations
@@ -13,56 +16,73 @@ from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
 APP = ROOT / "apps" / "flutter_client"
-YELLOW, INK, PEACH, GREEN, WHITE = (233, 231, 74), (23, 36, 29), (255, 114, 94), (189, 236, 193), (250, 251, 247)
+SOURCE = ROOT / "docs" / "assets" / "ferrolab_logo_source.png"
 
 
-def master(size: int = 1024, *, full_bleed: bool) -> Image.Image:
-    """full_bleed=True: fondo a sangre (iOS, maskable). False: tarjeta redondeada (Android/web)."""
-    s = size
-    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    if full_bleed:
-        d.rectangle([0, 0, s, s], fill=YELLOW)
-    else:
-        d.rounded_rectangle([0, 0, s - 1, s - 1], radius=int(s * .22), fill=YELLOW)
-    k = .78 if full_bleed else .86  # zona segura para iconos adaptables
-    def r(x0, y0, x1, y1):
-        c = s / 2
-        return [c + (x0 - .5) * s * k, c + (y0 - .5) * s * k, c + (x1 - .5) * s * k, c + (y1 - .5) * s * k]
-    d.rounded_rectangle(r(.18, .16, .82, .84), radius=int(s * .07 * k), fill=INK)          # cuerpo del horno
-    d.rounded_rectangle(r(.27, .25, .73, .60), radius=int(s * .035 * k), fill=(58, 30, 22))  # cámara
-    glow = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-    ImageDraw.Draw(glow).rounded_rectangle(r(.37, .45, .63, .55), radius=int(s * .02), fill=PEACH + (255,))
-    img.alpha_composite(glow.filter(ImageFilter.GaussianBlur(s * .025)))
-    d = ImageDraw.Draw(img)
-    d.rounded_rectangle(r(.38, .46, .62, .54), radius=int(s * .015 * k), fill=PEACH)        # pieza caliente
-    for i, y in enumerate((.31, .38)):                                                       # resistencias
-        pts = [(r(.31 + j * .045, y, 0, 0)[0], r(0, y + (.02 if j % 2 else -.02), 0, 0)[1]) for j in range(10)]
-        d.line(pts, fill=(255, 160, 80), width=max(2, int(s * .012 * k)), joint="curve")
-        del i
-    d.rounded_rectangle(r(.27, .67, .73, .76), radius=int(s * .02 * k), fill=WHITE)          # panel
-    d.ellipse(r(.31, .69, .36, .74), fill=GREEN)
-    return img
+def _card() -> tuple[Image.Image, tuple[int, int, int]]:
+    """Recorta la tarjeta oscura (sin el fondo blanco) y devuelve también su color de fondo."""
+    im = Image.open(SOURCE).convert("RGB")
+    gray = im.convert("L")
+    box = gray.point(lambda v: 255 if v < 200 else 0).getbbox()
+    card = im.crop(box)
+    side = max(card.size)
+    sq = Image.new("RGB", (side, side), (255, 255, 255))
+    sq.paste(card, ((side - card.width) // 2, (side - card.height) // 2))
+    bg = sq.getpixel((side // 2, int(side * 0.06)))  # gris del fondo, arriba al centro
+    return sq, bg
+
+
+def _outside(card: Image.Image) -> Image.Image:
+    """Máscara (255) del fondo blanco que rodea la tarjeta: relleno por inundación desde las cuatro esquinas sobre
+    los píxeles claros, de modo que se respeta la forma exacta del logo y los píxeles claros del dibujo (las patas
+    del horno, por ejemplo) no se tocan. Se ensancha 2 px para eliminar el halo del antialias."""
+    side = card.width
+    bright = card.convert("L").point(lambda v: 255 if v > 110 else 0)
+    flood = bright.copy()
+    for xy in ((0, 0), (side - 1, 0), (0, side - 1), (side - 1, side - 1)):
+        if flood.getpixel(xy) == 255:
+            ImageDraw.floodfill(flood, xy, 128)
+    out = flood.point(lambda v: 255 if v == 128 else 0)
+    return out.filter(ImageFilter.MaxFilter(5))
+
+
+def masters() -> tuple[Image.Image, Image.Image, Image.Image]:
+    card, bg = _card()
+    side = card.width
+    outside = _outside(card)
+    inside = outside.point(lambda v: 255 - v).filter(ImageFilter.GaussianBlur(1.2))
+    # 1) redondeado con transparencia (la forma de la tarjeta del propietario)
+    rounded = card.convert("RGBA")
+    rounded.putalpha(inside)
+    # 2) a sangre: el fondo blanco se sustituye por el gris de la tarjeta
+    bleed = Image.new("RGBA", (side, side), bg + (255,))
+    bleed.alpha_composite(rounded)
+    # 3) maskable: contenido reducido a la zona segura sobre fondo gris
+    maskable = Image.new("RGBA", (side, side), bg + (255,))
+    k = 0.84
+    small = bleed.resize((int(side * k), int(side * k)), Image.LANCZOS)
+    maskable.paste(small, ((side - small.width) // 2, (side - small.height) // 2))
+    return rounded, bleed, maskable
 
 
 def save(img: Image.Image, path: Path, size: int, *, opaque: bool = False) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     out = img.resize((size, size), Image.LANCZOS)
-    if opaque:  # iOS no admite transparencia en el icono
-        bg = Image.new("RGB", out.size, YELLOW)
-        bg.paste(out, mask=out.split()[3])
-        out = bg
+    if opaque:
+        out = out.convert("RGB")
     out.save(path)
 
 
 def main() -> None:
-    rounded, bleed = master(full_bleed=False), master(full_bleed=True)
+    rounded, bleed, maskable = masters()
     web = APP / "web"
     save(rounded, web / "favicon.png", 32)
     save(rounded, web / "icons" / "Icon-192.png", 192)
     save(rounded, web / "icons" / "Icon-512.png", 512)
-    save(bleed, web / "icons" / "Icon-maskable-192.png", 192)
-    save(bleed, web / "icons" / "Icon-maskable-512.png", 512)
+    save(maskable, web / "icons" / "Icon-maskable-192.png", 192)
+    save(maskable, web / "icons" / "Icon-maskable-512.png", 512)
+    save(bleed, web / "apple-touch-icon.png", 180, opaque=True)  # el iPhone lo busca primero en la raíz
+    save(bleed, web / "icons" / "apple-touch-icon.png", 180, opaque=True)
     for folder, px in {"mdpi": 48, "hdpi": 72, "xhdpi": 96, "xxhdpi": 144, "xxxhdpi": 192}.items():
         save(rounded, APP / "android" / "app" / "src" / "main" / "res" / f"mipmap-{folder}" / "ic_launcher.png", px)
     iconset = APP / "ios" / "Runner" / "Assets.xcassets" / "AppIcon.appiconset"

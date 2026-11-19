@@ -60,7 +60,11 @@ class HomeScreen extends ConsumerWidget {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: Text(t.appTitle, style: context.text.titleLarge?.copyWith(letterSpacing: 2, fontWeight: FontWeight.w700)),
+        title: Row(mainAxisSize: MainAxisSize.min, children: [
+          Image.asset('assets/logo.png', height: 32, excludeFromSemantics: true),
+          const SizedBox(width: 10),
+          Text(t.appTitle, style: context.text.titleLarge?.copyWith(letterSpacing: 2, fontWeight: FontWeight.w700)),
+        ]),
         actions: [
           IconButton(tooltip: t.settings, onPressed: () => context.push('/settings'), icon: const Icon(Icons.settings_outlined)),
         ],
