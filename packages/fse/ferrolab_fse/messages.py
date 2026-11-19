@@ -142,6 +142,59 @@ ASSUMPTIONS: dict[str, tuple[str, str]] = {
         "Los tramos entre puntos son líneas rectas: representación didáctica, no cinética medida.",
         "Segments between points are straight lines: a teaching representation, not measured kinetics.",
     ),
+    # --- motor metalúrgico (D-26) -----------------------------------------------
+    "OUTSIDE_RECOMMENDED_TEMPERATURE": (
+        "La temperatura elegida ({temperature_c} °C) está fuera del rango recomendado por la literatura para "
+        "este material y tratamiento ({min_c}–{max_c} °C). Es una mala práctica: revisa la sugerencia.",
+        "The selected temperature ({temperature_c} °C) is outside the literature-recommended range for this "
+        "material and treatment ({min_c}–{max_c} °C). This is poor practice: check the suggestion.",
+    ),
+    "OUTSIDE_RECOMMENDED_HOLD": (
+        "El tiempo de mantenimiento ({hold_min} min) está fuera de lo recomendado ({min_min}–{max_min} min).",
+        "The holding time ({hold_min} min) is outside the recommendation ({min_min}–{max_min} min).",
+    ),
+    "MODEL_ESTIMATE_NOT_REVIEWED": (
+        "Fases, constituyentes, dureza y diagramas son estimaciones de modelos empíricos publicados "
+        "(Li 1998, Koistinen–Marburger, Maynier 1978) para una probeta de 12.7 mm, en el centro. "
+        "No son mediciones y no han sido revisadas por un especialista.",
+        "Phases, constituents, hardness and diagrams are estimates from published empirical models "
+        "(Li 1998, Koistinen–Marburger, Maynier 1978) for a 12.7 mm specimen, at the center. "
+        "They are not measurements and have not been reviewed by a specialist.",
+    ),
+    "MODEL_THERMAL_HISTORY": (
+        "La curva térmica se calculó con un modelo de conducción de calor (supuestos declarados).",
+        "The thermal curve was computed with a heat-conduction model (declared assumptions).",
+    ),
+    "MODEL_NO_AUSTENITIZATION": (
+        "La pieza no superó Ae1: no se forma austenita y el temple/normalizado no cambia la microestructura.",
+        "The part did not exceed Ae1: no austenite forms and the treatment does not change the microstructure.",
+    ),
+    "MODEL_INTERCRITICAL": (
+        "Temperatura intercrítica (entre Ae1 y Ae3): queda ferrita sin transformar; el temple será incompleto.",
+        "Intercritical temperature (between Ae1 and Ae3): untransformed ferrite remains; hardening is incomplete.",
+    ),
+    "MODEL_OVERHEATING": (
+        "La temperatura supera ampliamente Ae3: riesgo de crecimiento de grano y descarburación (no modelados).",
+        "The temperature is far above Ae3: risk of grain growth and decarburization (not modeled).",
+    ),
+    "MODEL_TEMPER_ABOVE_AE1": (
+        "Un revenido por encima de Ae1 vuelve a formar austenita: ya no es un revenido.",
+        "Tempering above Ae1 re-forms austenite: it is no longer tempering.",
+    ),
+    "MODEL_TEMPER_HARDNESS_NOT_MODELED": (
+        "Se muestra el estado templado de partida calculado. La dureza tras el revenido no se estima: FERROLAB "
+        "no tiene aún un modelo de revenido verificado (cualitativamente, la dureza baja al subir la temperatura).",
+        "The computed as-quenched starting state is shown. Hardness after tempering is not estimated: FERROLAB "
+        "does not yet have a verified tempering model (qualitatively, hardness drops as temperature rises).",
+    ),
+    "MODEL_MEDIUM_SEVERITY_RANGE": (
+        "La banda de incertidumbre incluye el rango de severidad del aceite (Grossmann H 0.25–1.0).",
+        "The uncertainty band includes the oil severity range (Grossmann H 0.25–1.0).",
+    ),
+    "CAST_IRON_ILLUSTRATION_ONLY": (
+        "Fundición gris: no hay modelo cinético validado; la microestructura se muestra como ilustración cualitativa.",
+        "Gray cast iron: no validated kinetic model; the microstructure is shown as a qualitative illustration.",
+    ),
 }
 
 STAGE_LABELS: dict[str, tuple[str, str]] = {
@@ -161,6 +214,7 @@ STAGE_LABELS: dict[str, tuple[str, str]] = {
     "isothermal_bath_hold": ("Mantenimiento isotérmico en el baño", "Isothermal bath hold"),
     "equalization_hold": ("Igualación en el baño (cerca de Ms)", "Equalization in bath (near Ms)"),
     "final_cool": ("Enfriamiento final", "Final cooling"),
+    "heat_to_austenitizing_model": ("Calentamiento en horno", "Furnace heating"),
 }
 
 

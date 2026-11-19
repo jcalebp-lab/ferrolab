@@ -14,6 +14,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from . import ENGINE_VERSION
+from . import model_estimate as ME
 from .enums import (
     CompatibilityStatus,
     EvidenceKind,
@@ -25,6 +26,9 @@ from .enums import (
     TreatmentId,
 )
 from .messages import ASSUMPTIONS, MESSAGES, STAGE_LABELS, localize
+from .metallurgy import practice as metallurgy_practice
+from .metallurgy.recommend import check as check_recommended
+from .metallurgy.recommend import recommendation as recommended_practice
 from .models import ModelNotActivated
 from .models import koistinen_marburger as km
 from .result import (
@@ -102,6 +106,7 @@ class ValidationReport(BaseModel):
     physical_limit_c: float | None
     initial_condition_id: str | None
     warnings: list[Warning]
+    recommendation: dict[str, Any] | None = None
 
 
 @dataclass
@@ -307,6 +312,9 @@ class ScientificEngine:
     def validate(self, req: SimulationRequest) -> ValidationReport:
         ctx = _Ctx(req=req, snap=self.snapshot, locale=req.locale)
         _m, _t, ic, _p, _pr, t_dom, h_dom, guard, compat, quant = self._check(ctx)
+        if not ctx.blocking and compat != CompatibilityStatus.UNSUPPORTED:
+            self._recommend_warnings(ctx)
+        rec = recommended_practice(req.material_id, req.treatment_id)
         if ctx.blocking:
             status = SimulationStatus.INVALID_INPUT
         elif compat == CompatibilityStatus.UNSUPPORTED:
@@ -325,7 +333,16 @@ class ScientificEngine:
             physical_limit_c=guard.max_temperature_c if guard else None,
             initial_condition_id=ic.id if ic else None,
             warnings=ctx.warnings,
+            recommendation=rec.as_dict(req.locale) if rec else None,
         )
+
+    @staticmethod
+    def _recommend_warnings(ctx: _Ctx) -> None:
+        req = ctx.req
+        for code, params in check_recommended(req.material_id, req.treatment_id, req.target_temperature_c,
+                                              req.hold_time_min):
+            ctx.warn(code, "limitation", "target_temperature_c" if "TEMPERATURE" in code else "hold_time_min",
+                     **params)
 
     # ------------------------------------------------------- historial
     def build_thermal_history(self, req: SimulationRequest) -> ThermalHistory | None:
@@ -360,6 +377,10 @@ class ScientificEngine:
 
         history: ThermalHistory | None = None
         schematic = None
+        diagrams: list[dict[str, Any]] = []
+        estimate = None
+        illustration = None
+        model_sources: list[str] = []
         facts: dict[str, Any] = {}
         used_models: list[str] = []
         used_evidence: list[EvidenceRecord] = []
@@ -386,6 +407,32 @@ class ScientificEngine:
                 ctx.warn("HOLD_ZERO", "info")
             if quant and history is not None:
                 facts, used_models, used_evidence = self._quantify(ctx, material.id, treatment.id, ic, protocol, history)
+            self._recommend_warnings(ctx)
+            practice = None
+            if ME.supported(material.id):
+                practice = metallurgy_practice.run(material.id, treatment.id, req.target_temperature_c, req.hold_s)
+                for k, v in ME.facts(practice, self.snapshot.dataset_version).items():
+                    facts.setdefault(k, v)
+                if history is None:
+                    history = ME.thermal_history(practice)
+                    schematic = None
+                    ctx.warnings = [w for w in ctx.warnings if w.code != "SCHEMATIC_CYCLE_ONLY"]
+                    ctx.warn("MODEL_THERMAL_HISTORY", "info")
+                diagrams = practice.diagrams
+                used_models.append(metallurgy_practice.MODEL_VERSION)
+                model_sources = list(metallurgy_practice.MODEL_SOURCES)
+                ctx.warn("MODEL_ESTIMATE_NOT_REVIEWED", "info")
+                for note in practice.notes:
+                    ctx.warn(note, "limitation" if note in ("MODEL_NO_AUSTENITIZATION", "MODEL_TEMPER_ABOVE_AE1",
+                                                            "MODEL_OVERHEATING") else "info")
+            elif material.family == MaterialFamily.GRAY_CAST_IRON:
+                ctx.warn("CAST_IRON_ILLUSTRATION_ONLY", "info")
+            estimate = ME.estimate_block(practice, material.id, treatment.id, loc)
+            illustration = ME.illustration(material.id, treatment.id, self.request_hash(req), practice,
+                                           material.family.value)
+            rec = recommended_practice(material.id, treatment.id)
+            if rec:
+                model_sources += [s for s in rec.source_ids if s not in model_sources]
             n_facts = sum(1 for v in facts.values() if v)
             if n_facts == 0:
                 status = SimulationStatus.INSUFFICIENT_EVIDENCE
@@ -438,7 +485,11 @@ class ScientificEngine:
             results=results,
             result_status=result_status,
             warnings=ctx.warnings,
-            evidence=self._evidence_refs(material, treatment, used_evidence, used_models),
+            evidence=self._evidence_refs(material, treatment, used_evidence, used_models)
+            + ME.source_refs(model_sources),
+            diagrams=diagrams,
+            model_estimate=estimate,
+            microstructure_illustration=illustration,
             assumptions=[
                 Assumption(code=c, text=localize(ASSUMPTIONS, c, loc))
                 for c in (
@@ -551,6 +602,10 @@ class ScientificEngine:
     def _quantity_status(q: QuantityCode, fact, status: SimulationStatus, loc: str) -> QuantityStatus:
         if fact:
             first = fact if isinstance(fact, ResultFact) else next(iter(fact.values()))
+            if first.evidence_kind == EvidenceKind.MODELED and first.method != "koistinen_marburger":
+                return QuantityStatus(evidence_level=first.evidence_level, reason_code="MODEL_ESTIMATE",
+                                      reason="Estimación por modelo empírico publicado (no medida)" if loc == "es"
+                                      else "Estimate from a published empirical model (not measured)")
             return QuantityStatus(evidence_level=first.evidence_level, reason_code="SUPPORTED_BY_EVIDENCE",
                                   reason="Respaldado por evidencia publicada" if loc == "es" else "Supported by published evidence")
         if status == SimulationStatus.INVALID_INPUT:

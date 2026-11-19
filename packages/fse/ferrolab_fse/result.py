@@ -212,6 +212,8 @@ class SimulationResult(BaseModel):
     result_status: dict[QuantityCode, QuantityStatus]
     micrograph: dict[str, Any] | None = None
     diagrams: list[dict[str, Any]] = Field(default_factory=list)
+    model_estimate: dict[str, Any] | None = None
+    microstructure_illustration: dict[str, Any] | None = None
     warnings: list[Warning]
     evidence: list[EvidenceRef]
     assumptions: list[Assumption]

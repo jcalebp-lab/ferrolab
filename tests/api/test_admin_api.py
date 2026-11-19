@@ -124,7 +124,10 @@ def test_release_gates_then_publish_and_rollback(c, token):
     assert ready["dataset_version"] == "1.0.0-test" and ready["dataset_contains_unreviewed_content"] is False
     sim = c.post("/api/v1/simulations", json={"material_id": "aisi_1045", "treatment_id": "quench",
                                               "target_temperature_c": 850, "hold_time_min": 30}).json()
-    assert sim["simulation_status"] == "insufficient_evidence" and sim["results"]["hardness"] is None
+    # Sin evidencia medida publicada, la única cifra es la estimación de modelo etiquetada (D-26).
+    assert sim["simulation_status"] == "partial_result"
+    assert sim["results"]["hardness"]["evidence_kind"] == "modeled"
+    assert sim["results"]["hardness"]["evidence_level"] == "bounded_estimate"
     assert c.get("/api/v1/materials").json()["items"][0]["review_status"] == "published"
     rels = c.get("/api/v1/admin/releases", headers=h(token, REVIEWER)).json()["items"]
     old = next(x for x in rels if x["semantic_version"] == "0.1.0-dev+unreviewed")

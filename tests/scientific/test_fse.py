@@ -89,16 +89,44 @@ def test_extra_fields_rejected():
 
 # SCI-03 ---------------------------------------------------------------------
 @pytest.mark.parametrize("m,t", list(itertools.product(MaterialId, TreatmentId)))
-def test_sci03_all_seed_pairs_return_nulls(seed_snapshot, m, t):
+def test_sci03_all_seed_pairs_only_modeled_estimates(seed_snapshot, m, t):
+    """Sin evidencia revisada, las únicas cifras son estimaciones de modelo (D-26), siempre etiquetadas."""
     r = ScientificEngine(seed_snapshot).simulate(req(m=m, t=t, temp=500))
-    assert r.simulation_status == SimulationStatus.INSUFFICIENT_EVIDENCE
     res = r.results
-    assert res.hardness is None and res.phase_fractions is None and res.microconstituent_fractions is None
     assert res.grain_size is None and res.mechanical_properties is None
-    assert all(s.evidence_level == "insufficient_evidence" for s in r.result_status.values())
-    assert r.protocol_version is None and r.model_version is None
-    dumped = json.dumps(r.results.model_dump())
-    assert dumped.count("null") == 5
+    assert r.protocol_version is None
+    facts = [res.hardness] if res.hardness else []
+    for group in (res.phase_fractions, res.microconstituent_fractions):
+        facts += list((group or {}).values())
+    for f in facts:
+        assert f.evidence_kind == "modeled" and f.evidence_level == "bounded_estimate"
+        assert f.model_version and f.source_ids and f.validity["review"] == "not_reviewed_by_specialist"
+    if m == "astm_a48_class_30":
+        assert not facts and r.simulation_status == SimulationStatus.INSUFFICIENT_EVIDENCE
+    elif t != "temper":
+        # 500 °C < Ae1: no hay austenización, el modelo no inventa una microestructura nueva.
+        assert res.microconstituent_fractions is None
+        assert any(w.code == "MODEL_NO_AUSTENITIZATION" for w in r.warnings)
+    if t == "temper":
+        assert res.hardness is None  # no hay modelo de revenido verificado
+
+
+def test_model_estimates_at_recommended_practice(seed_snapshot):
+    eng = ScientificEngine(seed_snapshot)
+    r = eng.simulate(req(m="aisi_1045", t="quench", temp=845, hold=15))
+    assert r.simulation_status == SimulationStatus.PARTIAL_RESULT
+    micro = r.results.microconstituent_fractions
+    assert micro and abs(sum(f.value for f in micro.values()) - 1) < 2e-3
+    assert "martensite" in micro and r.results.hardness.unit == "HV"
+    u = r.results.hardness.uncertainty
+    assert u["min"] <= r.results.hardness.value <= u["max"]
+    assert {d["kind"] for d in r.diagrams} == {"TTT", "CCT"}
+    assert all(d["user_path"] for d in r.diagrams)
+    assert r.thermal_history and r.microstructure_illustration["kind"] == "generated_illustration"
+    assert not any(w.code == "OUTSIDE_RECOMMENDED_TEMPERATURE" for w in r.warnings)
+    bad = eng.simulate(req(m="aisi_1045", t="quench", temp=1100, hold=15))
+    assert any(w.code == "OUTSIDE_RECOMMENDED_TEMPERATURE" for w in bad.warnings)
+    assert eng.validate(req(m="aisi_1045", t="quench", temp=845, hold=15)).recommendation["temperature_min_c"] == 820
 
 
 def test_sci03_fraction_balance_and_taxonomy():
@@ -144,7 +172,7 @@ def test_sci06_8620_not_carburized(seed_snapshot):
     r = ScientificEngine(seed_snapshot).simulate(req(m="aisi_8620"))
     assert r.initial_condition.carburized is False
     assert any(w.code == "CARBURIZED_CASE_NOT_ASSUMED" for w in r.warnings)
-    assert r.results.hardness is None
+    assert r.results.hardness is None or r.results.hardness.evidence_kind == "modeled"
 
 
 # SCI-07 A48 ----------------------------------------------------------------------
@@ -254,7 +282,7 @@ def test_sci10_validator_rejects_bad_stages():
 
 def test_schematic_cycle_has_only_user_numbers(seed_snapshot):
     for t in TreatmentId:
-        r = ScientificEngine(seed_snapshot).simulate(req(t=t, temp=777, hold=13))
+        r = ScientificEngine(seed_snapshot).simulate(req(m="astm_a48_class_30", t=t, temp=777, hold=13))
         cyc = r.schematic_cycle
         assert cyc is not None and cyc.time_basis == "schematic_not_to_scale"
         for s in cyc.segments:
@@ -266,7 +294,7 @@ def test_schematic_cycle_has_only_user_numbers(seed_snapshot):
 
 
 def test_hold_zero_omits_stage(seed_snapshot):
-    r = ScientificEngine(seed_snapshot).simulate(req(hold=0))
+    r = ScientificEngine(seed_snapshot).simulate(req(m="astm_a48_class_30", hold=0))
     assert not any(s.is_user_hold for s in r.schematic_cycle.segments)
     assert any(w.code == "HOLD_ZERO" for w in r.warnings)
 

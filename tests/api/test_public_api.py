@@ -52,11 +52,15 @@ def test_simulation_envelope_and_nulls(client):
     assert r.status_code == 200
     body = r.json()
     assert ENVELOPE <= set(body)
-    assert body["simulation_status"] == "insufficient_evidence"
-    assert all(v is None for v in body["results"].values())
+    assert body["simulation_status"] == "partial_result"
+    res = body["results"]
+    assert res["grain_size"] is None and res["mechanical_properties"] is None
+    assert res["hardness"]["evidence_kind"] == "modeled" and res["hardness"]["model_version"]
     assert body["micrograph"] is None
     assert any(w["code"] == "NO_SUITABLE_MICROGRAPH" for w in body["warnings"])
-    assert body["thermal_history"] == [] and body["schematic_cycle"]["time_basis"] == "schematic_not_to_scale"
+    assert any(w["code"] == "MODEL_ESTIMATE_NOT_REVIEWED" for w in body["warnings"])
+    assert body["thermal_history"] and body["schematic_cycle"] is None
+    assert body["model_estimate"]["recommendation"]["temperature_typical_c"] == 845
     assert r.headers["X-Request-ID"] == body["request_id"]
 
 

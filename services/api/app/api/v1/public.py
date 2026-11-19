@@ -135,6 +135,7 @@ def material_treatments(material_id: str, locale: str = Depends(locale_q), st: A
             "temperature_domain": report.temperature_domain.model_dump(),
             "hold_domain": report.hold_domain.model_dump(),
             "physical_limit_c": report.physical_limit_c,
+            "recommendation": report.recommendation,
             "protocol": None if proto is None else {
                 "id": proto.id, "version": proto.version, "review_status": proto.review_status,
                 "medium": _l(proto, "medium", locale), "medium_documented": proto.medium_evidence_id is not None,
