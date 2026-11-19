@@ -508,5 +508,8 @@
   "mediumAir": "aire en calma",
   "mediumFurnace": "horno",
   "mediumSaltBath": "baño de sales",
-  "reviewExpectModel": "Se calcularán ESTIMACIONES de modelos publicados: fases, constituyentes, dureza y diagramas TTT/CCT de tu práctica. Irán etiquetadas como estimaciones (no mediciones)."
+  "reviewExpectModel": "Se calcularán ESTIMACIONES de modelos publicados: fases, constituyentes, dureza y diagramas TTT/CCT de tu práctica. Irán etiquetadas como estimaciones (no mediciones).",
+  "microLabelsToggle": "Señalar microconstituyentes",
+  "microLabelsZoomHint": "Las flechas se muestran en el aumento base: pulsa «Volver al aumento inicial».",
+  "microLabelRetained": "Austenita retenida (islas blancas)"
 }

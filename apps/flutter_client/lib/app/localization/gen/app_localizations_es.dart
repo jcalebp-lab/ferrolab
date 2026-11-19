@@ -1164,4 +1164,14 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get reviewExpectModel =>
       'Se calcularán ESTIMACIONES de modelos publicados: fases, constituyentes, dureza y diagramas TTT/CCT de tu práctica. Irán etiquetadas como estimaciones (no mediciones).';
+
+  @override
+  String get microLabelsToggle => 'Señalar microconstituyentes';
+
+  @override
+  String get microLabelsZoomHint =>
+      'Las flechas se muestran en el aumento base: pulsa «Volver al aumento inicial».';
+
+  @override
+  String get microLabelRetained => 'Austenita retenida (islas blancas)';
 }

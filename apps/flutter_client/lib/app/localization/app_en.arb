@@ -435,5 +435,8 @@
   "mediumAir": "still air",
   "mediumFurnace": "furnace",
   "mediumSaltBath": "salt bath",
-  "reviewExpectModel": "Model ESTIMATES will be computed from published models: phases, constituents, hardness and TTT/CCT diagrams of your practice. They will be labeled as estimates (not measurements)."
+  "reviewExpectModel": "Model ESTIMATES will be computed from published models: phases, constituents, hardness and TTT/CCT diagrams of your practice. They will be labeled as estimates (not measurements).",
+  "microLabelsToggle": "Point out microconstituents",
+  "microLabelsZoomHint": "Arrows are shown at base magnification: tap “Back to initial magnification”.",
+  "microLabelRetained": "Retained austenite (white islands)"
 }

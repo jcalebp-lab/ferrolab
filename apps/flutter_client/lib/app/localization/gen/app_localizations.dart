@@ -2197,6 +2197,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Se calcularán ESTIMACIONES de modelos publicados: fases, constituyentes, dureza y diagramas TTT/CCT de tu práctica. Irán etiquetadas como estimaciones (no mediciones).'**
   String get reviewExpectModel;
+
+  /// No description provided for @microLabelsToggle.
+  ///
+  /// In es, this message translates to:
+  /// **'Señalar microconstituyentes'**
+  String get microLabelsToggle;
+
+  /// No description provided for @microLabelsZoomHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Las flechas se muestran en el aumento base: pulsa «Volver al aumento inicial».'**
+  String get microLabelsZoomHint;
+
+  /// No description provided for @microLabelRetained.
+  ///
+  /// In es, this message translates to:
+  /// **'Austenita retenida (islas blancas)'**
+  String get microLabelRetained;
 }
 
 class _AppLocalizationsDelegate

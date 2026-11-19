@@ -42,6 +42,7 @@ class GeneratedMicroscope extends StatefulWidget {
 class _GeneratedMicroscopeState extends State<GeneratedMicroscope> {
   final _tc = TransformationController();
   double _zoom = 1;
+  bool _labels = false;
   late _Micro _micro = _Micro.build(widget.spec);
 
   @override
@@ -107,6 +108,15 @@ class _GeneratedMicroscopeState extends State<GeneratedMicroscope> {
                     ),
                   ),
                 ),
+                if (_labels && _zoom < 1.05)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        key: const Key('microLabels'),
+                        painter: _LabelPainter(_micro.annotations(_labelText(context)), side / kFieldUm),
+                      ),
+                    ),
+                  ),
                 // Barra de escala (se recalcula con el aumento).
                 Positioned(
                   left: side * .24,
@@ -136,9 +146,39 @@ class _GeneratedMicroscopeState extends State<GeneratedMicroscope> {
               onPressed: () => _setZoom(_zoom * 1.6, viewport), icon: const Icon(Icons.zoom_in)),
           IconButton(tooltip: t.microReset, onPressed: () => _setZoom(1, viewport), icon: const Icon(Icons.center_focus_strong)),
         ]),
+        Center(
+          child: FilterChip(
+            key: const Key('microLabelsToggle'),
+            avatar: const Icon(Icons.north_east, size: 18),
+            label: Text(t.microLabelsToggle),
+            selected: _labels,
+            onSelected: (v) {
+              setState(() => _labels = v);
+              if (v && _zoom >= 1.05) _setZoom(1, viewport); // las etiquetas se muestran en el aumento base
+            },
+          ),
+        ),
+        if (_labels && _zoom >= 1.05)
+          Text(t.microLabelsZoomHint, textAlign: TextAlign.center, style: context.text.bodySmall),
+        const Gap(FlSpace.xs),
         Text(t.microGesture, textAlign: TextAlign.center, style: context.text.bodySmall),
       ]);
     });
+  }
+
+  /// Nombre visible de cada clave señalada.
+  Map<String, String> _labelText(BuildContext context) {
+    final t = context.t;
+    final tempered = widget.spec['tempered'] == true;
+    return {
+      'proeutectoid_ferrite': t.constFerrite,
+      'pearlite': t.constPearlite,
+      'bainite': t.constBainite,
+      'martensite': tempered ? t.constTemperedMartensite : t.constMartensite,
+      'retained_austenite': t.microLabelRetained,
+      'graphite': t.constGraphite,
+      'matrix': t.grayMatrix(widget.spec['matrix'] as String? ?? 'pearlite'),
+    };
   }
 
   static double _niceBar(double um) {
@@ -282,6 +322,156 @@ class _Micro {
     return _Micro(cells, spec, flakes, spec['tempered'] == true || spec['matrix'] == 'tempered_martensite',
         spec['pearlite_spacing'] == 'coarse' ? 1.6 : 0.9, ra);
   }
+}
+
+/// Punto señalado (coordenadas del campo, µm) y su nombre.
+class _Annotation {
+  _Annotation(this.target, this.label);
+  final Offset target;
+  final String label;
+}
+
+extension on _Micro {
+  /// Un ejemplo de cada constituyente presente, bien separados entre sí y lejos del borde del campo circular.
+  List<_Annotation> annotations(Map<String, String> names) {
+    const center = Offset(kFieldUm / 2, kFieldUm / 2);
+    Offset centroid(_Cell c) => c.poly.reduce((a, b) => a + b) / c.poly.length.toDouble();
+    final usable = cells.where((c) => (centroid(c) - center).distance < kFieldUm * .33).toList();
+    final chosen = <Offset>[];
+    final out = <_Annotation>[];
+    Offset? pick(Iterable<Offset> candidates) {
+      Offset? best;
+      var bestD = -1.0;
+      for (final p in candidates) {
+        final d = chosen.isEmpty ? (kFieldUm - (p - center).distance) : chosen.map((q) => (q - p).distance).reduce(math.min);
+        if (d > bestD) {
+          bestD = d;
+          best = p;
+        }
+      }
+      if (best != null) chosen.add(best);
+      return best;
+    }
+
+    final family = spec['family'] as String? ?? 'steel';
+    if (family == 'gray_cast_iron') {
+      final flake = pick(flakes.map((f) => f[f.length ~/ 2]).where((p) => (p - center).distance < kFieldUm * .33));
+      if (flake != null) out.add(_Annotation(flake, names['graphite']!));
+      final m = pick(usable.map(centroid));
+      if (m != null) out.add(_Annotation(m, names['matrix']!));
+      return out;
+    }
+    final present = <String>{for (final c in cells) c.kind};
+    // Orden estable: del constituyente más abundante al menos abundante.
+    final order = present.toList()
+      ..sort((a, b) => cells.where((c) => c.kind == b).length.compareTo(cells.where((c) => c.kind == a).length));
+    for (final k in order) {
+      final p = pick(usable.where((c) => c.kind == k).map(centroid));
+      if (p != null) out.add(_Annotation(p, names[k] ?? k));
+    }
+    if (ra >= .005 && present.contains('martensite')) {
+      final p = pick(usable.where((c) => c.kind == 'martensite').map(centroid));
+      if (p != null) out.add(_Annotation(p, names['retained_austenite']!));
+    }
+    return out;
+  }
+}
+
+/// Flechas con rótulo, dibujadas sobre el campo en el aumento base.
+class _LabelPainter extends CustomPainter {
+  _LabelPainter(this.items, this.scale);
+  final List<_Annotation> items;
+  final double scale; // px por µm
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = Offset(size.width / 2, size.height / 2);
+    final r = size.width / 2;
+    final boxes = <Rect>[];
+    for (final a in items) {
+      final tip = a.target * scale;
+      var dir = tip - c;
+      dir = dir.distance < 1 ? const Offset(1, -1) / math.sqrt2 : dir / dir.distance;
+      final tp = TextPainter(
+        text: TextSpan(text: a.label, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
+        textDirection: TextDirection.ltr,
+      )..layout(maxWidth: size.width * .45);
+      // Rótulo hacia afuera del punto (o hacia adentro si choca con el borde), dentro del círculo,
+      // sin solaparse con otros y siempre a distancia visible del objetivo.
+      Rect place(Offset d) {
+        var anchor = tip + d * (r * .3);
+        Rect box() => Rect.fromCenter(center: anchor, width: tp.width + 14, height: tp.height + 8);
+        for (var k = 0; k < 8 && boxes.any((b) => b.overlaps(box().inflate(4))); k++) {
+          anchor += Offset(-d.dy, d.dx) * (tp.height + 12);
+        }
+        var rect = box();
+        final maxD = r * .92;
+        for (final corner in [rect.topLeft, rect.topRight, rect.bottomLeft, rect.bottomRight]) {
+          final dd = (corner - c).distance;
+          if (dd > maxD) {
+            anchor -= (corner - c) / dd * (dd - maxD);
+            rect = box();
+          }
+        }
+        return rect;
+      }
+
+      double gap(Rect b) => b.inflate(6).contains(tip) ? 0 : (_edgePoint(b, tip, b.center) - tip).distance;
+      double score(Rect b) => math.min(gap(b), 60) - (boxes.any((o) => o.overlaps(b.inflate(4))) ? 1000 : 0);
+      var rect = place(dir);
+      if (score(rect) < 36) {
+        for (var k = 0; k < 8; k++) {
+          final a = math.atan2(dir.dy, dir.dx) + k * math.pi / 4;
+          final cand = place(Offset(math.cos(a), math.sin(a)));
+          if (score(cand) > score(rect)) rect = cand;
+          if (score(rect) >= 50) break;
+        }
+      }
+      boxes.add(rect);
+      // Línea con halo para que se vea sobre fondos claros y oscuros.
+      final start = Offset(rect.center.dx.clamp(rect.left, rect.right), rect.center.dy);
+      final from = _edgePoint(rect, tip, start);
+      final halo = Paint()
+        ..color = Colors.black.withValues(alpha: .7)
+        ..strokeWidth = 4.5
+        ..strokeCap = StrokeCap.round;
+      final line = Paint()
+        ..color = Colors.white
+        ..strokeWidth = 2
+        ..strokeCap = StrokeCap.round;
+      canvas.drawLine(from, tip, halo);
+      canvas.drawLine(from, tip, line);
+      final v = tip - from;
+      if (v.distance > 1) {
+        final u = v / v.distance;
+        final n = Offset(-u.dy, u.dx);
+        final head = Path()
+          ..moveTo(tip.dx, tip.dy)
+          ..lineTo((tip - u * 11 + n * 6).dx, (tip - u * 11 + n * 6).dy)
+          ..lineTo((tip - u * 11 - n * 6).dx, (tip - u * 11 - n * 6).dy)
+          ..close();
+        canvas.drawPath(head, Paint()
+          ..color = Colors.black.withValues(alpha: .7)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5);
+        canvas.drawPath(head, Paint()..color = Colors.white);
+      }
+      canvas.drawRRect(RRect.fromRectAndRadius(rect, const Radius.circular(6)),
+          Paint()..color = Colors.black.withValues(alpha: .72));
+      tp.paint(canvas, rect.topLeft + const Offset(7, 4));
+    }
+  }
+
+  /// Punto del borde del rótulo en la dirección del objetivo.
+  static Offset _edgePoint(Rect r, Offset target, Offset fallback) {
+    final cx = target.dx.clamp(r.left, r.right).toDouble();
+    final cy = target.dy.clamp(r.top, r.bottom).toDouble();
+    final p = Offset(cx, cy);
+    return p == target ? fallback : p;
+  }
+
+  @override
+  bool shouldRepaint(covariant _LabelPainter old) => old.items != items || old.scale != scale;
 }
 
 // ----------------------------------------------------------------- dibujo

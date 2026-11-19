@@ -1159,4 +1159,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reviewExpectModel =>
       'Model ESTIMATES will be computed from published models: phases, constituents, hardness and TTT/CCT diagrams of your practice. They will be labeled as estimates (not measurements).';
+
+  @override
+  String get microLabelsToggle => 'Point out microconstituents';
+
+  @override
+  String get microLabelsZoomHint =>
+      'Arrows are shown at base magnification: tap “Back to initial magnification”.';
+
+  @override
+  String get microLabelRetained => 'Retained austenite (white islands)';
 }
