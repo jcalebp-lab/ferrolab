@@ -135,6 +135,10 @@ class _Ctx:
         return any(w.severity == "blocking" for w in self.warnings)
 
 
+_MEDIUM_NAMES = {"water": ("agua", "water"), "oil": ("aceite", "oil"), "air": ("aire", "air"),
+                 "furnace": ("horno", "furnace"), "salt_bath": ("baño de sales", "salt bath")}
+
+
 def _fmt(v: float) -> str:
     return f"{v:g}"
 
@@ -335,7 +339,7 @@ class ScientificEngine:
             physical_limit_c=guard.max_temperature_c if guard else None,
             initial_condition_id=ic.id if ic else None,
             warnings=ctx.warnings,
-            recommendation=rec.as_dict(req.locale) if rec else None,
+            recommendation=ME.recommendation_dict(rec, req.locale) if rec else None,
         )
 
     @staticmethod
@@ -424,9 +428,14 @@ class ScientificEngine:
                 used_models.append(metallurgy_practice.MODEL_VERSION)
                 model_sources = list(metallurgy_practice.MODEL_SOURCES)
                 ctx.warn("MODEL_ESTIMATE_NOT_REVIEWED", "info")
+                if practice.prior is not None:
+                    ctx.warn("MODEL_TEMPER_ASSUMED_PRIOR_QUENCH", "limitation",
+                             quench_c=_fmt(practice.prior["quench_temperature_c"]),
+                             medium=_MEDIUM_NAMES.get(practice.prior["medium"], ("?", "?"))[loc == "en"])
                 for note in practice.notes:
                     ctx.warn(note, "limitation" if note in ("MODEL_NO_AUSTENITIZATION", "MODEL_TEMPER_ABOVE_AE1",
-                                                            "MODEL_OVERHEATING") else "info")
+                                                            "MODEL_OVERHEATING",
+                                                            "MODEL_TEMPER_OUTSIDE_VALIDITY") else "info")
             elif material.family == MaterialFamily.GRAY_CAST_IRON:
                 ctx.warn("CAST_IRON_ILLUSTRATION_ONLY", "info")
             estimate = ME.estimate_block(practice, material.id, treatment.id, loc)

@@ -49,6 +49,17 @@ MAYNIER = {
     "ferrite_pearlite": ((42, {"C": 223, "Si": 53, "Mn": 30, "Ni": 12.6, "Cr": 7, "Mo": 19}),
                          (10, {"Si": -19, "Ni": 4, "Cr": 8, "V": 130})),
 }
+# Kang & Lee (2014) Mater. Trans. 55:1069, ecs. (4)-(5) y tabla 2: parámetro de revenido dependiente de la
+# composición TP = T·(log10 t + k0 + Σ ki·Xi) y TMH = (1542.97 − 25.31/C)·exp(−1.23e-4·TP) [HV].
+# T en K. El tiempo se toma en SEGUNDOS: así lo indican la tabla 1 (30 s – 3.5e6 s) y el eje de la fig. 4,
+# y reproduce el ejemplo del artículo (C(1040) = 12.7). Validez: C 0.12–1.15, Mn ≤ 1.75, Si ≤ 0.90,
+# Ni ≤ 3.5, Cr ≤ 2.0, Mo ≤ 0.5 (wt %); revenido 145–716 °C.
+KANG_LEE_K0 = 17.396
+KANG_LEE_K = {"C": -6.661, "Mn": -1.604, "Si": -3.412, "Ni": -0.248, "Cr": -1.112, "Mo": -4.355}
+KANG_LEE_A, KANG_LEE_B, KANG_LEE_EXP = 1542.97, 25.31, 1.23e-4
+KANG_LEE_T_RANGE_C = (145.0, 716.0)
+KANG_LEE_HOLD_RANGE_S = (30.0, 3.5e6)
+
 # HV -> HRC para aceros no austeníticos (COMSOL «Hardness», ref. 17).
 HRC_COEFFS = (31.49, 7.96683e-2, -3.55432e-5, -6.72816e3)
 
@@ -83,6 +94,7 @@ SOURCES = {
     "src_maynier_1978": "Maynier, Jungmann, Dollet (1978) — dureza por constituyente (COMSOL / Cambridge MAP)",
     "src_grossmann": "Grossmann — severidad de temple H (NPTEL)",
     "src_collins_2023": "Collins et al. (2023) Metals 13:1168 — implementación abierta del modelo de Li (Zenodo 10.5281/zenodo.7767620, MIT)",
+    "src_kang_lee_2014": "Kang & Lee (2014) Mater. Trans. 55:1069 — dureza de martensita revenida (doi:10.2320/matertrans.M2014004)",
     "src_grange_1961": "Grange (1961) Metal Progress 79:73 — Ae1/Ae3 empíricas usadas por el modelo de Li",
     "src_azom_1045": "AZoM ArticleID=6130 — AISI 1045: composición y tratamientos",
     "src_compraco_1045": "Compraco — SAE/AISI 1045: tratamiento térmico (datos tipo ASM)",

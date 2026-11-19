@@ -168,6 +168,28 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "The computed as-quenched starting state is shown. Hardness after tempering is not estimated: FERROLAB "
         "does not yet have a verified tempering model (qualitatively, hardness drops as temperature rises).",
     ),
+    "MODEL_TEMPER_KANG_LEE": (
+        "Dureza tras el revenido estimada con el parámetro de revenido dependiente de la composición de "
+        "Kang y Lee (2014), aplicado a la martensita del estado templado calculado. La bainita no se endurece "
+        "y la ferrita-perlita no cambia (supuestos).",
+        "Hardness after tempering estimated with the composition-dependent tempering parameter of Kang and Lee "
+        "(2014), applied to the martensite of the computed as-quenched state. Bainite does not harden and "
+        "ferrite-pearlite does not change (assumptions).",
+    ),
+    "MODEL_TEMPER_ASSUMED_PRIOR_QUENCH": (
+        "Para estimar el revenido, el modelo SUPONE que la pieza se templó antes con la práctica recomendada "
+        "({quench_c} °C, {medium}); ese estado de partida se calcula y se muestra. Si tu pieza tuvo otro temple, "
+        "el resultado no aplica.",
+        "To estimate tempering, the model ASSUMES the part was previously hardened with the recommended practice "
+        "({quench_c} °C, {medium}); that starting state is computed and shown. If your part had a different "
+        "hardening, the result does not apply.",
+    ),
+    "MODEL_TEMPER_OUTSIDE_VALIDITY": (
+        "La temperatura o el tiempo de revenido están fuera del rango de datos del modelo de Kang y Lee "
+        "(145–716 °C; 30 s – 40 días): no se estima la dureza.",
+        "Tempering temperature or time is outside the data range of the Kang and Lee model "
+        "(145–716 °C; 30 s – 40 days): hardness is not estimated.",
+    ),
     "MODEL_MEDIUM_SEVERITY_RANGE": (
         "La banda de incertidumbre incluye el rango de severidad del aceite (Grossmann H 0.25–1.0).",
         "The uncertainty band includes the oil severity range (Grossmann H 0.25–1.0).",

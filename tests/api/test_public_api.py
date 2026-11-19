@@ -99,8 +99,14 @@ def test_determinism_over_http(client):
 def test_all_pairs_answer_honestly(client, m, t):
     body = client.post("/api/v1/simulations", json={**BASE, "material_id": m, "treatment_id": t,
                                                     "target_temperature_c": 600}).json()
-    assert body["simulation_status"] in ("insufficient_evidence", "unsupported")
-    assert all(v is None for v in body["results"].values())
+    # 600 °C no austeniza: solo el revenido (estado templado supuesto y declarado) puede dar cifra modelada.
+    if t == "temper" and m != "astm_a48_class_30":
+        assert body["simulation_status"] == "partial_result"
+        assert body["results"]["hardness"]["evidence_kind"] == "modeled"
+        assert any(w["code"] == "MODEL_TEMPER_ASSUMED_PRIOR_QUENCH" for w in body["warnings"])
+    else:
+        assert body["simulation_status"] in ("insufficient_evidence", "unsupported")
+        assert all(v is None for v in body["results"].values())
     assert body["explanation"]["compatibility_reason"]
 
 

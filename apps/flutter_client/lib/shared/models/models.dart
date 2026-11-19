@@ -131,11 +131,12 @@ class ProtocolSummary {
 /// Práctica recomendada por la literatura (cada rango con su fuente).
 class RecommendationDto {
   RecommendationDto({this.tMin, this.tMax, this.tTypical, this.holdMin, this.holdMax, this.holdTypical,
-      required this.medium, required this.sourceIds, required this.note, this.bathRule});
+      required this.medium, required this.sourceIds, required this.note, this.bathRule, this.sourceNames = const []});
   final double? tMin, tMax, tTypical, holdMin, holdMax, holdTypical;
   final String medium, note;
   final String? bathRule;
   final List<String> sourceIds;
+  final List<String> sourceNames;
 
   /// Temperatura sugerida: la típica de la fuente o, si no la hay, el centro del rango.
   double? get suggestedTemperature =>
@@ -155,6 +156,9 @@ class RecommendationDto {
         sourceIds: _ls(j['source_ids']),
         note: j['note'] as String,
         bathRule: j['bath_rule'] as String?,
+        sourceNames: ((j['sources'] as List?) ?? const [])
+            .map((e) => '${(e as Json)['authors']} — ${e['title']}')
+            .toList(),
       );
 }
 

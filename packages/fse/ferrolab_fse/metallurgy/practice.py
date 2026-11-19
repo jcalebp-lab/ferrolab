@@ -11,13 +11,20 @@ from dataclasses import dataclass, field
 from . import kinetics as kin
 from .cooling import Medium, Runner, medium, rate_at, thin
 from .critical import critical_temperatures
-from .data import ASSUMPTIONS, C_CEMENTITE, COMPOSITION_RANGES, GROSSMANN_H_RANGE
-from .hardness import mixture_hv
+from .data import (
+    ASSUMPTIONS,
+    C_CEMENTITE,
+    COMPOSITION_RANGES,
+    GROSSMANN_H_RANGE,
+    KANG_LEE_HOLD_RANGE_S,
+    KANG_LEE_T_RANGE_C,
+)
+from .hardness import mixture_hv, tempered_mixture_hv
 from .recommend import recommendation
 
 MODEL_VERSION = "ferrolab_metallurgy@1.0.0"
 MODEL_SOURCES = ("src_li_1998", "src_collins_2023", "src_km_1959", "src_maynier_1978", "src_andrews_1965",
-                 "src_grange_1961", "src_grossmann")
+                 "src_grange_1961", "src_grossmann", "src_kang_lee_2014")
 DEFAULT_MEDIUM = {"aisi_1045": "water", "aisi_8620": "oil"}
 
 
@@ -213,8 +220,8 @@ def run(material_id: str, treatment_id: str, target_c: float, hold_s: float, med
 
 
 def _temper(material_id: str, target_c: float, hold_s: float, comps) -> Practice:
-    """Revenido: se calcula el estado templado de partida (práctica recomendada de temple) y el ciclo de revenido.
-    La dureza revenida NO se estima: no hay un modelo verificado incorporado (se informa cualitativamente)."""
+    """Revenido: estado templado de partida (práctica recomendada de temple, calculado) + ciclo de revenido.
+    Dureza revenida: Kang & Lee (2014) sobre la fracción de martensita (ver hardness.tempered_mixture_hv)."""
     c = comps["nominal"]
     rec = recommendation(material_id, "quench")
     prior = run(material_id, "quench", rec.temperature_typical_c, rec.hold_typical_min * 60)
@@ -228,11 +235,34 @@ def _temper(material_id: str, target_c: float, hold_s: float, comps) -> Practice
     p.prior = {"quench_temperature_c": rec.temperature_typical_c, "quench_hold_min": rec.hold_typical_min,
                "medium": prior.medium_code, "fractions": prior.fractions, "hardness_hv": prior.hardness_hv,
                "hardness_range": prior.hardness_range}
+    p.diagrams = prior.diagrams
     tm = kin.li_temps(c)
     if run_.max_center_c >= tm.ae1:
         p.notes.append("MODEL_TEMPER_ABOVE_AE1")
-    p.notes.append("MODEL_TEMPER_HARDNESS_NOT_MODELED")
-    p.diagrams = prior.diagrams
+        return p
+    lo_t, hi_t = KANG_LEE_T_RANGE_C
+    lo_h, hi_h = KANG_LEE_HOLD_RANGE_S
+    if not (lo_t <= target_c <= hi_t) or not (lo_h <= hold_s <= hi_h) or not prior.fractions or prior.vr_700_k_s is None:
+        p.notes.append("MODEL_TEMPER_OUTSIDE_VALIDITY")
+        return p
+    f = {k: v for k, v in prior.fractions.items()}
+    f["tempered_martensite"] = f.pop("martensite", 0.0)
+    p.fractions = f
+    p.fractions_range = None if prior.fractions_range is None else {
+        ("tempered_martensite" if k == "martensite" else k): v for k, v in prior.fractions_range.items()}
+    vr_h = prior.vr_700_k_s * 3600
+    p.hardness_hv = tempered_mixture_hv(prior.fractions, c, vr_h, target_c, hold_s)
+    hvs = [p.hardness_hv]
+    for key in ("low", "high"):
+        ck = comps[key]
+        fak, cak = _austenitize(ck, prior.max_center_c)
+        if fak <= 0:
+            continue
+        mk, _ = _decompose(prior.runner_center[prior.cooling_start_index:], ck, fak, cak)
+        hvs.append(tempered_mixture_hv(mk, ck, vr_h, target_c, hold_s))
+    p.hardness_range = (min(hvs), max(hvs))
+    p.vr_700_k_s = prior.vr_700_k_s
+    p.notes.append("MODEL_TEMPER_KANG_LEE")
     return p
 
 

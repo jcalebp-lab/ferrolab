@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 
-from .data import HRC_COEFFS, MAYNIER
+from .data import HRC_COEFFS, KANG_LEE_A, KANG_LEE_B, KANG_LEE_EXP, KANG_LEE_K, KANG_LEE_K0, MAYNIER
 
 
 def _lin(base: tuple[float, dict[str, float]], c: dict[str, float]) -> float:
@@ -35,3 +35,29 @@ def hv_to_hrc(hv: float) -> float | None:
     a, b, c2, d = HRC_COEFFS
     hrc = a + b * hv + c2 * hv * hv + d / hv
     return hrc if hrc >= 20 else None
+
+
+def tempering_c(c: dict[str, float]) -> float:
+    """Constante de Hollomon–Jaffe dependiente de la composición (Kang & Lee 2014, ec. 4)."""
+    return KANG_LEE_K0 + sum(k * float(c.get(el, 0.0)) for el, k in KANG_LEE_K.items())
+
+
+def tempered_martensite_hv(c: dict[str, float], temperature_c: float, hold_s: float) -> float:
+    """Kang & Lee (2014), ec. 5. Tiempo en segundos (ver data.py)."""
+    tp = (temperature_c + 273.15) * (math.log10(max(hold_s, 1.0)) + tempering_c(c))
+    return (KANG_LEE_A - KANG_LEE_B / float(c["C"])) * math.exp(-KANG_LEE_EXP * tp)
+
+
+def tempered_mixture_hv(fractions: dict[str, float], c: dict[str, float], vr_k_per_h: float,
+                        temperature_c: float, hold_s: float) -> float:
+    """Martensita → Kang & Lee (sin superar su dureza de temple); bainita → la menor entre su dureza de temple
+    y la de la martensita revenida (supuesto: no endurece al revenir); ferrita-perlita sin cambio (supuesto)."""
+    hv = constituent_hv(c, vr_k_per_h)
+    tm = min(tempered_martensite_hv(c, temperature_c, hold_s), hv["martensite"])
+    fm = fractions.get("martensite", 0.0)
+    fb = fractions.get("bainite", 0.0)
+    ffp = fractions.get("proeutectoid_ferrite", 0.0) + fractions.get("pearlite", 0.0)
+    total = fm + fb + ffp
+    if total <= 0:
+        raise ValueError("sin constituyentes")
+    return (fm * tm + fb * min(hv["bainite"], tm) + ffp * hv["ferrite_pearlite"]) / total

@@ -19,6 +19,7 @@ MICROCONSTITUENT_KEYS = {
     "pearlite",
     "bainite",
     "martensite",
+    "tempered_martensite",
     "proeutectoid_ferrite",
     "proeutectoid_cementite",
     "retained_austenite",

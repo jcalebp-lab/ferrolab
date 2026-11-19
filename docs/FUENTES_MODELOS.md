@@ -10,7 +10,8 @@ Las cifras se muestran como **estimación por modelo, no revisada por un especia
 4. **Austenización**: regla de la palanca con la línea Ae3 (intercrítico = temple incompleto).
 5. **Descomposición de la austenita**: modelo de Li (1998) con regla de aditividad de Scheil y la lógica secuencial de Collins (ferrita → perlita → bainita), enriquecimiento de carbono de la austenita; martensita por Koistinen–Marburger (α = 0,011).
 6. **Dureza**: Maynier, Jungmann y Dollet (1978) por constituyente con la velocidad de enfriamiento a 700 °C; HV → HRC con la conversión publicada por COMSOL.
-7. **Diagramas**: TTT (1 % y 99 %) y CCT (inicio de transformación a velocidades constantes) del mismo modelo, con la curva real del centro de la probeta superpuesta.
+7. **Revenido**: el estado de partida se SUPONE templado con la práctica recomendada (se calcula y se muestra). La martensita se revierte con el parámetro de revenido dependiente de la composición de Kang y Lee (2014, *Mater. Trans.* 55:1069; 1926 datos, R² = 0,941; tiempo en segundos, 145–716 °C). Supuestos: la bainita no se endurece al revenir (se toma la menor entre su dureza y la de la martensita revenida) y la ferrita-perlita no cambia. Comprobación: el código reproduce los ejemplos del artículo (C = 12,7 para AISI 1040 y 10,3 para AISI 4340).
+8. **Diagramas**: TTT (1 % y 99 %) y CCT (inicio de transformación a velocidades constantes) del mismo modelo, con la curva real del centro de la probeta superpuesta.
 
 ## Supuestos declarados (no son datos)
 Probeta de 12,7 mm, resultado en el centro; k = 30 W/m·K, ρ = 7850 kg/m³, cp = 600 J/kg·K, emisividad 0,8; traslado 5 s; tamaño de grano ASTM 7; baño de austemperizado = Ms + 40 °C; baño de martemperizado = Ms + 15 °C; la austenita retenida se excluye en la regla de mezclas de dureza.
@@ -28,7 +29,7 @@ Probeta de 12,7 mm, resultado en el centro; k = 30 W/m·K, ρ = 7850 kg/m³, cp 
 Conclusión honesta: las tendencias (qué constituyentes aparecen y cómo cambian con el medio y la temperatura) son correctas; las cifras absolutas pueden desviarse varios HRC, sobre todo en el 1045 templado. Por eso se muestran con banda y etiqueta de estimación.
 
 ## Lo que NO se calcula
-- **Dureza tras el revenido**: no hay un modelo verificado incorporado; se muestra el estado templado de partida y la tendencia cualitativa.
+- **Revenido fuera de 145–716 °C o de 30 s – 40 días**: fuera de los datos del modelo de Kang y Lee, no se estima.
 - **Fundición gris ASTM A48**: sin modelo cinético validado; solo rangos recomendados e ilustración cualitativa.
 - Tamaño de grano final y propiedades de tracción.
 

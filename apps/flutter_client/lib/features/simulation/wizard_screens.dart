@@ -488,7 +488,7 @@ class _RecommendationCard extends StatelessWidget {
         Text(rec.note, style: context.text.bodyMedium),
         if (rec.bathRule != null) ...[const Gap(FlSpace.xs), Text('${t.recBath}: ${rec.bathRule}', style: context.text.bodySmall)],
         const Gap(FlSpace.xs),
-        Text(t.recSources(rec.sourceIds.join(', ')), style: context.text.bodySmall),
+        Text(t.recSources((rec.sourceNames.isEmpty ? rec.sourceIds : rec.sourceNames).join('; ')), style: context.text.bodySmall),
         const Gap(FlSpace.s),
         if (!tOk) ...[Notice(t.recOutsideTemp, kind: 'warning'), const Gap(FlSpace.xs)],
         if (!hOk) ...[Notice(t.recOutsideHold, kind: 'limitation'), const Gap(FlSpace.xs)],

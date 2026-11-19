@@ -107,8 +107,25 @@ def test_sci03_all_seed_pairs_only_modeled_estimates(seed_snapshot, m, t):
         # 500 °C < Ae1: no hay austenización, el modelo no inventa una microestructura nueva.
         assert res.microconstituent_fractions is None
         assert any(w.code == "MODEL_NO_AUSTENITIZATION" for w in r.warnings)
-    if t == "temper":
-        assert res.hardness is None  # no hay modelo de revenido verificado
+    if t == "temper" and m != "astm_a48_class_30":
+        assert res.hardness is not None and res.hardness.method == "kang_lee_2014_tempering"
+
+
+def test_kang_lee_2014_reproduces_paper_examples():
+    """El artículo da C = 12.7 (AISI 1040) y 10.3 (AISI 4340)."""
+    from ferrolab_fse.metallurgy.hardness import tempered_martensite_hv, tempering_c
+    c1040 = {"C": 0.4, "Mn": 0.75, "Si": 0.23}
+    assert round(tempering_c(c1040), 1) == 12.7
+    assert round(tempering_c({**c1040, "Ni": 1.85, "Cr": 0.8, "Mo": 0.25}), 1) == 10.3
+    # Más temperatura o más tiempo => menos dureza.
+    assert tempered_martensite_hv(c1040, 600, 3600) < tempered_martensite_hv(c1040, 400, 3600)
+    assert tempered_martensite_hv(c1040, 400, 36000) < tempered_martensite_hv(c1040, 400, 3600)
+
+
+def test_temper_outside_model_validity_has_no_hardness(seed_snapshot):
+    r = ScientificEngine(seed_snapshot).simulate(req(m="aisi_1045", t="temper", temp=100, hold=60))
+    assert r.results.hardness is None
+    assert any(w.code == "MODEL_TEMPER_OUTSIDE_VALIDITY" for w in r.warnings)
 
 
 def test_model_estimates_at_recommended_practice(seed_snapshot):
@@ -164,7 +181,9 @@ def test_sci05_temper_requires_hardened_state(seed_snapshot):
         r = ScientificEngine(seed_snapshot).simulate(req(m=m, t="temper", temp=400))
         assert r.compatibility_status == CompatibilityStatus.EDUCATIONAL_ONLY
         assert any(w.code == "TEMPER_REQUIRES_HARDENED_STATE" for w in r.warnings)
-        assert r.results.hardness is None
+        # Solo hay cifra si el modelo declara el temple previo que supone (D-29).
+        assert any(w.code == "MODEL_TEMPER_ASSUMED_PRIOR_QUENCH" for w in r.warnings)
+        assert r.results.hardness.evidence_kind == "modeled"
 
 
 # SCI-06 8620 ---------------------------------------------------------------------

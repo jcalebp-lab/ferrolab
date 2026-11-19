@@ -38,6 +38,11 @@ MODEL_SOURCE_CATALOG: dict[str, dict[str, Any]] = {
                          "authors": "K. W. Andrews", "year": 1965, "doi": None,
                          "url": "https://www.phase-trans.msm.cam.ac.uk/map/steel/programs/ms-empirical.html",
                          "kind": "journal_article"},
+    "src_kang_lee_2014": {"title": "Prediction of tempered martensite hardness incorporating the composition-dependent "
+                          "tempering parameter in low alloy steels", "authors": "S. Kang, S.-J. Lee", "year": 2014,
+                          "doi": "10.2320/matertrans.M2014004",
+                          "url": "https://www.jstage.jst.go.jp/article/matertrans/55/7/55_M2014004/_article",
+                          "kind": "journal_article"},
     "src_grange_1961": {"title": "Estimating critical ranges in heat treatment of steels", "authors": "R. A. Grange",
                         "year": 1961, "doi": None, "url": None, "kind": "journal_article"},
     "src_grossmann": {"title": "Heat treatment — quench severity (Grossmann H)", "authors": "NPTEL", "year": None,
@@ -139,7 +144,8 @@ def facts(p: P.Practice, dataset_version: str) -> dict[str, Any]:
         }
     if p.hardness_hv is not None:
         lo, hi = p.hardness_range or (p.hardness_hv, p.hardness_hv)
-        out["hardness"] = _fact(p.hardness_hv, "HV", dataset_version, scale="HV", method="maynier_1978_mixture",
+        method = "kang_lee_2014_tempering" if p.treatment_id == "temper" else "maynier_1978_mixture"
+        out["hardness"] = _fact(p.hardness_hv, "HV", dataset_version, scale="HV", method=method,
                                 uncertainty={"min": round(lo, 1), "max": round(hi, 1),
                                              "hrc": _r(hv_to_hrc(p.hardness_hv)), "hrc_min": _r(hv_to_hrc(lo)),
                                              "hrc_max": _r(hv_to_hrc(hi)),
@@ -196,7 +202,7 @@ def estimate_block(p: P.Practice | None, material_id: str, treatment_id: str, lo
         "model_version": P.MODEL_VERSION,
         "label": ("Estimación por modelos empíricos publicados; no revisada por un especialista."
                   if locale == "es" else "Estimate from published empirical models; not reviewed by a specialist."),
-        "recommendation": rec.as_dict(locale) if rec else None,
+        "recommendation": recommendation_dict(rec, locale) if rec else None,
         "assumptions": {k: v for k, v in ASSUMPTIONS.items() if k != "ae_equals_ac"},
     }
     if p is None:
@@ -224,3 +230,10 @@ def estimate_block(p: P.Practice | None, material_id: str, treatment_id: str, lo
         },
     })
     return out
+
+
+def recommendation_dict(rec, locale: str) -> dict:
+    d = rec.as_dict(locale)
+    d["sources"] = [{"id": sid, "title": MODEL_SOURCE_CATALOG[sid]["title"], "authors": MODEL_SOURCE_CATALOG[sid]["authors"],
+                     "url": MODEL_SOURCE_CATALOG[sid]["url"]} for sid in rec.source_ids if sid in MODEL_SOURCE_CATALOG]
+    return d
