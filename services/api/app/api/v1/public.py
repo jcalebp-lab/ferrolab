@@ -36,7 +36,7 @@ def _cache(response: Response, request: Request, etag: str) -> bool:
 def _source(snap, sid):
     s = snap.source(sid)
     return None if s is None else {"id": s.id, "title": s.title, "authors": s.authors, "year": s.year,
-                                   "kind": s.kind, "url": s.url, "doi": s.doi,
+                                   "kind": s.kind, "url": s.url, "doi": s.doi, "edition": s.edition,
                                    "verification_status": s.verification_status}
 
 

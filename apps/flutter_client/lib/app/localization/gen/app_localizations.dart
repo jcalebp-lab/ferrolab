@@ -1241,7 +1241,7 @@ abstract class AppLocalizations {
   /// No description provided for @learnDiagramsBody.
   ///
   /// In es, this message translates to:
-  /// **'FERROLAB solo dibuja curvas TTT, CCT o Fe–C a partir de datos digitalizados con fuente y permiso. Todavía no hay ninguno publicado, así que aquí encontrarás la explicación conceptual sin líneas ficticias.'**
+  /// **'Los diagramas TTT y CCT de tu práctica se calculan con el modelo de Li et al. (1998) y aparecen en los resultados de cada simulación de acero. Aquí encontrarás la explicación de cada diagrama.'**
   String get learnDiagramsBody;
 
   /// No description provided for @learnRelated.
@@ -2935,6 +2935,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{n} micrografías reales de los constituyentes de tu resultado, con autor y licencia: ábrelas en el microscopio.'**
   String microRelatedCount(String n);
+
+  /// No description provided for @learnResearch.
+  ///
+  /// In es, this message translates to:
+  /// **'Artículos'**
+  String get learnResearch;
+
+  /// No description provided for @learnResearchNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Resúmenes de artículos científicos e informes de ACCESO LIBRE, con su cita completa (autores, año, revista y DOI). Abre el enlace para leer el texto original.'**
+  String get learnResearchNote;
+
+  /// No description provided for @learnCitation.
+  ///
+  /// In es, this message translates to:
+  /// **'Cita'**
+  String get learnCitation;
+
+  /// No description provided for @sourceStandard.
+  ///
+  /// In es, this message translates to:
+  /// **'Norma ASTM (texto oficial en ASTM International)'**
+  String get sourceStandard;
 }
 
 class _AppLocalizationsDelegate

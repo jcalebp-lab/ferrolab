@@ -75,7 +75,7 @@ def main() -> int:
                 if have != wanted:
                     repo.update(ent, key, item, row.revision, actor=None)
                     updated += 1
-    # Registros de la semilla anterior que ya no existen (p. ej. ASTM A48 clase 30, reemplazada por GG25): se RETIRAN
+    # Registros de la semilla anterior que ya no existen (p. ej. materiales reemplazados): se RETIRAN
     # (nunca se borran; quedan en el historial). Solo los que siguen siendo del catálogo semilla (sin editar, borrador).
     retired = 0
     for name in reversed(INSERT_ORDER):

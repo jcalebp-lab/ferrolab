@@ -5,7 +5,7 @@ Probeta de referencia educativa: cilindro de 12,7 mm. «Modelo» = valor calcula
 
 ## Matriz
 
-| Tratamiento | AISI 1045 | AISI 8620 | GG25 (EN-GJL-250) |
+| Tratamiento | AISI 1045 | AISI 8620 | ASTM A48 Clase 35 |
 |---|---|---|---|
 | Temple | Compatible · A (modelo publicado) · 2 protocolo(s) | Compatible · A (modelo publicado) · 5 protocolo(s) | Condicional · B (cualitativo) · 1 protocolo(s) |
 | Revenido | Condicional · A (modelo publicado) · 2 protocolo(s) | Condicional · A (modelo publicado) · 1 protocolo(s) | Condicional · B (cualitativo) · 1 protocolo(s) |
@@ -322,7 +322,7 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Horno: 550–650 °C · sostenimiento: 30 min
 - Medio: Agua (temple) y aire (revenido)
 - Etapas: austenitize → soak → transfer → quench → temper → soak → air_cool
-- Fuentes: AISI 1045 Medium Carbon Steel (verificada); Material specification sheet Saarstahl — C45 (equivalente europeo del 1045) (NO verificada); Prediction of tempered martensite hardness incorporating the composition-dependent tempering parameter in low alloy steels (verificada)
+- Fuentes: AISI 1045 Medium Carbon Steel (verificada); Using “Off-the-Shelf” AISI 4340 Steel for the Production of NIST Reference Charpy Specimens (NIST IR 8556) (verificada); Evaluación de los parámetros de temple y revenido para el acero AISI/SAE 1045 a escala industrial (verificada); Prediction of tempered martensite hardness incorporating the composition-dependent tempering parameter in low alloy steels (verificada)
 
 ### AISI 8620 — Bonificado: Temple 845 °C en aceite + revenido 550–650 °C (Vanguard) **[referencia]**
 
@@ -331,11 +331,11 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Horno: 550–650 °C · sostenimiento: 30–60 min
 - Medio: Aceite (temple) y aire (revenido)
 - Etapas: austenitize → soak → transfer → quench → temper → soak → air_cool
-- Fuentes: Vanguard Steel Product Manual — AISI/SAE 8620 (verificada); Material specification sheet Saarstahl — C45 (equivalente europeo del 1045) (NO verificada); Prediction of tempered martensite hardness incorporating the composition-dependent tempering parameter in low alloy steels (verificada)
+- Fuentes: Vanguard Steel Product Manual — AISI/SAE 8620 (verificada); Using “Off-the-Shelf” AISI 4340 Steel for the Production of NIST Reference Charpy Specimens (NIST IR 8556) (verificada); Prediction of tempered martensite hardness incorporating the composition-dependent tempering parameter in low alloy steels (verificada)
 
-### GG25 (EN-GJL-250) — Bonificado: Temple en aceite 870 °C + revenido ≤ 550 °C (Total Materia / Compraco) **[referencia]**
+### ASTM A48 Clase 35 — Bonificado: Temple en aceite 870 °C + revenido ≤ 550 °C (Total Materia / Compraco) **[referencia]**
 
-- Id: `prot_gjl250_qt_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_qt_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Matriz resistente y tenaz con grafito laminar.
 - Horno: 550 °C · sostenimiento: 30 min
 - Medio: Aceite (temple) y aire (revenido)
@@ -343,9 +343,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Tiempo de austenización: la fuente lo hace depender del tamaño y la composición, sin cifra. Temperatura mínima del revenido: las fuentes solo dan el máximo.
 - Fuentes: Heat Treating of Gray Irons: Part Two (verificada); Mastering Gray Cast Iron: Expert Guide to Heat Treatment (verificada)
 
-### GG25 (EN-GJL-250) — Temple: Temple en aceite (Total Materia / Compraco) **[referencia]**
+### ASTM A48 Clase 35 — Temple: Temple en aceite (Total Materia / Compraco) **[referencia]**
 
-- Id: `prot_gjl250_quench_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_quench_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Endurecer la matriz para mejorar la resistencia al desgaste.
 - Horno: 850–900 °C · sostenimiento: sin cifra en la fuente
 - Medio: Aceite
@@ -353,9 +353,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Tiempo de austenización: la fuente lo hace depender del tamaño y la composición, sin cifra.
 - Fuentes: Heat Treating of Gray Irons: Part Two (verificada); Mastering Gray Cast Iron: Expert Guide to Heat Treatment (verificada)
 
-### GG25 (EN-GJL-250) — Revenido: Revenido (Total Materia) **[referencia]**
+### ASTM A48 Clase 35 — Revenido: Revenido (Total Materia) **[referencia]**
 
-- Id: `prot_gjl250_temper_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_temper_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Reducir fragilidad de la matriz templada.
 - Horno: 550 °C · sostenimiento: 30 min
 - Medio: Aire
@@ -363,9 +363,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Temperatura mínima y valor de referencia: las fuentes solo dan el máximo.
 - Fuentes: Heat Treating of Gray Irons: Part Two (verificada); Mastering Gray Cast Iron: Expert Guide to Heat Treatment (verificada)
 
-### GG25 (EN-GJL-250) — Recocido: Recocido ferritizante (Total Materia) **[referencia]**
+### ASTM A48 Clase 35 — Recocido: Recocido ferritizante (Total Materia) **[referencia]**
 
-- Id: `prot_gjl250_anneal_ferritize` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_anneal_ferritize` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Mejorar la maquinabilidad convirtiendo la perlita en ferrita + grafito.
 - Horno: 700–760 °C · sostenimiento: sin cifra en la fuente
 - Medio: Horno
@@ -373,9 +373,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Tiempo de sostenimiento y velocidad de enfriamiento.
 - Fuentes: Heat Treating of Gray Irons: Part One (verificada)
 
-### GG25 (EN-GJL-250) — Recocido: Recocido medio/completo 790–900 °C (Total Materia)
+### ASTM A48 Clase 35 — Recocido: Recocido medio/completo 790–900 °C (Total Materia)
 
-- Id: `prot_gjl250_anneal_full` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_anneal_full` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Ablandar fundiciones aleadas cuando el ferritizante no basta.
 - Horno: 790–900 °C · sostenimiento: sin cifra en la fuente
 - Medio: Horno
@@ -383,9 +383,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Velocidad de enfriamiento (solo «lento»).
 - Fuentes: Heat Treating of Gray Irons: Part One (verificada)
 
-### GG25 (EN-GJL-250) — Recocido: Recocido grafitizante 900–955 °C
+### ASTM A48 Clase 35 — Recocido: Recocido grafitizante 900–955 °C
 
-- Id: `prot_gjl250_anneal_graphitize` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_anneal_graphitize` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Descomponer carburos masivos.
 - Horno: 900–955 °C · sostenimiento: sin cifra en la fuente
 - Medio: Horno
@@ -393,9 +393,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Tiempo y enfriamiento.
 - Fuentes: Heat Treating of Gray Irons: Part One (verificada)
 
-### GG25 (EN-GJL-250) — Recocido: Alivio de tensiones 550 °C (Compraco)
+### ASTM A48 Clase 35 — Recocido: Alivio de tensiones 550 °C (Compraco)
 
-- Id: `prot_gjl250_stress_relief` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_stress_relief` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Reducir tensiones de colada sin cambiar la matriz.
 - Horno: 550 °C · sostenimiento: sin cifra en la fuente
 - Medio: Horno, luego aire
@@ -403,18 +403,18 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Tiempo de sostenimiento (depende de la pieza).
 - Fuentes: Mastering Gray Cast Iron: Expert Guide to Heat Treatment (verificada)
 
-### GG25 (EN-GJL-250) — Normalizado: Normalizado 885–925 °C (Total Materia) **[referencia]**
+### ASTM A48 Clase 35 — Normalizado: Normalizado 885–925 °C (Total Materia) **[referencia]**
 
-- Id: `prot_gjl250_normalize_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_normalize_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Aumentar dureza y resistencia con una matriz perlítica fina.
 - Horno: 885–925 °C · sostenimiento: 30 min
 - Medio: Aire en calma
 - Etapas: austenitize → soak → air_cool
 - Fuentes: Heat Treating of Gray Irons: Part One (verificada)
 
-### GG25 (EN-GJL-250) — Austempering: Austemperizado 230–425 °C (Total Materia) **[referencia]**
+### ASTM A48 Clase 35 — Austempering: Austemperizado 230–425 °C (Total Materia) **[referencia]**
 
-- Id: `prot_gjl250_austemper_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_austemper_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Matriz de ferrita acicular/bainítica con austenita retenida.
 - Horno: 840–900 °C · sostenimiento: sin cifra en la fuente · baño: 230–425 °C · tiempo de baño: sin cifra en la fuente
 - Medio: Sal, aceite o plomo
@@ -422,9 +422,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Tiempo de austenización: la fuente lo hace depender del tamaño y la composición, sin cifra. Tiempo de baño: depende de la composición; sin cifra.
 - Fuentes: Heat Treating of Gray Irons: Part Two (verificada)
 
-### GG25 (EN-GJL-250) — Austempering: Austemperizado 230–290 °C (dureza)
+### ASTM A48 Clase 35 — Austempering: Austemperizado 230–290 °C (dureza)
 
-- Id: `prot_gjl250_austemper_hard` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_austemper_hard` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Máxima dureza y resistencia al desgaste.
 - Horno: 840–900 °C · sostenimiento: sin cifra en la fuente · baño: 230–290 °C · tiempo de baño: sin cifra en la fuente
 - Medio: Sal, aceite o plomo
@@ -432,9 +432,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Tiempo de austenización: la fuente lo hace depender del tamaño y la composición, sin cifra. Tiempo de baño.
 - Fuentes: Heat Treating of Gray Irons: Part Two (verificada)
 
-### GG25 (EN-GJL-250) — Austempering: AGI experimental 870 °C 2 h → 360 °C 1 h (fuente no verificada)
+### ASTM A48 Clase 35 — Austempering: AGI experimental 870 °C 2 h → 360 °C 1 h (fuente no verificada)
 
-- Id: `prot_gjl250_austemper_jmrt` · versión 1.0.0 · estado de evidencia: `source_unverified` · revisión: `draft`
+- Id: `prot_a48c35_austemper_jmrt` · versión 1.0.0 · estado de evidencia: `source_unverified` · revisión: `draft`
 - Objetivo: Caso experimental de fundición gris austemperizada.
 - Horno: 870 °C · sostenimiento: 120 min · baño: 260–360 °C · tiempo de baño: 60–120 min
 - Medio: Baño
@@ -442,9 +442,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Verificar el artículo (no se pudo abrir desde el entorno).
 - Fuentes: Wear resistance of austempered grey iron under dry and wet conditions (NO verificada)
 
-### GG25 (EN-GJL-250) — Martempering: Martemperizado 200–260 °C (Total Materia) **[referencia]**
+### ASTM A48 Clase 35 — Martempering: Martemperizado 200–260 °C (Total Materia) **[referencia]**
 
-- Id: `prot_gjl250_martemper_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
+- Id: `prot_a48c35_martemper_tm` · versión 1.0.0 · estado de evidencia: `source_verified` · revisión: `draft`
 - Objetivo: Martensita en la matriz con menos tensiones; revenir después.
 - Horno: 840–900 °C · sostenimiento: sin cifra en la fuente · baño: 200–260 °C · tiempo de baño: hasta igualar (modelo)
 - Medio: Sal, aceite o plomo hasta igualar, luego aire
@@ -452,9 +452,9 @@ Nivel A: hay modelo publicado para el acero y el protocolo está documentado (ci
 - Pendiente: Tiempo de austenización: la fuente lo hace depender del tamaño y la composición, sin cifra.
 - Fuentes: Heat Treating of Gray Irons: Part Two (verificada)
 
-### GG25 (EN-GJL-250) — Martempering: Camisas de cilindro 870 °C 1 h → 245 °C 1 min (fuente no verificada)
+### ASTM A48 Clase 35 — Martempering: Camisas de cilindro 870 °C 1 h → 245 °C 1 min (fuente no verificada)
 
-- Id: `prot_gjl250_martemper_asm` · versión 1.0.0 · estado de evidencia: `source_unverified` · revisión: `draft`
+- Id: `prot_a48c35_martemper_asm` · versión 1.0.0 · estado de evidencia: `source_unverified` · revisión: `draft`
 - Objetivo: Caso industrial citado por ASM.
 - Horno: 870 °C · sostenimiento: 60 min · baño: 245 °C · tiempo de baño: 1 min
 - Medio: Baño a 245 °C

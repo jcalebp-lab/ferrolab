@@ -441,7 +441,7 @@ class Micrograph(_Frozen):
 
 class KnowledgeEntry(_Frozen):
     slug: str
-    category: Literal["glossary", "concept", "faq"]
+    category: Literal["glossary", "concept", "faq", "research"]
     title_es: str
     title_en: str
     body_es: str

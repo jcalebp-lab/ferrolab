@@ -256,7 +256,7 @@ class SourceTile extends StatelessWidget {
             if (meta.isNotEmpty) Text(meta, style: context.text.bodySmall),
             if (s.locator != null) Text(s.locator!, style: context.text.bodySmall),
             if (s.url != null) SelectableText(s.url!, style: context.text.bodySmall),
-            Text(s.verified ? t.sourceVerified
+            Text(s.kind == 'standard' ? t.sourceStandard : s.verified ? t.sourceVerified
                 : (s.verificationStatus == 'model_reference' ? t.sourceModel : t.sourceUnverified),
                 style: context.text.bodySmall),
           ]),

@@ -578,7 +578,7 @@ class ScientificEngine:
             if material.family == MaterialFamily.GRAY_CAST_IRON and "mechanical_properties" not in facts:
                 # Referencia de la norma para la clase (colada, sin tratar): no cuenta como resultado del tratamiento.
                 facts["mechanical_properties"] = ME.gray_iron_mechanical(self.snapshot.dataset_version)
-                model_sources.append("src_en1561_gjl250")
+                model_sources.append("src_astm_a48_class35")
             if material.family == MaterialFamily.GRAY_CAST_IRON and "hardness" not in facts \
                     and (hl := ME.gray_iron_hardness(treatment.id.value, self.snapshot.dataset_version)) is not None:
                 facts["hardness"] = hl
@@ -677,7 +677,7 @@ class ScientificEngine:
         if any(k in mech for k in ("yield_strength", "tensile_strength")):
             codes.append("STRENGTH_FROM_HARDNESS")
         if "tensile_strength_min" in mech:
-            codes.append("GJL250_CLASS_REFERENCE")
+            codes.append("A48C35_CLASS_REFERENCE")
         hd = facts.get("hardness")
         if hd is not None and hd.method == "literature_reference_other_specimen":
             codes.append("GRAY_HARDNESS_LITERATURE")

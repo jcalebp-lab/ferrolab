@@ -52,7 +52,7 @@ def test_db01_catalog_has_no_invented_numbers(seed_data):
         for c in m["compositions"]:
             assert ev[c["evidence_id"]]["locator"] and src[ev[c["evidence_id"]]["source_id"]]["verification_status"] == "verified"
         if m["family"] == "gray_cast_iron":
-            assert m["compositions"] == []  # EN 1561 no fija composición
+            assert m["compositions"] == []  # ASTM A48 no fija composición
     assert seed_data["model_versions"] == []
     # Micrografías: solo reales, con licencia libre verificada, autor y página de la fuente.
     for m in seed_data["micrographs"]:
@@ -105,14 +105,14 @@ def test_sci03_all_seed_pairs_only_modeled_estimates(seed_snapshot, m, t):
     r = ScientificEngine(seed_snapshot).simulate(req(m=m, t=t, temp=500, hold=30))
     res = r.results
     assert r.protocol_version is None
-    if m == "en_gjl_250":
+    if m == "astm_a48_class_35":
         # Solo la referencia de la norma (colada, sin tratar), nunca un cálculo del tratamiento.
         assert res.grain_size is None and set(res.mechanical_properties) == {"tensile_strength_min"}
         assert res.mechanical_properties["tensile_strength_min"].evidence_kind == "literature"
     elif t != "temper":
         assert res.grain_size is None and res.mechanical_properties is None
     hd = res.hardness
-    if m == "en_gjl_250" and hd is not None:  # dureza publicada de otra muestra, nunca un cálculo
+    if m == "astm_a48_class_35" and hd is not None:  # dureza publicada de otra muestra, nunca un cálculo
         assert hd.method == "literature_reference_other_specimen" and hd.evidence_kind == "literature"
         hd = None
     facts = [hd] if hd else []
@@ -121,7 +121,7 @@ def test_sci03_all_seed_pairs_only_modeled_estimates(seed_snapshot, m, t):
     for f in facts:
         assert f.evidence_kind == "modeled" and f.evidence_level == "bounded_estimate"
         assert f.model_version and f.source_ids and f.validity["review"] == "not_reviewed_by_specialist"
-    if m == "en_gjl_250":
+    if m == "astm_a48_class_35":
         assert not facts and r.result_level in ("B", "C")
     elif t != "temper":
         # 500 °C queda fuera de todo rango de austenización: exploración cualitativa, sin cifras.
@@ -236,12 +236,12 @@ def test_sci06_8620_not_carburized(seed_snapshot):
     assert r.results.hardness is None or r.results.hardness.evidence_kind == "modeled"
 
 
-# SCI-07 GG25 ----------------------------------------------------------------------
-def test_sci07_gjl250_is_cast_iron_without_steel_models(seed_snapshot):
-    mat = seed_snapshot.material("en_gjl_250")
+# SCI-07 A48 clase 35 ----------------------------------------------------------------------
+def test_sci07_a48c35_is_cast_iron_without_steel_models(seed_snapshot):
+    mat = seed_snapshot.material("astm_a48_class_35")
     assert mat.family == "gray_cast_iron" and mat.compositions == []
     for t in TreatmentId:
-        r = ScientificEngine(seed_snapshot).simulate(req(m="en_gjl_250", t=t, temp=500))
+        r = ScientificEngine(seed_snapshot).simulate(req(m="astm_a48_class_35", t=t, temp=500))
         assert r.compatibility_status in (CompatibilityStatus.CONDITIONAL, CompatibilityStatus.SUPPORTED)
         assert any(w.code == "CAST_IRON_NO_STEEL_MODELS" for w in r.warnings)
         assert r.diagrams == [] and r.results.microconstituent_fractions is None
@@ -345,7 +345,7 @@ def test_sci10_validator_rejects_bad_stages():
 
 def test_schematic_cycle_has_only_user_numbers(no_library_snapshot):
     for t in TreatmentId:
-        r = ScientificEngine(no_library_snapshot).simulate(req(m="en_gjl_250", t=t, temp=777, hold=13))
+        r = ScientificEngine(no_library_snapshot).simulate(req(m="astm_a48_class_35", t=t, temp=777, hold=13))
         cyc = r.schematic_cycle
         assert cyc is not None and cyc.time_basis == "schematic_not_to_scale"
         for s in cyc.segments:
@@ -357,7 +357,7 @@ def test_schematic_cycle_has_only_user_numbers(no_library_snapshot):
 
 
 def test_hold_zero_omits_stage(no_library_snapshot):
-    r = ScientificEngine(no_library_snapshot).simulate(req(m="en_gjl_250", hold=0))
+    r = ScientificEngine(no_library_snapshot).simulate(req(m="astm_a48_class_35", hold=0))
     assert not any(s.is_user_hold for s in r.schematic_cycle.segments)
     assert any(w.code == "HOLD_ZERO" for w in r.warnings)
 
@@ -450,3 +450,23 @@ def test_seed_file_in_sync_with_generator(seed_data):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     assert mod.build() == seed_data, "Ejecuta: uv run python scripts/build_catalog_seed.py"
+
+
+def test_research_entries_cite_verified_open_articles(seed_snapshot):
+    """D-39: cada ficha de «Artículos» cita al menos un artículo de acceso libre verificado, con autores, año y enlace."""
+    research = [k for k in seed_snapshot.knowledge if k.category == "research"]
+    assert len(research) >= 10
+    for k in research:
+        arts = [seed_snapshot.source(s) for s in k.suggested_source_ids]
+        arts = [a for a in arts if a is not None and a.kind == "article"]
+        assert arts, k.slug
+        for a in arts:
+            assert a.verification_status == "verified" and a.authors and a.year and a.url and a.edition
+
+
+def test_only_astm_and_aisi_designations(seed_data):
+    """Petición del propietario: el catálogo solo usa normas ASTM y designaciones AISI."""
+    import json as _json
+    text = _json.dumps(seed_data, ensure_ascii=False)
+    for banned in ("EN 1561", "EN-GJL", "GG25", "GG-25", "DIN 1691", "JIS ", "EN 10083", "Saarstahl", "ISO 643"):
+        assert banned not in text, banned

@@ -12,7 +12,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('AISI 1045'), findsOneWidget);
     expect(find.text('AISI 8620'), findsOneWidget);
-    expect(find.text('GG25 (EN-GJL-250)'), findsOneWidget);
+    expect(find.text('ASTM A48 Clase 35'), findsOneWidget);
     expect(find.text('Fundición gris'), findsOneWidget);
   });
 
@@ -41,7 +41,7 @@ void main() {
     tester.view.physicalSize = const Size(1200, 4000);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final r = SimulationResultDto.fromJson(fixture('sim_gjl250_austemper_en'));
+    final r = SimulationResultDto.fromJson(fixture('sim_a48c35_austemper_en'));
     await tester.pumpWidget(await harness(Scaffold(body: ResultsBody(result: r)), locale: 'en'));
     await tester.pumpAndSettle();
     expect(find.text('Not estimable from current evidence'), findsNWidgets(5));

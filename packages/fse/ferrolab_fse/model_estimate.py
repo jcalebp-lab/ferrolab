@@ -73,11 +73,11 @@ MODEL_SOURCE_CATALOG: dict[str, dict[str, Any]] = {
     "src_pavlina_2008": {"title": "Correlation of yield strength and tensile strength with hardness for steels",
                          "authors": "E. J. Pavlina, C. J. Van Tyne", "year": 2008, "doi": "10.1007/s11665-008-9225-5",
                          "url": "https://doi.org/10.1007/s11665-008-9225-5", "kind": "journal_article"},
-    "src_en1561_gjl250": {"title": "EN 1561 — Grey cast irons: EN-GJL-250 (GG-25) exige 250 MPa de resistencia mínima "
-                          "a tracción en barra de ensayo de 30 mm (tabla reproducida por Casting Quality y fichas de "
-                          "fundiciones)", "authors": "CEN", "year": None, "doi": None,
-                          "url": "https://castingquality.com/wp-content/uploads/Casting-Material-gray-iron-in-EN-1561.pdf",
-                          "kind": "standard"},
+    "src_astm_a48_class35": {"title": "ASTM A48/A48M — Standard Specification for Gray Iron Castings: el número de clase es "
+                             "la resistencia mínima a tracción en ksi (clase 35 ≥ 35 ksi ≈ 241 MPa, barra colada aparte)",
+                             "authors": "ASTM International (tabla reproducida por Portland Bolt)", "year": None,
+                             "doi": None, "url": "https://www.portlandbolt.com/technical/specifications/astm-a48/",
+                             "kind": "standard"},
     "src_appsci_2026_agi": {"title": "Effect of Different Austenitizing Temperatures on the Microstructure and "
                             "Mechanical Properties of Austempering Gray Cast Iron (Applied Sciences 16(4):1828)",
                             "authors": "Applied Sciences (MDPI)", "year": 2026, "doi": "10.3390/app16041828",
@@ -193,7 +193,7 @@ def facts(p: P.Practice, dataset_version: str) -> dict[str, Any]:
 GRAIN_SOURCES = ["src_lee_2008", "src_gorni_handbook", "src_astm_e112_g"]
 PAVLINA_YS = (-90.7, 2.876, (129.0, 632.0))  # MPa = a + b·HV; dominio de HV de los datos
 PAVLINA_TS = (-99.8, 3.734, (129.0, 592.0))
-GJL250_MIN_MPA = 250.0  # EN 1561, barra de ensayo de 30 mm
+A48C35_MIN_MPA = 241.3  # ASTM A48 clase 35: 35 ksi × 6,895 MPa/ksi
 
 
 def _src_fact(value: float, unit: str, dataset_version: str, sources: list[str], method: str, validity: dict,
@@ -245,8 +245,8 @@ def mechanical_facts(p: P.Practice, dataset_version: str) -> dict[str, ResultFac
 
 def gray_iron_mechanical(dataset_version: str) -> dict[str, ResultFact]:
     return {"tensile_strength_min": _src_fact(
-        GJL250_MIN_MPA, "MPa", dataset_version, ["src_en1561_gjl250"], "en1561_gjl250_minimum",
-        {"condition": "as_cast_30mm_test_bar", "applies_after_heat_treatment": False}, None,
+        A48C35_MIN_MPA, "MPa", dataset_version, ["src_astm_a48_class35"], "astm_a48_class35_minimum",
+        {"condition": "as_cast_separately_cast_test_bar", "applies_after_heat_treatment": False}, None,
         kind=EvidenceKind.LITERATURE, level=EvidenceLevel.QUALITATIVE)}
 
 

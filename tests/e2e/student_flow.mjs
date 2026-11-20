@@ -72,7 +72,7 @@ async function flow(viewport, tag) {
   check(`${tag}: inicio`, await waitText(page, 'Iniciar simulación'));
   await page.screenshot({ path: `${OUT}${tag}-02-inicio.png` });
   await click(page, 'Iniciar simulación');
-  check(`${tag}: tres materiales`, (await waitText(page, 'GG25 (EN-GJL-250)')) && (await text(page)).includes('AISI 8620'));
+  check(`${tag}: tres materiales`, (await waitText(page, 'ASTM A48 Clase 35')) && (await text(page)).includes('AISI 8620'));
   await click(page, 'AISI 1045');
   await page.screenshot({ path: `${OUT}${tag}-03-material.png` });
   await click(page, 'Continuar');

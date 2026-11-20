@@ -4,7 +4,7 @@
 enum MaterialId {
   aisi1045('aisi_1045'),
   aisi8620('aisi_8620'),
-  enGjl250('en_gjl_250');
+  astmA48Class35('astm_a48_class_35');
 
   const MaterialId(this.wire);
   final String wire;

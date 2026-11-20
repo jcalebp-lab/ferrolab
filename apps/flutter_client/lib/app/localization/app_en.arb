@@ -190,7 +190,7 @@
   "learnFaq": "FAQ",
   "learnTreatments": "Treatments",
   "learnDiagrams": "Diagrams",
-  "learnDiagramsBody": "FERROLAB only draws TTT, CCT or Fe–C curves from digitized data with a source and permission. None is published yet, so here you will find the conceptual explanation without fictitious lines.",
+  "learnDiagramsBody": "The TTT and CCT diagrams of your practice are computed with the Li et al. (1998) model and appear in the results of every steel simulation. Here you will find the explanation of each diagram.",
   "learnRelated": "Related",
   "learnSearch": "Search",
   "practiceTitle": "Practice mode",
@@ -600,5 +600,9 @@
   "grainMeasureNote": "Each crossing of a line with a grain boundary is an intersection. ℓ̄ = total length ÷ intersections; G = −6.644·log10(ℓ̄ in mm) − 3.288. A small difference from the model is normal: the image is generated from the mean area and the standard notes that area and intercept do not give exactly the same G.",
   "sourceModel": "Reference for the model used in the computation",
   "factOtherSpecimen": "Published value from another specimen",
-  "microRelatedCount": "{n} real micrographs of the constituents in your result, with author and license: open them in the microscope."
+  "microRelatedCount": "{n} real micrographs of the constituents in your result, with author and license: open them in the microscope.",
+  "learnResearch": "Articles",
+  "learnResearchNote": "Summaries of OPEN-ACCESS scientific articles and reports, with their full citation (authors, year, journal and DOI). Open the link to read the original text.",
+  "learnCitation": "Citation",
+  "sourceStandard": "ASTM standard (official text at ASTM International)"
 }

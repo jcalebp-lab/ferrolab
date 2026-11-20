@@ -10,7 +10,7 @@ from enum import StrEnum
 class MaterialId(StrEnum):
     AISI_1045 = "aisi_1045"
     AISI_8620 = "aisi_8620"
-    EN_GJL_250 = "en_gjl_250"
+    ASTM_A48_CLASS_35 = "astm_a48_class_35"
 
 
 class TreatmentId(StrEnum):

@@ -232,7 +232,7 @@
   "learnFaq": "Preguntas frecuentes",
   "learnTreatments": "Tratamientos",
   "learnDiagrams": "Diagramas",
-  "learnDiagramsBody": "FERROLAB solo dibuja curvas TTT, CCT o Fe–C a partir de datos digitalizados con fuente y permiso. Todavía no hay ninguno publicado, así que aquí encontrarás la explicación conceptual sin líneas ficticias.",
+  "learnDiagramsBody": "Los diagramas TTT y CCT de tu práctica se calculan con el modelo de Li et al. (1998) y aparecen en los resultados de cada simulación de acero. Aquí encontrarás la explicación de cada diagrama.",
   "learnRelated": "Relacionado",
   "learnSearch": "Buscar",
   "practiceTitle": "Modo práctica",
@@ -744,5 +744,9 @@
         "type": "String"
       }
     }
-  }
+  },
+  "learnResearch": "Artículos",
+  "learnResearchNote": "Resúmenes de artículos científicos e informes de ACCESO LIBRE, con su cita completa (autores, año, revista y DOI). Abre el enlace para leer el texto original.",
+  "learnCitation": "Cita",
+  "sourceStandard": "Norma ASTM (texto oficial en ASTM International)"
 }

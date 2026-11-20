@@ -622,7 +622,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get learnDiagramsBody =>
-      'FERROLAB solo dibuja curvas TTT, CCT o Fe–C a partir de datos digitalizados con fuente y permiso. Todavía no hay ninguno publicado, así que aquí encontrarás la explicación conceptual sin líneas ficticias.';
+      'Los diagramas TTT y CCT de tu práctica se calculan con el modelo de Li et al. (1998) y aparecen en los resultados de cada simulación de acero. Aquí encontrarás la explicación de cada diagrama.';
 
   @override
   String get learnRelated => 'Relacionado';
@@ -1577,4 +1577,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String microRelatedCount(String n) {
     return '$n micrografías reales de los constituyentes de tu resultado, con autor y licencia: ábrelas en el microscopio.';
   }
+
+  @override
+  String get learnResearch => 'Artículos';
+
+  @override
+  String get learnResearchNote =>
+      'Resúmenes de artículos científicos e informes de ACCESO LIBRE, con su cita completa (autores, año, revista y DOI). Abre el enlace para leer el texto original.';
+
+  @override
+  String get learnCitation => 'Cita';
+
+  @override
+  String get sourceStandard =>
+      'Norma ASTM (texto oficial en ASTM International)';
 }

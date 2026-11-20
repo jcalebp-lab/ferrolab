@@ -174,7 +174,7 @@
             "enum": [
               "aisi_1045",
               "aisi_8620",
-              "en_gjl_250"
+              "astm_a48_class_35"
             ],
             "title": "Material Id",
             "type": "string"

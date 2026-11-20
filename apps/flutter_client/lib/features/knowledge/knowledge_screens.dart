@@ -22,7 +22,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     final k = ref.watch(knowledgeProvider);
     final trts = ref.watch(treatmentsProvider);
     return DefaultTabController(
-      length: 5,
+      length: 6,
       child: Scaffold(
         appBar: AppBar(
           title: Text(t.learnTitle),
@@ -30,6 +30,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             Tab(text: t.learnGlossary),
             Tab(text: t.learnConcepts),
             Tab(text: t.learnFaq),
+            Tab(text: t.learnResearch),
             Tab(text: t.learnTreatments),
             Tab(text: t.learnDiagrams),
           ]),
@@ -44,6 +45,10 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                   .where((e) => _query.isEmpty || '${e.title} ${e.body}'.toLowerCase().contains(_query.toLowerCase()))
                   .toList();
               return PageBody(maxWidth: 820, children: [
+                if (cat == 'research') ...[
+                  Notice(t.learnResearchNote, kind: 'info', icon: Icons.article_outlined),
+                  const Gap(FlSpace.m),
+                ],
                 TextField(
                   decoration: InputDecoration(prefixIcon: const Icon(Icons.search), hintText: t.learnSearch),
                   onChanged: (v) => setState(() => _query = v),
@@ -66,6 +71,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
               list('glossary'),
               list('concept'),
               list('faq'),
+              list('research'),
               AsyncBody(
                 value: trts,
                 data: (ts) => PageBody(maxWidth: 820, children: [
@@ -134,7 +140,8 @@ class KnowledgeDetailScreen extends ConsumerWidget {
             ],
             if (e.sources.isNotEmpty) ...[
               const Gap(FlSpace.xl),
-              Text(t.resultsSuggestedReading, style: context.text.titleMedium),
+              Text(e.category == 'research' ? t.learnCitation : t.resultsSuggestedReading,
+                  style: context.text.titleMedium),
               for (final s in e.sources) SourceTile(s),
             ],
           ]);

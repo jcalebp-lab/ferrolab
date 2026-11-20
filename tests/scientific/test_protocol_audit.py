@@ -95,12 +95,12 @@ def test_reference_simulation_is_coherent(seed_snapshot, m, t):
     # 9. no se inventan resultados: cifras solo con modelo declarado y etiquetadas
     hd = r.results.hardness
     if hd is not None and hd.method == "literature_reference_other_specimen":  # dureza publicada de otra muestra
-        assert m == MaterialId.EN_GJL_250 and hd.evidence_kind == "literature" and hd.validity["locator"]
+        assert m == MaterialId.ASTM_A48_CLASS_35 and hd.evidence_kind == "literature" and hd.validity["locator"]
         hd = None
     facts = [hd] if hd else []
     for g in (r.results.phase_fractions, r.results.microconstituent_fractions):
         facts += list((g or {}).values())
-    if m == MaterialId.EN_GJL_250:
+    if m == MaterialId.ASTM_A48_CLASS_35:
         assert not facts and r.result_level == "B"
     for f in facts:
         assert f.evidence_kind == "modeled" and f.model_version and f.source_ids
@@ -154,17 +154,17 @@ def test_8620_uncarburized_vs_carburized(seed_snapshot):
 
 def test_gray_iron_unknown_composition(seed_snapshot):
     eng = ScientificEngine(seed_snapshot)
-    r = eng.simulate(_req("en_gjl_250", "quench", target_temperature_c=870, hold_time_min=30))
+    r = eng.simulate(_req("astm_a48_class_35", "quench", target_temperature_c=870, hold_time_min=30))
     assert (r.results.hardness is None or r.results.hardness.method == "literature_reference_other_specimen") \
         and r.diagrams == []
     assert r.model_estimate.get("critical_temperatures_c") is None
-    assert any("GG25" in x for x in r.protocol_card["restrictions"])
+    assert any("ASTM A48" in x for x in r.protocol_card["restrictions"])
     assert r.thermal_history and any(w.code == "THERMAL_CURVE_ILLUSTRATIVE" for w in r.warnings)
 
 
 def test_austemper_bath_without_validated_duration(seed_snapshot):
     eng = ScientificEngine(seed_snapshot)
-    r = eng.simulate(_req("en_gjl_250", "austemper", target_temperature_c=870, hold_time_min=30))
+    r = eng.simulate(_req("astm_a48_class_35", "austemper", target_temperature_c=870, hold_time_min=30))
     assert any(w.code == "BATH_TIME_UNDOCUMENTED" for w in r.warnings)
     assert r.protocol_card["params"]["bath_time"]["basis"] == "pending"
     steel = eng.simulate(_req("aisi_8620", "austemper", target_temperature_c=845, hold_time_min=7.5,
@@ -217,7 +217,7 @@ def test_illustration_explains_why_nothing_is_drawn(seed_snapshot):
         "not_modeled": _req("aisi_1045", "anneal", target_temperature_c=695, hold_time_min=60,
                             protocol_id="prot_1045_anneal_subcritical"),
         "theory": _req("aisi_1045", "temper", target_temperature_c=550, hold_time_min=30, prior_mode="theory"),
-        "qualitative_cast_iron": _req("en_gjl_250", "quench", target_temperature_c=870, hold_time_min=30),
+        "qualitative_cast_iron": _req("astm_a48_class_35", "quench", target_temperature_c=870, hold_time_min=30),
     }
     for reason, rq in cases.items():
         il = eng.simulate(rq).microstructure_illustration
@@ -240,6 +240,6 @@ def test_no_review_or_empirical_notices_and_complete_reference_results(seed_snap
             for txt in texts:
                 assert not any(b in txt.lower() for b in BANNED), (pr.id, txt)
             assert all(s.reason_code != "NO_QUANTITATIVE_EVIDENCE" for s in r.result_status.values())
-            if pr.is_reference and m != MaterialId.EN_GJL_250:
+            if pr.is_reference and m != MaterialId.ASTM_A48_CLASS_35:
                 missing = [q for q, v in r.results.model_dump().items() if not v]
                 assert not missing, (pr.id, missing)

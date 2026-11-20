@@ -23,7 +23,7 @@ def test_health(client):
 
 def test_catalog_three_materials_seven_treatments(client):
     mats = client.get("/api/v1/materials").json()["items"]
-    assert [m["id"] for m in mats] == ["aisi_1045", "aisi_8620", "en_gjl_250"]
+    assert [m["id"] for m in mats] == ["aisi_1045", "aisi_8620", "astm_a48_class_35"]
     assert mats[0]["compositions"] and mats[1]["compositions"] and mats[2]["compositions"] == []
     assert mats[2]["family"] == "gray_cast_iron"
     trts = client.get("/api/v1/treatments?locale=en").json()["items"]
@@ -100,21 +100,21 @@ def test_determinism_over_http(client):
     assert a == b
 
 
-@pytest.mark.parametrize("m,t", list(itertools.product(["aisi_1045", "aisi_8620", "en_gjl_250"],
+@pytest.mark.parametrize("m,t", list(itertools.product(["aisi_1045", "aisi_8620", "astm_a48_class_35"],
                                                        ["quench", "temper", "anneal", "normalize", "austemper",
                                                         "martemper"])))
 def test_all_pairs_answer_honestly(client, m, t):
     body = client.post("/api/v1/simulations", json={**BASE, "material_id": m, "treatment_id": t,
                                                     "target_temperature_c": 600}).json()
     # 600 °C no austeniza: solo el revenido (estado templado supuesto y declarado) puede dar cifra modelada.
-    if t == "temper" and m != "en_gjl_250":
+    if t == "temper" and m != "astm_a48_class_35":
         assert body["simulation_status"] in ("partial_result", "completed")
         assert body["results"]["hardness"]["evidence_kind"] == "modeled"
         assert any(w["code"] == "DEPENDENCY_REFERENCE" for w in body["warnings"])
     else:
         assert body["simulation_status"] in ("insufficient_evidence", "unsupported")
         res = dict(body["results"])
-        if m == "en_gjl_250":  # referencia de la norma, no un resultado del tratamiento
+        if m == "astm_a48_class_35":  # referencia de la norma, no un resultado del tratamiento
             assert set(res.pop("mechanical_properties")) == {"tensile_strength_min"}
             hd = res.pop("hardness")
             assert hd is None or hd["method"] == "literature_reference_other_specimen"
@@ -177,7 +177,7 @@ def test_simulation_offers_related_real_micrographs(client):
                                                     "target_temperature_c": 830, "hold_time_min": 60}).json()
     rel = body["related_micrographs"]
     assert rel and all("pearlite" in m["constituents"] or "proeutectoid_ferrite" in m["constituents"] for m in rel)
-    gray = client.post("/api/v1/simulations", json={"material_id": "en_gjl_250", "treatment_id": "normalize",
+    gray = client.post("/api/v1/simulations", json={"material_id": "astm_a48_class_35", "treatment_id": "normalize",
                                                     "target_temperature_c": 900, "hold_time_min": 30}).json()
     grel = gray["related_micrographs"]
     # Primero las fundiciones grises; después, ejemplos de la MATRIZ en otras muestras (nunca otra cosa).
@@ -187,7 +187,7 @@ def test_simulation_offers_related_real_micrographs(client):
 
 
 @pytest.mark.parametrize("m,t", list(itertools.product(
-    ["aisi_1045", "aisi_8620", "en_gjl_250"], ["quench", "temper", "anneal", "normalize", "austemper", "martemper"])))
+    ["aisi_1045", "aisi_8620", "astm_a48_class_35"], ["quench", "temper", "anneal", "normalize", "austemper", "martemper"])))
 def test_every_combination_shows_real_micrographs(client, m, t):
     body = client.post("/api/v1/simulations", json={"material_id": m, "treatment_id": t,
                                                     "target_temperature_c": 850, "hold_time_min": 30}).json()

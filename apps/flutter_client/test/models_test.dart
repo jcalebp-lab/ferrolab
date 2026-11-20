@@ -27,8 +27,8 @@ void main() {
     expect(Playback.from(r), isNull);
   });
 
-  test('GG25 austempering (EN): baño sin cifra en el esquema', () {
-    final r = SimulationResultDto.fromJson(fixture('sim_gjl250_austemper_en'));
+  test('A48 class 35 austempering (EN): baño sin cifra en el esquema', () {
+    final r = SimulationResultDto.fromJson(fixture('sim_a48c35_austemper_en'));
     final bath = r.schematic!.where((s) => s.endLevel == SchematicLevel.bath);
     expect(bath, isNotEmpty);
     expect(bath.every((s) => s.endTemperatureC == null && s.durationS == null), isTrue);

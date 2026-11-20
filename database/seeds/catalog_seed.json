@@ -87,11 +87,67 @@
       "url": "https://store.astm.org/standards/a48"
     },
     {
-      "id": "src_en_1561",
+      "id": "src_astm_a247",
       "kind": "standard",
-      "title": "EN 1561 — Founding: Grey cast irons (EN-GJL-250, antes GG-25 según DIN 1691)",
+      "title": "ASTM A247 — Standard Test Method for Evaluating the Microstructure of Graphite in Iron Castings",
       "verification_status": "unverified",
-      "url": "https://castingquality.com/wp-content/uploads/Casting-Material-gray-iron-in-EN-1561.pdf"
+      "url": "https://store.astm.org/a0247-19.html"
+    },
+    {
+      "id": "src_astm_a29",
+      "kind": "standard",
+      "title": "ASTM A29/A29M — Standard Specification for General Requirements for Steel Bars, Carbon and Alloy, Hot-Wrought (composición de los grados AISI/SAE)",
+      "verification_status": "unverified",
+      "url": "https://store.astm.org/a0029_a0029m-23.html"
+    },
+    {
+      "id": "src_astm_e3",
+      "kind": "standard",
+      "title": "ASTM E3 — Standard Guide for Preparation of Metallographic Specimens",
+      "verification_status": "unverified",
+      "url": "https://store.astm.org/e0003-11r17.html"
+    },
+    {
+      "id": "src_astm_e407",
+      "kind": "standard",
+      "title": "ASTM E407 — Standard Practice for Microetching Metals and Alloys",
+      "verification_status": "unverified",
+      "url": "https://store.astm.org/e0407-23.html"
+    },
+    {
+      "id": "src_astm_e18",
+      "kind": "standard",
+      "title": "ASTM E18 — Standard Test Methods for Rockwell Hardness of Metallic Materials",
+      "verification_status": "unverified",
+      "url": "https://store.astm.org/e0018-22.html"
+    },
+    {
+      "id": "src_astm_e10",
+      "kind": "standard",
+      "title": "ASTM E10 — Standard Test Method for Brinell Hardness of Metallic Materials",
+      "verification_status": "unverified",
+      "url": "https://store.astm.org/e0010-18.html"
+    },
+    {
+      "id": "src_astm_e92",
+      "kind": "standard",
+      "title": "ASTM E92 — Standard Test Methods for Vickers Hardness and Knoop Hardness of Metallic Materials",
+      "verification_status": "unverified",
+      "url": "https://store.astm.org/e0092-23.html"
+    },
+    {
+      "id": "src_astm_e8",
+      "kind": "standard",
+      "title": "ASTM E8/E8M — Standard Test Methods for Tension Testing of Metallic Materials",
+      "verification_status": "unverified",
+      "url": "https://store.astm.org/e0008_e0008m-24.html"
+    },
+    {
+      "id": "src_astm_e23",
+      "kind": "standard",
+      "title": "ASTM E23 — Standard Test Methods for Notched Bar Impact Testing of Metallic Materials (Charpy)",
+      "verification_status": "unverified",
+      "url": "https://store.astm.org/e0023-24.html"
     },
     {
       "id": "src_astm_a255",
@@ -140,6 +196,136 @@
       "authors": "K. W. Andrews",
       "year": 1965,
       "notes": "Journal of the Iron and Steel Institute 203, 721–727."
+    },
+    {
+      "id": "src_art_collins_2023",
+      "kind": "article",
+      "title": "A Rapid, Open-Source CCT Predictor for Low-Alloy Steels, and Its Application to Compositionally Heterogeneous Material",
+      "authors": "J. Collins, M. Piemonte, M. Taylor, J. Fellowes, E. Pickering",
+      "year": 2023,
+      "edition": "Metals 13(7):1168",
+      "doi": "10.3390/met13071168",
+      "url": "https://www.mdpi.com/2075-4701/13/7/1168",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "MDPI, acceso abierto (CC BY)."
+    },
+    {
+      "id": "src_art_razali_2023",
+      "kind": "article",
+      "title": "Practical Approach for Determining Material Parameters When Predicting Austenite Grain Growth under Isothermal Heat Treatment",
+      "authors": "M. K. Razali, A. A. Abd Ghawi, M. Irani, S. H. Chung, J. M. Choi, M. S. Joun",
+      "year": 2023,
+      "edition": "Materials 16(19):6583",
+      "doi": "10.3390/ma16196583",
+      "url": "https://www.mdpi.com/1996-1944/16/19/6583",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "MDPI y PubMed Central (PMC10574047)."
+    },
+    {
+      "id": "src_art_kang_lee_2014",
+      "kind": "article",
+      "title": "Prediction of Tempered Martensite Hardness Incorporating the Composition-Dependent Tempering Parameter in Low Alloy Steels",
+      "authors": "S. Kang, S.-J. Lee",
+      "year": 2014,
+      "edition": "Materials Transactions 55(7):1069",
+      "doi": "10.2320/matertrans.M2014004",
+      "url": "https://www.jstage.jst.go.jp/article/matertrans/55/7/55_M2014004/_article",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "J-STAGE, lectura libre."
+    },
+    {
+      "id": "src_art_nist_2025",
+      "kind": "article",
+      "title": "Using “Off-the-Shelf” AISI 4340 Steel for the Production of NIST Reference Charpy Specimens",
+      "authors": "E. Lucon, A. Eckhardt, R. Santoyo",
+      "year": 2025,
+      "edition": "NIST Interagency Report 8556",
+      "doi": "10.6028/NIST.IR.8556",
+      "url": "https://nvlpubs.nist.gov/nistpubs/ir/2025/NIST.IR.8556.pdf",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "Informe gratuito del NIST."
+    },
+    {
+      "id": "src_art_vieira_2021",
+      "kind": "article",
+      "title": "Evaluation of the characteristics of an AISI 1045 steel quenched in different concentration of polymer solutions of polyvinylpyrrolidone",
+      "authors": "E. da Rosa Vieira, L. V. Biehl, J. L. B. Medeiros, V. M. Costa, R. J. Macedo",
+      "year": 2021,
+      "edition": "Scientific Reports 11 (2021)",
+      "doi": "10.1038/s41598-020-79060-0",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7809479/",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "Scientific Reports y PubMed Central, acceso abierto."
+    },
+    {
+      "id": "src_art_mazuera_2011",
+      "kind": "article",
+      "title": "Evaluación de los parámetros de temple y revenido para el acero AISI/SAE 1045 a escala industrial",
+      "authors": "D. Mazuera, A. Ortiz",
+      "year": 2011,
+      "edition": "Scientia et Technica 16(49):25–29 (Universidad Tecnológica de Pereira)",
+      "doi": null,
+      "url": "https://ojs2.utp.edu.co/index.php/revistaciencia/article/view/1461",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "Revista colombiana de acceso abierto."
+    },
+    {
+      "id": "src_art_garzon_2016",
+      "kind": "article",
+      "title": "Influencia en las propiedades mecánicas del acero AISI-SAE 1045 tratado térmicamente con temple a temperatura intercrítica y revenido",
+      "authors": "J. R. Garzón Torres, C. A. Bohórquez Ávila, M. E. Hernández, H. F. Rojas Molano",
+      "year": 2016,
+      "edition": "Avances: Investigación en Ingeniería 13(1) (Universidad Libre)",
+      "doi": "10.18041/1794-4953/avances.2.257",
+      "url": "https://revistas.unilibre.edu.co/index.php/avances/article/view/257",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "Revista colombiana de acceso abierto."
+    },
+    {
+      "id": "src_art_castillo_2018",
+      "kind": "article",
+      "title": "Caracterización microestructural y mecánica de aceros de fase dual (ferrita-martensita), obtenidos mediante procesos térmicos y termomecánicos",
+      "authors": "D. E. Castillo-Gutiérrez, I. I. Angarita-Moncaleano, R. Rodríguez-Baracaldo",
+      "year": 2018,
+      "edition": "Ingeniare. Revista chilena de ingeniería 26(3):430–439",
+      "doi": "10.4067/s0718-33052018000300430",
+      "url": "https://scielo.conicyt.cl/pdf/ingeniare/v26n3/0718-3305-ingeniare-26-03-00430.pdf",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "SciELO, acceso abierto."
+    },
+    {
+      "id": "src_art_wang_2019",
+      "kind": "article",
+      "title": "Wear Behavior of Austempered and Quenched and Tempered Gray Cast Irons under Similar Hardness",
+      "authors": "B. Wang, X. Han, G. Barber, Y. Pan",
+      "year": 2019,
+      "edition": "Metals 9(12):1329",
+      "doi": "10.3390/met9121329",
+      "url": "https://www.mdpi.com/2075-4701/9/12/1329",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "MDPI, acceso abierto (CC BY)."
+    },
+    {
+      "id": "src_art_zhu_2026",
+      "kind": "article",
+      "title": "Effect of Different Austenitizing Temperatures on the Microstructure and Mechanical Properties of Austempering Gray Cast Iron",
+      "authors": "S. Zhu, H. Zhang, F. Han, Y. Hao, X. Liu, et al.",
+      "year": 2026,
+      "edition": "Applied Sciences 16(4):1828",
+      "doi": "10.3390/app16041828",
+      "url": "https://www.mdpi.com/2076-3417/16/4/1828",
+      "verification_status": "verified",
+      "license_code": "open_access",
+      "notes": "MDPI, acceso abierto (CC BY)."
     },
     {
       "id": "src_wikimedia_commons",
@@ -246,6 +432,27 @@
       "notes": "Resumen IMRC 2024 (MRS-México), simposio F5."
     },
     {
+      "id": "src_nist_ir_8556",
+      "kind": "web",
+      "title": "Using “Off-the-Shelf” AISI 4340 Steel for the Production of NIST Reference Charpy Specimens (NIST IR 8556)",
+      "verification_status": "verified",
+      "authors": "E. Lucon, A. Eckhardt, R. Santoyo",
+      "year": 2025,
+      "doi": "10.6028/NIST.IR.8556",
+      "url": "https://nvlpubs.nist.gov/nistpubs/ir/2025/NIST.IR.8556.pdf",
+      "notes": "Informe gratuito del NIST (enero 2025). Introducción: la energía Charpy depende sobre todo de la temperatura final de revenido; 300–400 °C da baja energía y ~600 °C alta energía, con martensita totalmente revenida."
+    },
+    {
+      "id": "src_mazuera_ortiz_2011",
+      "kind": "article",
+      "title": "Evaluación de los parámetros de temple y revenido para el acero AISI/SAE 1045 a escala industrial",
+      "verification_status": "verified",
+      "authors": "D. Mazuera, A. Ortiz",
+      "year": 2011,
+      "url": "https://ojs2.utp.edu.co/index.php/revistaciencia/article/view/1461",
+      "notes": "Scientia et Technica, 16(49), 25–29 (Universidad Tecnológica de Pereira, acceso abierto). Barras industriales de 1,5 in; austenización recomendada 870 °C; revenidos a 400 y 630 °C."
+    },
+    {
       "id": "src_kang_lee_2014",
       "kind": "article",
       "title": "Prediction of tempered martensite hardness incorporating the composition-dependent tempering parameter in low alloy steels",
@@ -283,15 +490,6 @@
       "notes": "J. Mater. Res. Technol. Acceso abierto, pero el texto no se pudo abrir desde el entorno; condiciones aportadas por el propietario."
     },
     {
-      "id": "src_saarstahl_c45",
-      "kind": "web",
-      "title": "Material specification sheet Saarstahl — C45 (equivalente europeo del 1045)",
-      "verification_status": "unverified",
-      "authors": "Saarstahl AG",
-      "url": "https://en.saarstahl.com/app/uploads/2024/03/20160401102929-0503_C45.pdf",
-      "notes": "Leído como extracto de un buscador: temple 820–860 °C agua/aceite y revenido 550–660 °C (bonificado). Solo se usa para justificar el límite inferior del revenido de bonificado."
-    },
-    {
       "id": "src_bodycote_austempering",
       "kind": "web",
       "title": "Austempering — Bodycote",
@@ -316,11 +514,22 @@
       "review_status": "draft"
     },
     {
-      "id": "ev_sa_c45_qt",
-      "source_id": "src_saarstahl_c45",
-      "locator": "Heat treatment: hardening / tempering (extracto)",
-      "claim_es": "C45: temple 820–860 °C en agua o aceite; revenido de bonificado 550–660 °C.",
-      "claim_en": "C45: hardening 820–860 °C in water or oil; quench-and-temper tempering 550–660 °C.",
+      "id": "ev_nist_qt_tempering",
+      "source_id": "src_nist_ir_8556",
+      "locator": "Introducción (NIST IR 8556, 2025)",
+      "claim_es": "La energía Charpy del 4340 templado depende sobre todo del revenido final: 300–400 °C da baja energía y ~600 °C, alta energía (martensita totalmente revenida).",
+      "claim_en": "Charpy energy of quenched 4340 depends mainly on the final temper: 300–400 °C gives low energy and ~600 °C high energy (fully tempered martensite).",
+      "evidence_kind": "literature",
+      "evidence_level": "bounded_estimate",
+      "method": "protocol_parameter",
+      "review_status": "draft"
+    },
+    {
+      "id": "ev_mo_1045_qt",
+      "source_id": "src_mazuera_ortiz_2011",
+      "locator": "Scientia et Technica 16(49):25–29, resumen y tabla de tratamientos",
+      "claim_es": "AISI/SAE 1045 industrial (barras de 1,5 in): austenización recomendada 870 °C; revenidos evaluados a 400 y 630 °C.",
+      "claim_en": "Industrial AISI/SAE 1045 (1.5 in bars): recommended austenitizing 870 °C; tempers evaluated at 400 and 630 °C.",
       "evidence_kind": "literature",
       "evidence_level": "bounded_estimate",
       "method": "protocol_parameter",
@@ -1041,29 +1250,29 @@
       "review_status": "draft"
     },
     {
-      "id": "en_gjl_250",
+      "id": "astm_a48_class_35",
       "family": "gray_cast_iron",
-      "display_name": "GG25 (EN-GJL-250)",
-      "standard_note_es": "EN 1561 designa la fundición gris por su resistencia mínima a la tracción: EN-GJL-250 (antes GG-25, DIN 1691; material 5.1301) exige 250 MPa en barra de ensayo de 30 mm. Equivale aproximadamente a ASTM A48 clase 35 y a JIS FC250.",
-      "standard_note_en": "EN 1561 designates gray iron by its minimum tensile strength: EN-GJL-250 (formerly GG-25, DIN 1691; material 5.1301) requires 250 MPa on a 30 mm test bar. Roughly equivalent to ASTM A48 class 35 and JIS FC250.",
-      "description_es": "Fundición gris de grafito laminar y matriz principalmente perlítica (≈ 160–240 HB en bruto de colada según el espesor). No es un acero. Se usa en bancadas, carcasas, bloques de motor y discos de freno por su colabilidad, maquinabilidad y amortiguación.",
-      "description_en": "Flake-graphite gray iron with a mainly pearlitic matrix (≈ 160–240 HB as cast, depending on section). It is not a steel. Used for machine beds, housings, engine blocks and brake discs for its castability, machinability and damping.",
+      "display_name": "ASTM A48 Clase 35",
+      "standard_note_es": "ASTM A48/A48M clasifica la fundición gris por su resistencia mínima a la tracción en ksi: la clase 35 exige 35 ksi (≈ 241 MPa) en una barra de ensayo colada aparte (letras A, B o C según el diámetro de la barra). La estructura del grafito se describe con ASTM A247.",
+      "standard_note_en": "ASTM A48/A48M classifies gray iron by its minimum tensile strength in ksi: class 35 requires 35 ksi (≈ 241 MPa) on a separately cast test bar (letters A, B or C by bar diameter). Graphite structure is described with ASTM A247.",
+      "description_es": "Fundición gris de grafito laminar y matriz principalmente perlítica. No es un acero. Se usa en bancadas, carcasas, bloques de motor y discos de freno por su colabilidad, maquinabilidad y amortiguación.",
+      "description_en": "Flake-graphite gray iron with a mainly pearlitic matrix. It is not a steel. Used for machine beds, housings, engine blocks and brake discs for its castability, machinability and damping.",
       "limitations_es": [
-        "La norma EN 1561 no fija la composición química: la deja al fundidor y los catálogos de proveedores dan rangos distintos (C entre 2,8 y 3,5 %).",
-        "La resistencia baja con el espesor de la pieza (≈ 225 MPa a 20–40 mm y 195 MPa a 40–80 mm).",
+        "ASTM A48 no fija la composición química ni la dureza: solo la resistencia mínima en la barra de ensayo.",
+        "La resistencia real de una pieza baja con el espesor de la sección; la barra de ensayo no representa toda la pieza.",
         "La matriz y la morfología del grafito dependen del proceso de fundición y del espesor de la pieza.",
         "No se usan curvas ni modelos del acero para esta fundición."
       ],
       "limitations_en": [
-        "EN 1561 does not fix the chemical composition: it is left to the foundry and supplier catalogs give different ranges (C between 2.8 and 3.5%).",
-        "Strength falls with section thickness (≈ 225 MPa at 20–40 mm and 195 MPa at 40–80 mm).",
+        "ASTM A48 does not fix chemical composition or hardness: only the minimum strength on the test bar.",
+        "The actual strength of a part falls with section thickness; the test bar does not represent the whole part.",
         "The matrix and graphite morphology depend on the casting process and section thickness.",
         "Steel curves and models are not used for this cast iron."
       ],
       "compositions": [],
       "suggested_source_ids": [
-        "src_en_1561",
         "src_astm_a48",
+        "src_astm_a247",
         "src_angus",
         "src_asm_15"
       ],
@@ -1094,8 +1303,8 @@
       "review_status": "draft"
     },
     {
-      "id": "ic_gjl250_as_cast_unspecified",
-      "material_id": "en_gjl_250",
+      "id": "ic_a48c35_as_cast_unspecified",
+      "material_id": "astm_a48_class_35",
       "name_es": "Bruto de colada, matriz no documentada",
       "name_en": "As-cast, matrix undocumented",
       "description_es": "Grafito laminar (propio de la fundición gris); tipo y tamaño de láminas y composición de la matriz no documentados.",
@@ -1140,8 +1349,8 @@
       "review_status": "draft"
     },
     {
-      "id": "ic_gjl250_hardened_ref",
-      "material_id": "en_gjl_250",
+      "id": "ic_a48c35_hardened_ref",
+      "material_id": "astm_a48_class_35",
       "name_es": "Matriz templada de referencia",
       "name_en": "Reference hardened matrix",
       "description_es": "Fundición gris templada con el protocolo de referencia (aceite). Matriz martensítica supuesta, composición no documentada.",
@@ -1634,7 +1843,7 @@
       "protocol_id": "prot_8620_qt_vanguard"
     },
     {
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "quench",
       "compatibility_status": "conditional",
       "reason_es": "Posible si la composición y la matriz lo permiten (Total Materia, Compraco).",
@@ -1642,10 +1851,10 @@
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_gjl250_quench_tm"
+      "protocol_id": "prot_a48c35_quench_tm"
     },
     {
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "temper",
       "compatibility_status": "conditional",
       "reason_es": "Requiere una matriz previamente endurecida.",
@@ -1655,10 +1864,10 @@
         "hardened": true
       },
       "review_status": "draft",
-      "protocol_id": "prot_gjl250_temper_tm"
+      "protocol_id": "prot_a48c35_temper_tm"
     },
     {
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "anneal",
       "compatibility_status": "supported",
       "reason_es": "Recocido ferritizante, completo, grafitizante y alivio de tensiones documentados.",
@@ -1666,10 +1875,10 @@
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_gjl250_anneal_ferritize"
+      "protocol_id": "prot_a48c35_anneal_ferritize"
     },
     {
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "normalize",
       "compatibility_status": "conditional",
       "reason_es": "Aplicable según la fundición (Total Materia: 885–925 °C).",
@@ -1677,21 +1886,21 @@
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_gjl250_normalize_tm"
+      "protocol_id": "prot_a48c35_normalize_tm"
     },
     {
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "austemper",
       "compatibility_status": "conditional",
-      "reason_es": "Documentado para ciertas fundiciones grises; no se asume para cualquier GG25.",
-      "reason_en": "Documented for certain gray irons; not assumed for every GG25.",
+      "reason_es": "Documentado para ciertas fundiciones grises; no se asume para cualquier ASTM A48.",
+      "reason_en": "Documented for certain gray irons; not assumed for every ASTM A48 iron.",
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_gjl250_austemper_tm"
+      "protocol_id": "prot_a48c35_austemper_tm"
     },
     {
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "quench_temper",
       "compatibility_status": "conditional",
       "reason_es": "Temple en aceite y revenido por debajo de 550 °C (Total Materia, Compraco).",
@@ -1699,10 +1908,10 @@
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_gjl250_qt_tm"
+      "protocol_id": "prot_a48c35_qt_tm"
     },
     {
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "martemper",
       "compatibility_status": "conditional",
       "reason_es": "Documentado para fundiciones no aleadas (200–260 °C); revenir después.",
@@ -1710,7 +1919,7 @@
       "quantitative_outputs_enabled": false,
       "required_initial_state": {},
       "review_status": "draft",
-      "protocol_id": "prot_gjl250_martemper_tm"
+      "protocol_id": "prot_a48c35_martemper_tm"
     }
   ],
   "protocols": [
@@ -5173,7 +5382,8 @@
       "evidence_status": "source_verified",
       "source_ids": [
         "src_azom_1045",
-        "src_saarstahl_c45",
+        "src_nist_ir_8556",
+        "src_mazuera_ortiz_2011",
         "src_kang_lee_2014"
       ],
       "validity": {
@@ -5277,8 +5487,8 @@
           "end_temperature_evidence_id": "ev_az_1045_temper",
           "purpose_es": "Calentamiento por debajo de Ac1: no se forma austenita nueva.",
           "purpose_en": "Heating below Ac1: no new austenite forms.",
-          "rule_es": "Bonificado = temple + revenido ALTO. El límite inferior de 550 °C es el del bonificado del C45 (Saarstahl, equivalente europeo del 1045); el superior es el máximo publicado para este material.",
-          "rule_en": "Quench and temper (bonificado) = hardening + HIGH tempering. The 550 °C lower limit is that of C45 quench and temper (Saarstahl, European equivalent of 1045); the upper one is the maximum published for this material.",
+          "rule_es": "Bonificado = temple + revenido ALTO. FERROLAB toma la parte alta del rango publicado (550–650 °C): lejos de la zona de 300–400 °C, donde el revenido da baja tenacidad, y alrededor de los ~600 °C que dan alta energía Charpy (NIST IR 8556, 2025); el bonificado industrial del 1045 se ha evaluado a 630 °C (Mazuera y Ortiz, 2011).",
+          "rule_en": "Quench and temper (bonificado) = hardening + HIGH tempering. FERROLAB takes the upper part of the published range (550–650 °C): away from the 300–400 °C zone where tempering gives low toughness, and around the ~600 °C that gives high Charpy energy (NIST IR 8556, 2025); industrial quench and temper of 1045 has been evaluated at 630 °C (Mazuera and Ortiz, 2011).",
           "ordinal": 5
         },
         {
@@ -5340,7 +5550,7 @@
       "evidence_status": "source_verified",
       "source_ids": [
         "src_vanguard_8620",
-        "src_saarstahl_c45",
+        "src_nist_ir_8556",
         "src_kang_lee_2014"
       ],
       "validity": {
@@ -5446,8 +5656,8 @@
           "end_temperature_evidence_id": "ev_vg_8620_harden",
           "purpose_es": "Calentamiento por debajo de Ac1: no se forma austenita nueva.",
           "purpose_en": "Heating below Ac1: no new austenite forms.",
-          "rule_es": "Bonificado = temple + revenido ALTO. El límite inferior de 550 °C es el del bonificado del C45 (Saarstahl, equivalente europeo del 1045); el superior es el máximo publicado para este material.",
-          "rule_en": "Quench and temper (bonificado) = hardening + HIGH tempering. The 550 °C lower limit is that of C45 quench and temper (Saarstahl, European equivalent of 1045); the upper one is the maximum published for this material.",
+          "rule_es": "Bonificado = temple + revenido ALTO. FERROLAB toma la parte alta del rango publicado (550–650 °C): lejos de la zona de 300–400 °C, donde el revenido da baja tenacidad, y alrededor de los ~600 °C que dan alta energía Charpy (NIST IR 8556, 2025); el bonificado industrial del 1045 se ha evaluado a 630 °C (Mazuera y Ortiz, 2011).",
+          "rule_en": "Quench and temper (bonificado) = hardening + HIGH tempering. FERROLAB takes the upper part of the published range (550–650 °C): away from the 300–400 °C zone where tempering gives low toughness, and around the ~600 °C that gives high Charpy energy (NIST IR 8556, 2025); industrial quench and temper of 1045 has been evaluated at 630 °C (Mazuera and Ortiz, 2011).",
           "ordinal": 5
         },
         {
@@ -5486,9 +5696,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_qt_tm",
+      "id": "prot_a48c35_qt_tm",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "quench_temper",
       "variant_code": "tm_qt",
       "variant_es": "Temple en aceite 870 °C + revenido ≤ 550 °C (Total Materia / Compraco)",
@@ -5504,7 +5714,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5517,11 +5727,11 @@
       "expected_es": "Martensita revenida en la matriz con grafito laminar sin cambios: más tenacidad que el templado.",
       "expected_en": "Tempered martensite matrix with unchanged flake graphite: tougher than as-quenched.",
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
         "Revenir por debajo de 550 °C para evitar la grafitización (Compraco)."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
         "Temper below 550 °C to avoid graphitization (Compraco)."
       ],
       "assumptions_es": [
@@ -5676,9 +5886,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_quench_tm",
+      "id": "prot_a48c35_quench_tm",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "quench",
       "variant_code": "oil_tm",
       "variant_es": "Temple en aceite (Total Materia / Compraco)",
@@ -5694,7 +5904,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5707,11 +5917,11 @@
       "expected_es": "Matriz martensítica con grafito laminar sin cambios; revenir siempre.",
       "expected_en": "Martensitic matrix with unchanged flake graphite; always temper.",
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
         "La fundición gris no aleada puede necesitar Mn suficiente para templar en el centro."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
         "Unalloyed gray iron may need enough Mn to harden at the center."
       ],
       "assumptions_es": [
@@ -5812,9 +6022,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_temper_tm",
+      "id": "prot_a48c35_temper_tm",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "temper",
       "variant_code": "tm",
       "variant_es": "Revenido (Total Materia)",
@@ -5832,8 +6042,8 @@
       "required_initial_state": {
         "hardened": true
       },
-      "default_initial_condition_id": "ic_gjl250_hardened_ref",
-      "prior_protocol_id": "prot_gjl250_quench_tm",
+      "default_initial_condition_id": "ic_a48c35_hardened_ref",
+      "prior_protocol_id": "prot_a48c35_quench_tm",
       "evidence_status": "source_verified",
       "source_ids": [
         "src_totalmateria_gray_2",
@@ -5918,9 +6128,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_anneal_ferritize",
+      "id": "prot_a48c35_anneal_ferritize",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "anneal",
       "variant_code": "ferritizing",
       "variant_es": "Recocido ferritizante (Total Materia)",
@@ -5936,7 +6146,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -5948,10 +6158,10 @@
       "expected_es": "Matriz más ferrítica, menor dureza y resistencia (≈ una clase menos).",
       "expected_en": "More ferritic matrix, lower hardness and strength (≈ one grade lower).",
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -6040,9 +6250,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_anneal_full",
+      "id": "prot_a48c35_anneal_full",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "anneal",
       "variant_code": "full",
       "variant_es": "Recocido medio/completo 790–900 °C (Total Materia)",
@@ -6058,7 +6268,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -6070,10 +6280,10 @@
       "expected_es": null,
       "expected_en": null,
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -6162,9 +6372,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_anneal_graphitize",
+      "id": "prot_a48c35_anneal_graphitize",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "anneal",
       "variant_code": "graphitizing",
       "variant_es": "Recocido grafitizante 900–955 °C",
@@ -6180,7 +6390,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -6284,9 +6494,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_stress_relief",
+      "id": "prot_a48c35_stress_relief",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "anneal",
       "variant_code": "stress_relief",
       "variant_es": "Alivio de tensiones 550 °C (Compraco)",
@@ -6302,7 +6512,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -6400,9 +6610,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_normalize_tm",
+      "id": "prot_a48c35_normalize_tm",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "normalize",
       "variant_code": "tm",
       "variant_es": "Normalizado 885–925 °C (Total Materia)",
@@ -6418,7 +6628,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -6430,10 +6640,10 @@
       "expected_es": "Matriz perlítica más fina; la dureza depende del carbono combinado y del espaciado perlítico.",
       "expected_en": "Finer pearlitic matrix; hardness depends on combined carbon and pearlite spacing.",
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -6499,9 +6709,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_austemper_tm",
+      "id": "prot_a48c35_austemper_tm",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "austemper",
       "variant_code": "tm_general",
       "variant_es": "Austemperizado 230–425 °C (Total Materia)",
@@ -6517,7 +6727,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -6529,10 +6739,10 @@
       "expected_es": "Matriz ausferrítica; no confundir con ADI (fundición nodular austemperizada).",
       "expected_en": "Ausferritic matrix; do not confuse with ADI (austempered ductile iron).",
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -6638,9 +6848,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_austemper_hard",
+      "id": "prot_a48c35_austemper_hard",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "austemper",
       "variant_code": "tm_hardness",
       "variant_es": "Austemperizado 230–290 °C (dureza)",
@@ -6656,7 +6866,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -6668,10 +6878,10 @@
       "expected_es": null,
       "expected_en": null,
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -6777,9 +6987,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_austemper_jmrt",
+      "id": "prot_a48c35_austemper_jmrt",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "austemper",
       "variant_code": "jmrt_2022_unverified",
       "variant_es": "AGI experimental 870 °C 2 h → 360 °C 1 h (fuente no verificada)",
@@ -6795,7 +7005,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_unverified",
       "source_ids": [
@@ -6807,12 +7017,12 @@
       "expected_es": null,
       "expected_en": null,
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
-        "Condiciones de un estudio concreto (360 °C 1 h o 260 °C 2 h); no se asignan a cualquier GG25."
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
+        "Condiciones de un estudio concreto (360 °C 1 h o 260 °C 2 h); no se asignan a cualquier ASTM A48."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
-        "Conditions of a specific study (360 °C 1 h or 260 °C 2 h); not assigned to every GG25."
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
+        "Conditions of a specific study (360 °C 1 h or 260 °C 2 h); not assigned to every ASTM A48 iron."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -6916,9 +7126,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_martemper_tm",
+      "id": "prot_a48c35_martemper_tm",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "martemper",
       "variant_code": "tm",
       "variant_es": "Martemperizado 200–260 °C (Total Materia)",
@@ -6934,7 +7144,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_verified",
       "source_ids": [
@@ -6946,10 +7156,10 @@
       "expected_es": "Matriz martensítica frágil: revenir casi siempre.",
       "expected_en": "Brittle martensitic matrix: tempering almost always needed.",
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol."
       ],
       "assumptions_es": [
         "La fundición gris no tiene modelo cinético validado en FERROLAB: se describe la transformación de la matriz de forma cualitativa y la curva térmica es ilustrativa."
@@ -7053,9 +7263,9 @@
       "review_status": "draft"
     },
     {
-      "id": "prot_gjl250_martemper_asm",
+      "id": "prot_a48c35_martemper_asm",
       "version": "1.0.0",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "martemper",
       "variant_code": "asm_liners_unverified",
       "variant_es": "Camisas de cilindro 870 °C 1 h → 245 °C 1 min (fuente no verificada)",
@@ -7071,7 +7281,7 @@
       "material_condition_es": null,
       "material_condition_en": null,
       "required_initial_state": {},
-      "default_initial_condition_id": "ic_gjl250_as_cast_unspecified",
+      "default_initial_condition_id": "ic_a48c35_as_cast_unspecified",
       "prior_protocol_id": null,
       "evidence_status": "source_unverified",
       "source_ids": [
@@ -7083,11 +7293,11 @@
       "expected_es": null,
       "expected_en": null,
       "restrictions_es": [
-        "La GG25 (EN-GJL-250) fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
+        "La ASTM A48 Clase 35 fija una resistencia, no una composición: comprueba C, Si, Mn y la matriz de colada antes de aplicar el protocolo.",
         "Revenido posterior del caso: 200 °C, 2 h."
       ],
       "restrictions_en": [
-        "GG25 (EN-GJL-250) sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
+        "ASTM A48 Class 35 sets a strength, not a composition: check C, Si, Mn and the as-cast matrix before applying the protocol.",
         "Subsequent temper of the case: 200 °C, 2 h."
       ],
       "assumptions_es": [
@@ -7261,10 +7471,10 @@
         "proeutectoid_ferrite",
         "pearlite"
       ],
-      "alt_es": "Ferrita (granos claros) y perlita (zonas oscuras) en un acero hipoeutectoide C45.",
-      "alt_en": "Ferrite (light grains) and pearlite (dark areas) in a hypoeutectoid C45 steel.",
-      "specimen_es": "acero C45 (0,45 % C, equivalente europeo del AISI 1045); condición de tratamiento no indicada",
-      "specimen_en": "C45 steel (0.45% C, European equivalent of AISI 1045); treatment condition not stated",
+      "alt_es": "Ferrita (granos claros) y perlita (zonas oscuras) en un acero hipoeutectoide de 0,45 % C (equivalente al AISI 1045).",
+      "alt_en": "Ferrite (light grains) and pearlite (dark areas) in a hypoeutectoid 0.45% C steel (equivalent to AISI 1045).",
+      "specimen_es": "acero al carbono de 0,45 % C (equivalente al AISI 1045); condición de tratamiento no indicada",
+      "specimen_en": "0.45% C carbon steel (equivalent to AISI 1045); treatment condition not stated",
       "family": "steel",
       "preparation": null,
       "review_status": "draft"
@@ -7373,10 +7583,10 @@
         "proeutectoid_ferrite",
         "pearlite"
       ],
-      "alt_es": "Colonias de perlita en un acero de bajo carbono C10, rodeadas de ferrita.",
-      "alt_en": "Pearlite colonies in a low-carbon C10 steel, surrounded by ferrite.",
-      "specimen_es": "acero C10 (bajo carbono)",
-      "specimen_en": "C10 steel (low carbon)",
+      "alt_es": "Colonias de perlita en un acero de bajo carbono (≈ 0,10 % C, comparable al AISI 1010), rodeadas de ferrita.",
+      "alt_en": "Pearlite colonies in a low-carbon steel (≈ 0.10% C, comparable to AISI 1010), surrounded by ferrite.",
+      "specimen_es": "acero de bajo carbono (≈ 0,10 % C, comparable al AISI 1010)",
+      "specimen_en": "low-carbon steel (≈ 0.10% C, comparable to AISI 1010)",
       "family": "steel",
       "preparation": null,
       "review_status": "draft"
@@ -7401,10 +7611,10 @@
         "proeutectoid_ferrite",
         "pearlite"
       ],
-      "alt_es": "Matriz ferrítica clara con regiones perlíticas oscuras en un acero 20Cr.",
-      "alt_en": "Light ferritic matrix with dark pearlitic regions in a 20Cr steel.",
-      "specimen_es": "acero aleado 20Cr (bajo carbono, al cromo)",
-      "specimen_en": "20Cr alloy steel (low carbon, chromium)",
+      "alt_es": "Matriz ferrítica clara con regiones perlíticas oscuras en un acero de bajo carbono al cromo (comparable al AISI 5120).",
+      "alt_en": "Light ferritic matrix with dark pearlitic regions in a low-carbon chromium steel (comparable to AISI 5120).",
+      "specimen_es": "acero aleado de bajo carbono al cromo (comparable al AISI 5120)",
+      "specimen_en": "low-carbon chromium alloy steel (comparable to AISI 5120)",
       "family": "steel",
       "preparation": null,
       "review_status": "draft"
@@ -7540,8 +7750,8 @@
       ],
       "alt_es": "Acero de alto carbono con microestructura predominantemente perlítica.",
       "alt_en": "High-carbon steel with a predominantly pearlitic microstructure.",
-      "specimen_es": "acero CK85 (0,85 % C)",
-      "specimen_en": "CK85 steel (0.85% C)",
+      "specimen_es": "acero de alto carbono (≈ 0,85 % C, comparable al AISI 1084)",
+      "specimen_en": "high-carbon steel (≈ 0.85% C, comparable to AISI 1084)",
       "family": "steel",
       "preparation": null,
       "review_status": "draft"
@@ -7766,7 +7976,7 @@
     },
     {
       "id": "mg_gi_lamellar_graphite",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": null,
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Gusseisen_mit_Lamellengraphit.jpg",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Gusseisen_mit_Lamellengraphit.jpg/960px-Gusseisen_mit_Lamellengraphit.jpg",
@@ -7793,7 +8003,7 @@
     },
     {
       "id": "mg_gi_grey",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": null,
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Cast_iron_grey.jpg",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Cast_iron_grey.jpg/960px-Cast_iron_grey.jpg",
@@ -7821,7 +8031,7 @@
     },
     {
       "id": "mg_gi_pearlitic",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": null,
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Fundici%C3%B3n_perlitica.JPG",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Fundici%C3%B3n_perlitica.JPG/500px-Fundici%C3%B3n_perlitica.JPG",
@@ -7850,7 +8060,7 @@
     },
     {
       "id": "mg_di_nodular",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": null,
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Gusseisen_mit_Kugelgraphit.jpg",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Gusseisen_mit_Kugelgraphit.jpg/960px-Gusseisen_mit_Kugelgraphit.jpg",
@@ -7877,7 +8087,7 @@
     },
     {
       "id": "mg_di_adi",
-      "material_id": "en_gjl_250",
+      "material_id": "astm_a48_class_35",
       "treatment_id": "austemper",
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/19/Austempered_Ductile_Iron_%28ADI%29.jpg",
       "thumbnail_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Austempered_Ductile_Iron_%28ADI%29.jpg/960px-Austempered_Ductile_Iron_%28ADI%29.jpg",
@@ -7905,6 +8115,165 @@
     }
   ],
   "knowledge": [
+    {
+      "slug": "art-cct-abierto",
+      "category": "research",
+      "title_es": "Un predictor CCT abierto para aceros de baja aleación (Collins et al., 2023)",
+      "title_en": "An open CCT predictor for low-alloy steels (Collins et al., 2023)",
+      "body_es": "Collins y colaboradores implementaron en código abierto el modelo cinético de Li et al. (1998) para predecir diagramas de enfriamiento continuo (CCT) de aceros de baja aleación en menos de 10 segundos (10 velocidades de enfriamiento). Mejoraron las predicciones de varios aceros y ampliaron el modelo para calcular las fracciones finales de constituyentes y la segregación química medida. FERROLAB usa esta misma lógica (ferrita → perlita → bainita y martensita de Koistinen–Marburger) para sus diagramas TTT/CCT.",
+      "body_en": "Collins and co-workers implemented the Li et al. (1998) kinetic model as open-source code to predict continuous cooling transformation (CCT) diagrams of low-alloy steels in under 10 seconds (10 cooling rates). They improved predictions for several steels and extended the model to compute final constituent fractions and measured chemical segregation. FERROLAB uses the same logic (ferrite → pearlite → bainite, and Koistinen–Marburger martensite) for its TTT/CCT diagrams.",
+      "related_slugs": [
+        "cct",
+        "ttt"
+      ],
+      "suggested_source_ids": [
+        "src_art_collins_2023"
+      ],
+      "review_status": "draft"
+    },
+    {
+      "slug": "art-crecimiento-grano",
+      "category": "research",
+      "title_es": "Crecimiento del grano austenítico durante la austenización (Razali et al., 2023)",
+      "title_en": "Austenite grain growth during austenitizing (Razali et al., 2023)",
+      "body_es": "El estudio analiza cómo el tiempo, la temperatura y el tamaño de grano inicial controlan el crecimiento del grano austenítico de un acero de baja aleación durante un tratamiento isotérmico, y ajusta los parámetros del modelo por optimización. Con los parámetros óptimos, el tamaño de grano predicho coincide con el medido. Es el fundamento de que en FERROLAB austenizar más caliente o más tiempo dé un grano más grueso (y un G ASTM E112 menor).",
+      "body_en": "The study analyzes how time, temperature and initial grain size control austenite grain growth of a low-alloy steel during isothermal treatment, fitting the model parameters by optimization. With the optimal parameters, the predicted grain size matches the measured one. It is why in FERROLAB austenitizing hotter or longer gives a coarser grain (and a lower ASTM E112 G).",
+      "related_slugs": [
+        "templabilidad"
+      ],
+      "suggested_source_ids": [
+        "src_art_razali_2023",
+        "src_astm_e112"
+      ],
+      "review_status": "draft"
+    },
+    {
+      "slug": "art-dureza-revenido",
+      "category": "research",
+      "title_es": "Dureza de la martensita revenida según la composición (Kang y Lee, 2014)",
+      "title_en": "Hardness of tempered martensite as a function of composition (Kang and Lee, 2014)",
+      "body_es": "Kang y Lee propusieron un parámetro de revenido que depende de la composición del acero (C, Mn, Si, Ni, Cr, Mo) para predecir la dureza de la martensita revenida a partir de la temperatura y el tiempo. FERROLAB lo usa para el revenido y el bonificado de los aceros AISI 1045 y 8620, dentro del rango de validez del artículo (145–716 °C).",
+      "body_en": "Kang and Lee proposed a composition-dependent tempering parameter (C, Mn, Si, Ni, Cr, Mo) to predict tempered martensite hardness from temperature and time. FERROLAB uses it for tempering and quench-and-temper of AISI 1045 and 8620, within the paper's validity range (145–716 °C).",
+      "related_slugs": [
+        "martensita"
+      ],
+      "suggested_source_ids": [
+        "src_art_kang_lee_2014"
+      ],
+      "review_status": "draft"
+    },
+    {
+      "slug": "art-tenacidad-revenido",
+      "category": "research",
+      "title_es": "La temperatura de revenido decide la tenacidad Charpy (NIST, 2025)",
+      "title_en": "Tempering temperature decides Charpy toughness (NIST, 2025)",
+      "body_es": "En el AISI 4340 templado, la energía absorbida en el ensayo Charpy (ASTM E23) depende sobre todo de la temperatura final de revenido: revenir entre 300 y 400 °C da baja energía, mientras que revenir cerca de 600 °C da alta energía, siempre con martensita totalmente revenida. Por eso el bonificado reviene alto: busca tenacidad, no la máxima dureza.",
+      "body_en": "In quenched AISI 4340, the energy absorbed in the Charpy test (ASTM E23) depends mainly on the final tempering temperature: tempering between 300 and 400 °C gives low energy, whereas tempering near 600 °C gives high energy, always with fully tempered martensite. That is why quench-and-temper uses a high temper: it seeks toughness, not maximum hardness.",
+      "related_slugs": [
+        "martensita"
+      ],
+      "suggested_source_ids": [
+        "src_art_nist_2025",
+        "src_astm_e23"
+      ],
+      "review_status": "draft"
+    },
+    {
+      "slug": "art-temple-polimero-1045",
+      "category": "research",
+      "title_es": "Temple del AISI 1045 en soluciones de polímero (Vieira et al., 2021)",
+      "title_en": "Quenching AISI 1045 in polymer solutions (Vieira et al., 2021)",
+      "body_es": "Los autores templaron AISI 1045 en soluciones de polivinilpirrolidona (PVP) al 10, 15, 20 y 25 %. La martensita disminuyó al aumentar la concentración (el medio enfría más despacio), la difracción de rayos X no mostró austenita retenida y la dureza bajó desde la superficie hacia el núcleo. Ilustra cómo la severidad del medio cambia la microestructura, igual que en FERROLAB al pasar de agua a aceite.",
+      "body_en": "The authors quenched AISI 1045 in polyvinylpyrrolidone (PVP) solutions at 10, 15, 20 and 25%. Martensite decreased as concentration rose (the medium cools more slowly), X-ray diffraction showed no retained austenite and hardness fell from the surface toward the core. It illustrates how quench severity changes the microstructure, as in FERROLAB when moving from water to oil.",
+      "related_slugs": [
+        "faq-velocidad-enfriamiento",
+        "martensita"
+      ],
+      "suggested_source_ids": [
+        "src_art_vieira_2021"
+      ],
+      "review_status": "draft"
+    },
+    {
+      "slug": "art-1045-industrial",
+      "category": "research",
+      "title_es": "Temple y revenido del AISI 1045 a escala industrial (Mazuera y Ortiz, 2011)",
+      "title_en": "Quench and temper of AISI 1045 at industrial scale (Mazuera and Ortiz, 2011)",
+      "body_es": "En barras industriales de AISI/SAE 1045 de 1,5 pulgadas se compararon combinaciones de temperatura y tiempo de temple y revenido mediante microestructura y dureza (revenidos a 400 y 630 °C). Los autores recomiendan austenizar a 870 °C en condiciones industriales, por encima del rango de laboratorio, porque las barras gruesas tardan más en austenizarse.",
+      "body_en": "In 1.5-inch industrial AISI/SAE 1045 bars, combinations of quench and temper temperature and time were compared by microstructure and hardness (tempers at 400 and 630 °C). The authors recommend austenitizing at 870 °C under industrial conditions, above the laboratory range, because thick bars take longer to austenitize.",
+      "related_slugs": [
+        "templabilidad"
+      ],
+      "suggested_source_ids": [
+        "src_art_mazuera_2011"
+      ],
+      "review_status": "draft"
+    },
+    {
+      "slug": "art-1045-intercritico",
+      "category": "research",
+      "title_es": "Temple intercrítico y revenido del AISI 1045 (Garzón Torres et al., 2016)",
+      "title_en": "Intercritical quenching and tempering of AISI 1045 (Garzón Torres et al., 2016)",
+      "body_es": "Templar el AISI 1045 desde 760 °C (entre Ac1 y Ac3, 30 min) y revenir produjo martensita revenida junto a ferrita, con mayor dureza y resistencia a la tensión que el estado de entrega y menor fragilidad. En FERROLAB, una austenización entre Ac1 y Ac3 aparece como «intercrítica»: solo parte de la pieza se transforma en austenita.",
+      "body_en": "Quenching AISI 1045 from 760 °C (between Ac1 and Ac3, 30 min) and tempering produced tempered martensite alongside ferrite, with higher hardness and tensile strength than the as-supplied state and less brittleness. In FERROLAB, austenitizing between Ac1 and Ac3 appears as «intercritical»: only part of the piece transforms into austenite.",
+      "related_slugs": [
+        "ferrita",
+        "martensita"
+      ],
+      "suggested_source_ids": [
+        "src_art_garzon_2016"
+      ],
+      "review_status": "draft"
+    },
+    {
+      "slug": "art-8620-fase-dual",
+      "category": "research",
+      "title_es": "Acero de fase dual a partir del AISI 8620 (Castillo-Gutiérrez et al., 2018)",
+      "title_en": "Dual-phase steel from AISI 8620 (Castillo-Gutiérrez et al., 2018)",
+      "body_es": "Con tratamientos térmicos y termomecánicos se obtuvo un acero de fase dual (ferrita + martensita) a partir del AISI/SAE 8620. La microdureza subió de unas 369 HV a 443–486 HV y el tamaño de grano bajó de 23,7 µm a 9,5–11,4 µm. Muestra la relación entre grano más fino y mayor dureza que FERROLAB calcula con ASTM E112.",
+      "body_en": "Thermal and thermomechanical treatments produced a dual-phase steel (ferrite + martensite) from AISI/SAE 8620. Microhardness rose from about 369 HV to 443–486 HV and grain size fell from 23.7 µm to 9.5–11.4 µm. It shows the relation between finer grain and higher hardness that FERROLAB computes with ASTM E112.",
+      "related_slugs": [
+        "ferrita",
+        "martensita"
+      ],
+      "suggested_source_ids": [
+        "src_art_castillo_2018",
+        "src_astm_e112"
+      ],
+      "review_status": "draft"
+    },
+    {
+      "slug": "art-fundicion-austemperizada",
+      "category": "research",
+      "title_es": "Fundición gris austemperizada frente a templada y revenida (Wang et al., 2019)",
+      "title_en": "Austempered versus quenched-and-tempered gray iron (Wang et al., 2019)",
+      "body_es": "A igual dureza, la fundición gris austemperizada resistió mejor el desgaste que la templada y revenida: ligeramente mejor con baños de 232 a 316 °C y claramente mejor a 343 y 371 °C. La dureza bajó al subir la temperatura del baño porque queda menos martensita en la matriz. La matriz ausferrítica (ferrita acicular + austenita estable) explica la mejora.",
+      "body_en": "At equal hardness, austempered gray iron resisted wear better than quenched-and-tempered iron: slightly better with baths at 232–316 °C and clearly better at 343 and 371 °C. Hardness fell as the bath temperature rose because less martensite remains in the matrix. The ausferritic matrix (acicular ferrite + stable austenite) explains the improvement.",
+      "related_slugs": [
+        "grafito-laminar",
+        "bainita"
+      ],
+      "suggested_source_ids": [
+        "src_art_wang_2019"
+      ],
+      "review_status": "draft"
+    },
+    {
+      "slug": "art-fundicion-austenizacion",
+      "category": "research",
+      "title_es": "Temperatura de austenización en la fundición gris austemperizada (Zhu et al., 2026)",
+      "title_en": "Austenitizing temperature in austempered gray iron (Zhu et al., 2026)",
+      "body_es": "Austenizando entre 890 y 950 °C antes del austemperizado, la matriz pasó de ferrita + perlita a ausferrita, con más ausferrita a mayor temperatura. La dureza máxima fue 247,6 HBW a 930 °C (187,6 HBW en bruto de colada) y la resistencia a tracción e impacto máximas, 219 MPa y 9,59 J, a 910 °C. Ese valor de dureza es la referencia publicada que FERROLAB muestra para el austemperizado de la fundición.",
+      "body_en": "Austenitizing between 890 and 950 °C before austempering changed the matrix from ferrite + pearlite to ausferrite, with more ausferrite at higher temperature. Maximum hardness was 247.6 HBW at 930 °C (187.6 HBW as cast) and maximum tensile and impact strength, 219 MPa and 9.59 J, at 910 °C. That hardness is the published reference FERROLAB shows for austempering the iron.",
+      "related_slugs": [
+        "grafito-laminar"
+      ],
+      "suggested_source_ids": [
+        "src_art_zhu_2026",
+        "src_astm_a247"
+      ],
+      "review_status": "draft"
+    },
     {
       "slug": "austenita",
       "category": "glossary",
@@ -8288,9 +8657,9 @@
       "review_status": "draft"
     },
     {
-      "id": "pq_gjl250",
-      "prompt_es": "La designación EN-GJL-250 (GG25) define…",
-      "prompt_en": "The EN-GJL-250 (GG25) designation defines…",
+      "id": "pq_a48c35",
+      "prompt_es": "ASTM A48 Clase 35 define…",
+      "prompt_en": "ASTM A48 Class 35 defines…",
       "options_es": [
         "Una composición química única",
         "Una clase de fundición gris por requisito de resistencia",

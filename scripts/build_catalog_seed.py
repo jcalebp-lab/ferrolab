@@ -40,8 +40,24 @@ SOURCES = [
     src("src_angus", "book", "Cast Iron: Physical and Engineering Properties", authors="H. T. Angus"),
     src("src_astm_a48", "standard", "ASTM A48/A48M — Standard Specification for Gray Iron Castings",
         url="https://store.astm.org/standards/a48"),
-    src("src_en_1561", "standard", "EN 1561 — Founding: Grey cast irons (EN-GJL-250, antes GG-25 según DIN 1691)",
-        url="https://castingquality.com/wp-content/uploads/Casting-Material-gray-iron-in-EN-1561.pdf"),
+    src("src_astm_a247", "standard", "ASTM A247 — Standard Test Method for Evaluating the Microstructure of Graphite in Iron Castings",
+        url="https://store.astm.org/a0247-19.html"),
+    src("src_astm_a29", "standard", "ASTM A29/A29M — Standard Specification for General Requirements for Steel Bars, Carbon and Alloy, Hot-Wrought (composición de los grados AISI/SAE)",
+        url="https://store.astm.org/a0029_a0029m-23.html"),
+    src("src_astm_e3", "standard", "ASTM E3 — Standard Guide for Preparation of Metallographic Specimens",
+        url="https://store.astm.org/e0003-11r17.html"),
+    src("src_astm_e407", "standard", "ASTM E407 — Standard Practice for Microetching Metals and Alloys",
+        url="https://store.astm.org/e0407-23.html"),
+    src("src_astm_e18", "standard", "ASTM E18 — Standard Test Methods for Rockwell Hardness of Metallic Materials",
+        url="https://store.astm.org/e0018-22.html"),
+    src("src_astm_e10", "standard", "ASTM E10 — Standard Test Method for Brinell Hardness of Metallic Materials",
+        url="https://store.astm.org/e0010-18.html"),
+    src("src_astm_e92", "standard", "ASTM E92 — Standard Test Methods for Vickers Hardness and Knoop Hardness of Metallic Materials",
+        url="https://store.astm.org/e0092-23.html"),
+    src("src_astm_e8", "standard", "ASTM E8/E8M — Standard Test Methods for Tension Testing of Metallic Materials",
+        url="https://store.astm.org/e0008_e0008m-24.html"),
+    src("src_astm_e23", "standard", "ASTM E23 — Standard Test Methods for Notched Bar Impact Testing of Metallic Materials (Charpy)",
+        url="https://store.astm.org/e0023-24.html"),
     src("src_astm_a255", "standard", "ASTM A255 — Determining Hardenability of Steel (Jominy)",
         url="https://store.astm.org/standards/a255"),
     src("src_astm_e112", "standard", "ASTM E112 — Determining Average Grain Size", url="https://store.astm.org/standards/e112"),
@@ -141,43 +157,41 @@ MATERIALS = [
         "review_status": "draft",
     },
     {
-        "id": "en_gjl_250",
+        "id": "astm_a48_class_35",
         "family": "gray_cast_iron",
-        "display_name": "GG25 (EN-GJL-250)",
+        "display_name": "ASTM A48 Clase 35",
         "standard_note_es": (
-            "EN 1561 designa la fundición gris por su resistencia mínima a la tracción: EN-GJL-250 (antes GG-25, "
-            "DIN 1691; material 5.1301) exige 250 MPa en barra de ensayo de 30 mm. Equivale aproximadamente a ASTM "
-            "A48 clase 35 y a JIS FC250."
+            "ASTM A48/A48M clasifica la fundición gris por su resistencia mínima a la tracción en ksi: la clase 35 exige "
+            "35 ksi (≈ 241 MPa) en una barra de ensayo colada aparte (letras A, B o C según el diámetro de la barra). "
+            "La estructura del grafito se describe con ASTM A247."
         ),
         "standard_note_en": (
-            "EN 1561 designates gray iron by its minimum tensile strength: EN-GJL-250 (formerly GG-25, DIN 1691; "
-            "material 5.1301) requires 250 MPa on a 30 mm test bar. Roughly equivalent to ASTM A48 class 35 and JIS "
-            "FC250."
+            "ASTM A48/A48M classifies gray iron by its minimum tensile strength in ksi: class 35 requires 35 ksi "
+            "(≈ 241 MPa) on a separately cast test bar (letters A, B or C by bar diameter). Graphite structure is "
+            "described with ASTM A247."
         ),
         "description_es": (
-            "Fundición gris de grafito laminar y matriz principalmente perlítica (≈ 160–240 HB en bruto de colada "
-            "según el espesor). No es un acero. Se usa en bancadas, carcasas, bloques de motor y discos de freno por "
-            "su colabilidad, maquinabilidad y amortiguación."
+            "Fundición gris de grafito laminar y matriz principalmente perlítica. No es un acero. Se usa en bancadas, "
+            "carcasas, bloques de motor y discos de freno por su colabilidad, maquinabilidad y amortiguación."
         ),
         "description_en": (
-            "Flake-graphite gray iron with a mainly pearlitic matrix (≈ 160–240 HB as cast, depending on section). "
-            "It is not a steel. Used for machine beds, housings, engine blocks and brake discs for its castability, "
-            "machinability and damping."
+            "Flake-graphite gray iron with a mainly pearlitic matrix. It is not a steel. Used for machine beds, "
+            "housings, engine blocks and brake discs for its castability, machinability and damping."
         ),
         "limitations_es": [
-            "La norma EN 1561 no fija la composición química: la deja al fundidor y los catálogos de proveedores dan rangos distintos (C entre 2,8 y 3,5 %).",
-            "La resistencia baja con el espesor de la pieza (≈ 225 MPa a 20–40 mm y 195 MPa a 40–80 mm).",
+            "ASTM A48 no fija la composición química ni la dureza: solo la resistencia mínima en la barra de ensayo.",
+            "La resistencia real de una pieza baja con el espesor de la sección; la barra de ensayo no representa toda la pieza.",
             "La matriz y la morfología del grafito dependen del proceso de fundición y del espesor de la pieza.",
             "No se usan curvas ni modelos del acero para esta fundición.",
         ],
         "limitations_en": [
-            "EN 1561 does not fix the chemical composition: it is left to the foundry and supplier catalogs give different ranges (C between 2.8 and 3.5%).",
-            "Strength falls with section thickness (≈ 225 MPa at 20–40 mm and 195 MPa at 40–80 mm).",
+            "ASTM A48 does not fix chemical composition or hardness: only the minimum strength on the test bar.",
+            "The actual strength of a part falls with section thickness; the test bar does not represent the whole part.",
             "The matrix and graphite morphology depend on the casting process and section thickness.",
             "Steel curves and models are not used for this cast iron.",
         ],
         "compositions": [],
-        "suggested_source_ids": ["src_en_1561", "src_astm_a48", "src_angus", "src_asm_15"],
+        "suggested_source_ids": ["src_astm_a48", "src_astm_a247", "src_angus", "src_asm_15"],
         "review_status": "draft",
     },
 ]
@@ -206,8 +220,8 @@ INITIAL_CONDITIONS = [
         "review_status": "draft",
     },
     {
-        "id": "ic_gjl250_as_cast_unspecified",
-        "material_id": "en_gjl_250",
+        "id": "ic_a48c35_as_cast_unspecified",
+        "material_id": "astm_a48_class_35",
         "name_es": "Bruto de colada, matriz no documentada",
         "name_en": "As-cast, matrix undocumented",
         "description_es": (
@@ -391,6 +405,51 @@ MEDIUM = {
     "quench_temper": ("Medio de temple y revenido según el protocolo", "Quench and temper media per protocol"),
 }
 
+# ---------------------------------------------------------------------- artículos de acceso libre (D-39)
+# Solo artículos e informes de ACCESO LIBRE cuya existencia, autores, revista, DOI y conclusiones se comprobaron en su
+# resumen o ficha pública (MDPI, PubMed Central, Scientific Reports, J-STAGE, NIST, revistas colombianas en OJS).
+def art(id, title, authors, year, journal, *, doi=None, url, notes):
+    return {"id": id, "kind": "article", "title": title, "authors": authors, "year": year, "edition": journal,
+            "doi": doi, "url": url, "verification_status": "verified", "license_code": "open_access", "notes": notes}
+
+
+ARTICLES = [
+    art("src_art_collins_2023", "A Rapid, Open-Source CCT Predictor for Low-Alloy Steels, and Its Application to Compositionally Heterogeneous Material",
+        "J. Collins, M. Piemonte, M. Taylor, J. Fellowes, E. Pickering", 2023, "Metals 13(7):1168",
+        doi="10.3390/met13071168", url="https://www.mdpi.com/2075-4701/13/7/1168", notes="MDPI, acceso abierto (CC BY)."),
+    art("src_art_razali_2023", "Practical Approach for Determining Material Parameters When Predicting Austenite Grain Growth under Isothermal Heat Treatment",
+        "M. K. Razali, A. A. Abd Ghawi, M. Irani, S. H. Chung, J. M. Choi, M. S. Joun", 2023, "Materials 16(19):6583",
+        doi="10.3390/ma16196583", url="https://www.mdpi.com/1996-1944/16/19/6583", notes="MDPI y PubMed Central (PMC10574047)."),
+    art("src_art_kang_lee_2014", "Prediction of Tempered Martensite Hardness Incorporating the Composition-Dependent Tempering Parameter in Low Alloy Steels",
+        "S. Kang, S.-J. Lee", 2014, "Materials Transactions 55(7):1069", doi="10.2320/matertrans.M2014004",
+        url="https://www.jstage.jst.go.jp/article/matertrans/55/7/55_M2014004/_article", notes="J-STAGE, lectura libre."),
+    art("src_art_nist_2025", "Using \u201cOff-the-Shelf\u201d AISI 4340 Steel for the Production of NIST Reference Charpy Specimens",
+        "E. Lucon, A. Eckhardt, R. Santoyo", 2025, "NIST Interagency Report 8556", doi="10.6028/NIST.IR.8556",
+        url="https://nvlpubs.nist.gov/nistpubs/ir/2025/NIST.IR.8556.pdf", notes="Informe gratuito del NIST."),
+    art("src_art_vieira_2021", "Evaluation of the characteristics of an AISI 1045 steel quenched in different concentration of polymer solutions of polyvinylpyrrolidone",
+        "E. da Rosa Vieira, L. V. Biehl, J. L. B. Medeiros, V. M. Costa, R. J. Macedo", 2021, "Scientific Reports 11 (2021)",
+        doi="10.1038/s41598-020-79060-0", url="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7809479/",
+        notes="Scientific Reports y PubMed Central, acceso abierto."),
+    art("src_art_mazuera_2011", "Evaluación de los parámetros de temple y revenido para el acero AISI/SAE 1045 a escala industrial",
+        "D. Mazuera, A. Ortiz", 2011, "Scientia et Technica 16(49):25–29 (Universidad Tecnológica de Pereira)",
+        url="https://ojs2.utp.edu.co/index.php/revistaciencia/article/view/1461", notes="Revista colombiana de acceso abierto."),
+    art("src_art_garzon_2016", "Influencia en las propiedades mecánicas del acero AISI-SAE 1045 tratado térmicamente con temple a temperatura intercrítica y revenido",
+        "J. R. Garzón Torres, C. A. Bohórquez Ávila, M. E. Hernández, H. F. Rojas Molano", 2016,
+        "Avances: Investigación en Ingeniería 13(1) (Universidad Libre)", doi="10.18041/1794-4953/avances.2.257",
+        url="https://revistas.unilibre.edu.co/index.php/avances/article/view/257", notes="Revista colombiana de acceso abierto."),
+    art("src_art_castillo_2018", "Caracterización microestructural y mecánica de aceros de fase dual (ferrita-martensita), obtenidos mediante procesos térmicos y termomecánicos",
+        "D. E. Castillo-Gutiérrez, I. I. Angarita-Moncaleano, R. Rodríguez-Baracaldo", 2018,
+        "Ingeniare. Revista chilena de ingeniería 26(3):430–439", doi="10.4067/s0718-33052018000300430",
+        url="https://scielo.conicyt.cl/pdf/ingeniare/v26n3/0718-3305-ingeniare-26-03-00430.pdf", notes="SciELO, acceso abierto."),
+    art("src_art_wang_2019", "Wear Behavior of Austempered and Quenched and Tempered Gray Cast Irons under Similar Hardness",
+        "B. Wang, X. Han, G. Barber, Y. Pan", 2019, "Metals 9(12):1329", doi="10.3390/met9121329",
+        url="https://www.mdpi.com/2075-4701/9/12/1329", notes="MDPI, acceso abierto (CC BY)."),
+    art("src_art_zhu_2026", "Effect of Different Austenitizing Temperatures on the Microstructure and Mechanical Properties of Austempering Gray Cast Iron",
+        "S. Zhu, H. Zhang, F. Han, Y. Hao, X. Liu, et al.", 2026, "Applied Sciences 16(4):1828", doi="10.3390/app16041828",
+        url="https://www.mdpi.com/2076-3417/16/4/1828", notes="MDPI, acceso abierto (CC BY)."),
+]
+SOURCES += ARTICLES
+
 
 def protocol_stages(tid):
     stages = []
@@ -441,6 +500,57 @@ def k(slug, cat, tes, ten, bes, ben, related=(), srcs=("src_callister",)):
 
 
 KNOWLEDGE = [
+    # ------------------------------------------------------------------ artículos científicos (D-39)
+    k("art-cct-abierto", "research", "Un predictor CCT abierto para aceros de baja aleación (Collins et al., 2023)",
+      "An open CCT predictor for low-alloy steels (Collins et al., 2023)",
+      "Collins y colaboradores implementaron en código abierto el modelo cinético de Li et al. (1998) para predecir diagramas de enfriamiento continuo (CCT) de aceros de baja aleación en menos de 10 segundos (10 velocidades de enfriamiento). Mejoraron las predicciones de varios aceros y ampliaron el modelo para calcular las fracciones finales de constituyentes y la segregación química medida. FERROLAB usa esta misma lógica (ferrita → perlita → bainita y martensita de Koistinen–Marburger) para sus diagramas TTT/CCT.",
+      "Collins and co-workers implemented the Li et al. (1998) kinetic model as open-source code to predict continuous cooling transformation (CCT) diagrams of low-alloy steels in under 10 seconds (10 cooling rates). They improved predictions for several steels and extended the model to compute final constituent fractions and measured chemical segregation. FERROLAB uses the same logic (ferrite → pearlite → bainite, and Koistinen–Marburger martensite) for its TTT/CCT diagrams.",
+      ["cct", "ttt"], ("src_art_collins_2023",)),
+    k("art-crecimiento-grano", "research", "Crecimiento del grano austenítico durante la austenización (Razali et al., 2023)",
+      "Austenite grain growth during austenitizing (Razali et al., 2023)",
+      "El estudio analiza cómo el tiempo, la temperatura y el tamaño de grano inicial controlan el crecimiento del grano austenítico de un acero de baja aleación durante un tratamiento isotérmico, y ajusta los parámetros del modelo por optimización. Con los parámetros óptimos, el tamaño de grano predicho coincide con el medido. Es el fundamento de que en FERROLAB austenizar más caliente o más tiempo dé un grano más grueso (y un G ASTM E112 menor).",
+      "The study analyzes how time, temperature and initial grain size control austenite grain growth of a low-alloy steel during isothermal treatment, fitting the model parameters by optimization. With the optimal parameters, the predicted grain size matches the measured one. It is why in FERROLAB austenitizing hotter or longer gives a coarser grain (and a lower ASTM E112 G).",
+      ["templabilidad"], ("src_art_razali_2023", "src_astm_e112")),
+    k("art-dureza-revenido", "research", "Dureza de la martensita revenida según la composición (Kang y Lee, 2014)",
+      "Hardness of tempered martensite as a function of composition (Kang and Lee, 2014)",
+      "Kang y Lee propusieron un parámetro de revenido que depende de la composición del acero (C, Mn, Si, Ni, Cr, Mo) para predecir la dureza de la martensita revenida a partir de la temperatura y el tiempo. FERROLAB lo usa para el revenido y el bonificado de los aceros AISI 1045 y 8620, dentro del rango de validez del artículo (145–716 °C).",
+      "Kang and Lee proposed a composition-dependent tempering parameter (C, Mn, Si, Ni, Cr, Mo) to predict tempered martensite hardness from temperature and time. FERROLAB uses it for tempering and quench-and-temper of AISI 1045 and 8620, within the paper's validity range (145–716 °C).",
+      ["martensita"], ("src_art_kang_lee_2014",)),
+    k("art-tenacidad-revenido", "research", "La temperatura de revenido decide la tenacidad Charpy (NIST, 2025)",
+      "Tempering temperature decides Charpy toughness (NIST, 2025)",
+      "En el AISI 4340 templado, la energía absorbida en el ensayo Charpy (ASTM E23) depende sobre todo de la temperatura final de revenido: revenir entre 300 y 400 °C da baja energía, mientras que revenir cerca de 600 °C da alta energía, siempre con martensita totalmente revenida. Por eso el bonificado reviene alto: busca tenacidad, no la máxima dureza.",
+      "In quenched AISI 4340, the energy absorbed in the Charpy test (ASTM E23) depends mainly on the final tempering temperature: tempering between 300 and 400 °C gives low energy, whereas tempering near 600 °C gives high energy, always with fully tempered martensite. That is why quench-and-temper uses a high temper: it seeks toughness, not maximum hardness.",
+      ["martensita"], ("src_art_nist_2025", "src_astm_e23")),
+    k("art-temple-polimero-1045", "research", "Temple del AISI 1045 en soluciones de polímero (Vieira et al., 2021)",
+      "Quenching AISI 1045 in polymer solutions (Vieira et al., 2021)",
+      "Los autores templaron AISI 1045 en soluciones de polivinilpirrolidona (PVP) al 10, 15, 20 y 25 %. La martensita disminuyó al aumentar la concentración (el medio enfría más despacio), la difracción de rayos X no mostró austenita retenida y la dureza bajó desde la superficie hacia el núcleo. Ilustra cómo la severidad del medio cambia la microestructura, igual que en FERROLAB al pasar de agua a aceite.",
+      "The authors quenched AISI 1045 in polyvinylpyrrolidone (PVP) solutions at 10, 15, 20 and 25%. Martensite decreased as concentration rose (the medium cools more slowly), X-ray diffraction showed no retained austenite and hardness fell from the surface toward the core. It illustrates how quench severity changes the microstructure, as in FERROLAB when moving from water to oil.",
+      ["faq-velocidad-enfriamiento", "martensita"], ("src_art_vieira_2021",)),
+    k("art-1045-industrial", "research", "Temple y revenido del AISI 1045 a escala industrial (Mazuera y Ortiz, 2011)",
+      "Quench and temper of AISI 1045 at industrial scale (Mazuera and Ortiz, 2011)",
+      "En barras industriales de AISI/SAE 1045 de 1,5 pulgadas se compararon combinaciones de temperatura y tiempo de temple y revenido mediante microestructura y dureza (revenidos a 400 y 630 °C). Los autores recomiendan austenizar a 870 °C en condiciones industriales, por encima del rango de laboratorio, porque las barras gruesas tardan más en austenizarse.",
+      "In 1.5-inch industrial AISI/SAE 1045 bars, combinations of quench and temper temperature and time were compared by microstructure and hardness (tempers at 400 and 630 °C). The authors recommend austenitizing at 870 °C under industrial conditions, above the laboratory range, because thick bars take longer to austenitize.",
+      ["templabilidad"], ("src_art_mazuera_2011",)),
+    k("art-1045-intercritico", "research", "Temple intercrítico y revenido del AISI 1045 (Garzón Torres et al., 2016)",
+      "Intercritical quenching and tempering of AISI 1045 (Garzón Torres et al., 2016)",
+      "Templar el AISI 1045 desde 760 °C (entre Ac1 y Ac3, 30 min) y revenir produjo martensita revenida junto a ferrita, con mayor dureza y resistencia a la tensión que el estado de entrega y menor fragilidad. En FERROLAB, una austenización entre Ac1 y Ac3 aparece como «intercrítica»: solo parte de la pieza se transforma en austenita.",
+      "Quenching AISI 1045 from 760 °C (between Ac1 and Ac3, 30 min) and tempering produced tempered martensite alongside ferrite, with higher hardness and tensile strength than the as-supplied state and less brittleness. In FERROLAB, austenitizing between Ac1 and Ac3 appears as «intercritical»: only part of the piece transforms into austenite.",
+      ["ferrita", "martensita"], ("src_art_garzon_2016",)),
+    k("art-8620-fase-dual", "research", "Acero de fase dual a partir del AISI 8620 (Castillo-Gutiérrez et al., 2018)",
+      "Dual-phase steel from AISI 8620 (Castillo-Gutiérrez et al., 2018)",
+      "Con tratamientos térmicos y termomecánicos se obtuvo un acero de fase dual (ferrita + martensita) a partir del AISI/SAE 8620. La microdureza subió de unas 369 HV a 443–486 HV y el tamaño de grano bajó de 23,7 µm a 9,5–11,4 µm. Muestra la relación entre grano más fino y mayor dureza que FERROLAB calcula con ASTM E112.",
+      "Thermal and thermomechanical treatments produced a dual-phase steel (ferrite + martensite) from AISI/SAE 8620. Microhardness rose from about 369 HV to 443–486 HV and grain size fell from 23.7 µm to 9.5–11.4 µm. It shows the relation between finer grain and higher hardness that FERROLAB computes with ASTM E112.",
+      ["ferrita", "martensita"], ("src_art_castillo_2018", "src_astm_e112")),
+    k("art-fundicion-austemperizada", "research", "Fundición gris austemperizada frente a templada y revenida (Wang et al., 2019)",
+      "Austempered versus quenched-and-tempered gray iron (Wang et al., 2019)",
+      "A igual dureza, la fundición gris austemperizada resistió mejor el desgaste que la templada y revenida: ligeramente mejor con baños de 232 a 316 °C y claramente mejor a 343 y 371 °C. La dureza bajó al subir la temperatura del baño porque queda menos martensita en la matriz. La matriz ausferrítica (ferrita acicular + austenita estable) explica la mejora.",
+      "At equal hardness, austempered gray iron resisted wear better than quenched-and-tempered iron: slightly better with baths at 232–316 °C and clearly better at 343 and 371 °C. Hardness fell as the bath temperature rose because less martensite remains in the matrix. The ausferritic matrix (acicular ferrite + stable austenite) explains the improvement.",
+      ["grafito-laminar", "bainita"], ("src_art_wang_2019",)),
+    k("art-fundicion-austenizacion", "research", "Temperatura de austenización en la fundición gris austemperizada (Zhu et al., 2026)",
+      "Austenitizing temperature in austempered gray iron (Zhu et al., 2026)",
+      "Austenizando entre 890 y 950 °C antes del austemperizado, la matriz pasó de ferrita + perlita a ausferrita, con más ausferrita a mayor temperatura. La dureza máxima fue 247,6 HBW a 930 °C (187,6 HBW en bruto de colada) y la resistencia a tracción e impacto máximas, 219 MPa y 9,59 J, a 910 °C. Ese valor de dureza es la referencia publicada que FERROLAB muestra para el austemperizado de la fundición.",
+      "Austenitizing between 890 and 950 °C before austempering changed the matrix from ferrite + pearlite to ausferrite, with more ausferrite at higher temperature. Maximum hardness was 247.6 HBW at 930 °C (187.6 HBW as cast) and maximum tensile and impact strength, 219 MPa and 9.59 J, at 910 °C. That hardness is the published reference FERROLAB shows for austempering the iron.",
+      ["grafito-laminar"], ("src_art_zhu_2026", "src_astm_a247")),
     k("austenita", "glossary", "Austenita (γ)", "Austenite (γ)",
       "Fase del hierro con estructura cúbica centrada en las caras (FCC). En los aceros es estable a alta temperatura y disuelve mucho más carbono que la ferrita. Es el punto de partida del temple, el normalizado, el austempering y el martempering.",
       "Iron phase with a face-centered cubic (FCC) structure. In steels it is stable at high temperature and dissolves much more carbon than ferrite. It is the starting point of quenching, normalizing, austempering and martempering.",
@@ -548,7 +658,7 @@ PRACTICE = [
       ["That it is a steel", "That it has a carburized surface case", "That it contains iron"], 1,
       "La cementación es un proceso aparte; sin él no hay capa de alto carbono.",
       "Carburizing is a separate process; without it there is no high-carbon case.", None),
-    q("pq_gjl250", "La designación EN-GJL-250 (GG25) define…", "The EN-GJL-250 (GG25) designation defines…",
+    q("pq_a48c35", "ASTM A48 Clase 35 define…", "ASTM A48 Class 35 defines…",
       ["Una composición química única", "Una clase de fundición gris por requisito de resistencia", "Un acero al carbono"],
       ["A unique chemical composition", "A gray iron class by strength requirement", "A carbon steel"], 1,
       "La clase se refiere a un requisito de resistencia; la composición y la matriz pueden variar.",

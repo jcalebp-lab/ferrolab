@@ -13,7 +13,7 @@ import '../../shared/widgets/widgets.dart';
 
 /// Código de actividad (FR-20): codifica SOLO la configuración; no identifica a nadie.
 abstract final class ActivityCode {
-  static const _materials = ['aisi_1045', 'aisi_8620', 'en_gjl_250'];
+  static const _materials = ['aisi_1045', 'aisi_8620', 'astm_a48_class_35'];
   static const _treatments = ['quench', 'temper', 'quench_temper', 'anneal', 'normalize', 'austemper', 'martemper'];
 
   static String encode(SimulationInput i) {

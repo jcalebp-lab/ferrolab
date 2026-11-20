@@ -46,7 +46,7 @@
 - **Origen de un dato** (`evidence_kind`): `measured`, `literature`, `modeled`, `illustrative`, `unavailable`.
 - **Solidez de un resultado individual** (`evidence_level`): `validated`, `bounded_estimate`, `qualitative`, `insufficient_evidence`, `unsupported`.
 - **Flujo de publicación** (`review_status`): `draft` → `reviewed` → `published` → (`retired`, cuando corresponda). La revisión no se automatiza con IA.
-- **Identificadores de materiales**: `aisi_1045`, `aisi_8620`, `en_gjl_250`.
+- **Identificadores de materiales**: `aisi_1045`, `aisi_8620`, `astm_a48_class_35`.
 - **Identificadores de tratamientos**: `quench`, `temper`, `anneal`, `normalize`, `austemper`, `martemper`.
 - **Unidad interna de temperatura**: °C; de tiempo físico: segundos (`s`); entrada de mantenimiento: minutos; dureza según escala explícita (`HRC`, `HV`, `HBW`).
 - **Versión publicada del paquete científico**: `dataset_version` + `model_version` + `protocol_version` + `engine_version`. Todo resultado conserva estos campos.
