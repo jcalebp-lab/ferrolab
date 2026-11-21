@@ -12,8 +12,10 @@ queda «pendiente» y el problema se informa una sola vez.
 
 from __future__ import annotations
 
+import copy
 import math
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import Any
 
 from .enums import MaterialFamily
@@ -95,6 +97,13 @@ def choose(snap: DatasetSnapshot, material_id: str, treatment_id: str, protocol_
 # ---------------------------------------------------------------------------------------- ventana Ms–Bs
 def model_window(material_id: str) -> dict[str, float] | None:
     """Ventana del baño calculada sobre TODO el rango de composición de la norma (Andrews / Li)."""
+    w = _model_window(material_id)
+    return None if w is None else copy.copy(w)
+
+
+@lru_cache(maxsize=16)
+def _model_window(material_id: str) -> dict[str, float] | None:
+    # Depende solo del material (rango de composición fijo): se calcula una vez por proceso.
     comps = compositions(material_id)
     if comps is None:
         return None
@@ -116,6 +125,7 @@ def model_window(material_id: str) -> dict[str, float] | None:
             "martemper_ref_c": float(lo)}
 
 
+@lru_cache(maxsize=512)
 def bainite_times(material_id: str, t_c: float) -> tuple[float | None, float | None]:
     comps = compositions(material_id)
     if comps is None:

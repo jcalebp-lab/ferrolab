@@ -28,12 +28,8 @@ C_FERRITE_MAX = 0.022
 C_CEMENTITE = 6.70
 
 # ---------------------------------------------------------------- modelos
-# Li, Niebuhr, Meekisho, Atteridge (1998) Metall. Mater. Trans. B 29B:661, reproducido
-# en arXiv:2412.08217 ecs. (2)-(8): tau = F / (2^(a G) dT^n exp(-13840/T)) S(X).
-LI_Q_OVER_R = 13840.0  # K
-LI_FERRITE = {"a": 0.41, "n": 3, "F": (1.0, {"C": 6.31, "Mn": 1.78, "Si": 0.31, "Ni": 1.12, "Cr": 2.70, "Mo": 4.06})}
-LI_PEARLITE = {"a": 0.32, "n": 3, "F": (-4.25, {"C": 4.12, "Mn": 4.36, "Si": 0.44, "Ni": 1.71, "Cr": 3.33, "Mo": 0.36})}
-LI_BAINITE = {"a": 0.29, "n": 2, "F": (-10.23, {"C": 10.18, "Mn": 0.85, "Ni": 0.55, "Cr": 0.90, "Mo": 0.36})}
+# Li, Niebuhr, Meekisho, Atteridge (1998) Metall. Mater. Trans. B 29B:661: los coeficientes del modelo cinético
+# están en kinetics.py, contrastados con la implementación abierta de Collins et al. (2023, Metals 13:1168).
 
 # Koistinen & Marburger (1959): f = 1 - exp(-0.011 (Ms - T)); Cambridge MAP mart2-b.
 KM_ALPHA = 0.011
@@ -89,7 +85,7 @@ ASSUMPTIONS = {
 SOURCES = {
     "src_andrews_1965": "Andrews (1965) J. Iron Steel Inst. 203:721 — Ac1, Ac3, Ms (texto: metallai.com; Ms: Cambridge MAP)",
     "src_steven_haynes_1956": "Steven & Haynes (1956) J. Iron Steel Inst. 183:349 — Bs",
-    "src_li_1998": "Li et al. (1998) Metall. Mater. Trans. B 29B:661 — cinética TTT (vía arXiv:2412.08217)",
+    "src_li_1998": "Li et al. (1998) Metall. Mater. Trans. B 29B:661 — cinética TTT (coeficientes según Collins et al. 2023)",
     "src_km_1959": "Koistinen & Marburger (1959) Acta Metall. 7:59 — martensita",
     "src_maynier_1978": "Maynier, Jungmann, Dollet (1978) — dureza por constituyente (COMSOL / Cambridge MAP)",
     "src_grossmann": "Grossmann — severidad de temple H (NPTEL)",

@@ -230,3 +230,30 @@ def test_serve_web_app_same_origin(settings_factory, tmp_path):
     assert "frame-ancestors" not in page.headers.get("content-security-policy", "")
     api = c.get("/api/v1/health/live")
     assert api.json() == {"status": "ok"} and "default-src 'none'" in api.headers["content-security-policy"]
+
+
+def test_articles_are_knowledge_sources_in_results(client):
+    """D-40: cada simulación ofrece los artículos de acceso libre de su material y tratamiento, con cita."""
+    qt = client.post("/api/v1/simulations", json={"material_id": "aisi_1045", "treatment_id": "quench_temper",
+                                                  "target_temperature_c": 600, "hold_time_min": 30}).json()
+    slugs = [a["slug"] for a in qt["related_articles"]]
+    assert "art-tenacidad-revenido" in slugs and "art-dureza-revenido" in slugs
+    assert all(a["sources"] and a["sources"][0]["doi"] or a["sources"][0]["url"] for a in qt["related_articles"])
+    gray = client.post("/api/v1/simulations", json={"material_id": "astm_a48_class_35", "treatment_id": "austemper",
+                                                    "target_temperature_c": 900, "hold_time_min": 30}).json()
+    gslugs = {a["slug"] for a in gray["related_articles"]}
+    assert gslugs and gslugs <= {"art-fundicion-austemperizada", "art-fundicion-austenizacion"}
+    # Un artículo de otro material nunca respalda el resultado
+    q8620 = client.post("/api/v1/simulations", json={"material_id": "aisi_8620", "treatment_id": "quench",
+                                                     "target_temperature_c": 845, "hold_time_min": 7.5}).json()
+    assert "art-temple-polimero-1045" not in {a["slug"] for a in q8620["related_articles"]}
+    # y la lectura sugerida del tratamiento incluye los artículos verificados
+    assert any(e["source_id"] == "src_art_nist_2025" for e in qt["evidence"])
+
+
+def test_tutor_cites_articles(client):
+    body = client.post("/api/v1/tutor/ask", json={"question": "¿Por qué el bonificado da más tenacidad Charpy?",
+                                                  "simulation": {"material_id": "aisi_1045", "treatment_id": "quench_temper",
+                                                                 "target_temperature_c": 600, "hold_time_min": 30}}).json()
+    cited = {s for c in body["explanations"] for s in c["source_ids"]}
+    assert "src_art_nist_2025" in cited and "art-tenacidad-revenido" in body["related_slugs"]

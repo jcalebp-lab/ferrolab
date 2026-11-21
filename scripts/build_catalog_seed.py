@@ -499,6 +499,56 @@ def k(slug, cat, tes, ten, bes, ben, related=(), srcs=("src_callister",)):
             "related_slugs": list(related), "suggested_source_ids": list(srcs), "review_status": "draft"}
 
 
+STEELS = ("aisi_1045", "aisi_8620")
+AUSTENITIZING = ("quench", "quench_temper", "normalize", "anneal", "austemper", "martemper")
+# Ámbito de cada artículo (D-40): materiales, tratamientos, constituyentes y palabras clave con los que se usa como
+# fuente en los resultados, el tutor, el glosario y las fichas de tratamiento.
+ARTICLE_SCOPE = {
+    "art-cct-abierto": (STEELS, ("quench", "normalize", "anneal", "austemper", "martemper", "quench_temper"),
+                        ("proeutectoid_ferrite", "pearlite", "bainite", "martensite"),
+                        ("cct", "ttt", "diagrama", "diagram", "li", "templabilidad", "hardenability")),
+    "art-crecimiento-grano": (STEELS, AUSTENITIZING, (), ("grano", "grain", "astm", "e112", "austeniz")),
+    "art-dureza-revenido": (STEELS, ("temper", "quench_temper"), ("tempered_martensite",),
+                            ("revenido", "tempering", "temper", "dureza", "hardness", "kang")),
+    "art-tenacidad-revenido": (STEELS, ("temper", "quench_temper"), ("tempered_martensite",),
+                               ("tenacidad", "toughness", "charpy", "impacto", "impact", "bonificado", "fragil")),
+    "art-temple-polimero-1045": (("aisi_1045",), ("quench",), ("martensite",),
+                                 ("medio", "medium", "polimero", "polymer", "agua", "water", "aceite", "oil", "severidad")),
+    "art-1045-industrial": (("aisi_1045",), ("quench", "temper", "quench_temper"), ("martensite", "tempered_martensite"),
+                            ("industrial", "barra", "bar", "austeniz")),
+    "art-1045-intercritico": (("aisi_1045",), ("quench", "temper"), ("proeutectoid_ferrite", "martensite", "tempered_martensite"),
+                              ("intercritic", "intercrit", "ac1", "ac3")),
+    "art-8620-fase-dual": (("aisi_8620",), ("quench", "normalize"), ("proeutectoid_ferrite", "martensite"),
+                           ("fase dual", "dual", "grano", "grain", "ferrita", "ferrite")),
+    "art-fundicion-austemperizada": (("astm_a48_class_35",), ("austemper", "quench", "temper", "quench_temper"),
+                                     ("graphite_flakes", "ausferrite", "bainite", "tempered_martensite"),
+                                     ("fundicion", "cast iron", "desgaste", "wear", "ausferrit", "austemper")),
+    "art-fundicion-austenizacion": (("astm_a48_class_35",), ("austemper",), ("graphite_flakes", "ausferrite"),
+                                    ("fundicion", "cast iron", "ausferrit", "austeniz", "austemper")),
+}
+# Fichas del glosario que se apoyan en artículos: enlaces y fuentes adicionales.
+CONCEPT_ARTICLES = {
+    "martensita": ("art-dureza-revenido", "art-temple-polimero-1045"),
+    "bainita": ("art-fundicion-austemperizada",),
+    "grafito-laminar": ("art-fundicion-austemperizada", "art-fundicion-austenizacion"),
+    "ttt": ("art-cct-abierto",), "cct": ("art-cct-abierto",),
+    "templabilidad": ("art-temple-polimero-1045", "art-cct-abierto"),
+    "faq-velocidad-enfriamiento": ("art-temple-polimero-1045",),
+    "faq-martemper-austemper": ("art-fundicion-austemperizada",),
+    "faq-fundicion-acero": ("art-fundicion-austemperizada",),
+}
+# Artículos que se citan como lectura sugerida de cada tratamiento.
+TREATMENT_ARTICLES = {
+    "quench": ("src_art_vieira_2021", "src_art_mazuera_2011", "src_art_collins_2023"),
+    "temper": ("src_art_kang_lee_2014", "src_art_nist_2025"),
+    "quench_temper": ("src_art_nist_2025", "src_art_mazuera_2011", "src_art_kang_lee_2014"),
+    "normalize": ("src_art_collins_2023", "src_art_razali_2023"),
+    "anneal": ("src_art_collins_2023",),
+    "austemper": ("src_art_wang_2019", "src_art_zhu_2026"),
+    "martemper": ("src_art_collins_2023",),
+}
+
+
 KNOWLEDGE = [
     # ------------------------------------------------------------------ artículos científicos (D-39)
     k("art-cct-abierto", "research", "Un predictor CCT abierto para aceros de baja aleación (Collins et al., 2023)",
@@ -669,6 +719,28 @@ PRACTICE = [
       "Sin evidencia para la condición exacta, la respuesta honesta es «no estimable».",
       "Without evidence for the exact condition, the honest answer is \"not estimable\".", "faq-sin-dureza"),
 ]
+
+
+def _apply_article_scope() -> None:
+    by_slug = {e["slug"]: e for e in KNOWLEDGE}
+    for slug, (mats, trts, cons, kws) in ARTICLE_SCOPE.items():
+        e = by_slug[slug]
+        e.update(materials=list(mats), treatments=list(trts), constituents=list(cons), keywords=list(kws))
+    for slug, arts in CONCEPT_ARTICLES.items():
+        e = by_slug[slug]
+        for a in arts:
+            if a not in e["related_slugs"]:
+                e["related_slugs"].append(a)
+            for sid in by_slug[a]["suggested_source_ids"]:
+                if sid not in e["suggested_source_ids"] and sid.startswith("src_art_"):
+                    e["suggested_source_ids"].append(sid)
+    for t in TREATMENTS:
+        for sid in TREATMENT_ARTICLES.get(t["id"], ()):
+            if sid not in t["suggested_source_ids"]:
+                t["suggested_source_ids"].append(sid)
+
+
+_apply_article_scope()
 
 
 def build() -> dict:

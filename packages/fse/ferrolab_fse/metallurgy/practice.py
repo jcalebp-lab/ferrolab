@@ -6,7 +6,9 @@ Todo es determinista. Las cifras resultantes son ESTIMACIONES DE MODELOS EMPÍRI
 
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass, field
+from functools import lru_cache
 
 from . import grain as grain_model
 from . import kinetics as kin
@@ -182,8 +184,8 @@ def simulate_steps(material_id: str, treatment_id: str, steps: list[Step], *, mo
     fa, ca = _austenitize(c, t_max)
     p.austenite_fraction = fa
     tm = kin.li_temps(c)
-    p.diagrams = _diagrams(c, t_max, path_c, run_.center[i0][0])
     if fa <= 0:
+        p.diagrams = _diagrams(c, t_max, path_c, run_.center[i0][0])
         p.notes.append("MODEL_NO_AUSTENITIZATION")
         return p
     if fa < 1:
@@ -200,8 +202,7 @@ def simulate_steps(material_id: str, treatment_id: str, steps: list[Step], *, mo
                 p.notes.append("MODEL_GRAIN_EXTRAPOLATED")
     else:
         p.notes.append("MODEL_GRAIN_INTERCRITICAL")
-    if g is not None:
-        p.diagrams = _diagrams(c, t_max, path_c, run_.center[i0][0], g)
+    p.diagrams = _diagrams(c, t_max, path_c, run_.center[i0][0], g)  # una sola vez, con el grano ya calculado
     micro, st = _decompose(path_c, c, fa, ca, g)
     p.fractions = micro
     p.phases = _phases(micro, c, st.carbon_austenite)
@@ -331,13 +332,21 @@ def _critical_dict(c: dict[str, float]) -> dict[str, float]:
     return cr
 
 
+@lru_cache(maxsize=128)
+def _cached_diagrams(comp: tuple[tuple[str, float], ...], grain: float, t_start: float) -> tuple[dict, dict]:
+    """TTT y CCT dependen solo de la composición, el grano y la temperatura inicial: se reutilizan entre peticiones
+    (p. ej. el temple de referencia del revenido y del bonificado). Se devuelven copias, nunca el objeto en caché."""
+    c = dict(comp)
+    return kin.ttt_diagram(c, grain), kin.cct_diagram(c, grain, t_start)
+
+
 def _diagrams(c, t_max, path_c, t_cool0, g=None) -> list[dict]:
     grain = ASSUMPTIONS["astm_grain_size"] if g is None else g
     user = [[round(max(t - t_cool0, 0.01), 3), round(temp, 1)] for t, temp in thin(path_c, 300)]
-    ttt = kin.ttt_diagram(c, grain)
+    ttt0, cct0 = _cached_diagrams(tuple(sorted(c.items())), grain, max(t_max, kin.li_temps(c).ae3 + 10))
+    ttt, cct = copy.deepcopy(ttt0), copy.deepcopy(cct0)
     ttt["user_path"] = user
     ttt["astm_grain_size"] = round(grain, 1)
-    cct = kin.cct_diagram(c, grain, max(t_max, kin.li_temps(c).ae3 + 10))
     cct["user_path"] = user
     cct["astm_grain_size"] = round(grain, 1)
     return [ttt, cct]

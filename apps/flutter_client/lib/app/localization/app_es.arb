@@ -14,7 +14,6 @@
   "onbStep3Title": "3. Interpreta con evidencia",
   "onbStep3Body": "Cada resultado indica su fuente y su nivel de evidencia. Si no hay datos, lo verás claramente.",
   "next": "Siguiente",
-  "back": "Atrás",
   "continueLabel": "Continuar",
   "close": "Cerrar",
   "cancel": "Cancelar",
@@ -57,40 +56,19 @@
   "treatmentStages": "Etapas del proceso",
   "paramsTitle": "Configura tu experimento",
   "paramsYouControl": "Lo que tú controlas",
-  "paramsProtocolDefines": "Lo que define el protocolo",
-  "paramsTemperature": "Temperatura objetivo",
   "paramsHold": "Tiempo de mantenimiento",
   "paramsMinutes": "minutos",
-  "paramsHoldStage": "Se aplica a: {stage}",
-  "@paramsHoldStage": {
-    "placeholders": {
-      "stage": {}
-    }
-  },
-  "paramsFurnaceRange": "Rango del horno (interfaz): {min}–{max} °C",
-  "@paramsFurnaceRange": {
-    "placeholders": {
-      "min": {},
-      "max": {}
-    }
-  },
-  "paramsThermalLimit": "Rango válido del protocolo",
   "paramsRangeUnpublished": "Rango válido del protocolo: aún no documentado",
-  "paramsRangeTooltip": "El rango válido depende del material y del tratamiento; el máximo del horno es solo la capacidad visual del instrumento.",
   "paramsPhysicalLimit": "Límite físico de seguridad: {limit} °C (fusión)",
   "@paramsPhysicalLimit": {
     "placeholders": {
       "limit": {}
     }
   },
-  "protocolLocked": "Enfriamiento definido por protocolo",
-  "protocolLockedWhy": "Se selecciona automáticamente según el protocolo revisado por material y tratamiento; no es configurable para mantener la simulación trazable.",
-  "protocolPending": "Protocolo pendiente de revisión",
   "protocolMedium": "Medio",
   "paramsReview": "Revisar configuración",
   "paramsInvalidNumber": "Introduce un número válido",
   "paramsOutOfUi": "Fuera del rango de la interfaz",
-  "runReview": "Revisar experimento",
   "reviewTitle": "Tu experimento",
   "reviewMaterial": "Material",
   "reviewTreatment": "Tratamiento",
@@ -144,7 +122,6 @@
   "chartSchematic": "Esquema del ciclo: eje de tiempo no a escala",
   "chartPhysical": "Historial térmico del motor científico (centro de la probeta)",
   "chartTimeAxis": "tiempo",
-  "chartNoData": "Sin trayectoria para mostrar",
   "resultsTitle": "Esto podemos concluir",
   "status_completed": "Resultado completo",
   "status_partial_result": "Resultado parcial",
@@ -167,9 +144,7 @@
   "q_grain_size": "Tamaño de grano",
   "q_mechanical_properties": "Propiedades mecánicas",
   "resultsUnavailable": "No estimable con la evidencia actual",
-  "resultsViewSource": "Ver fuente y límites",
   "resultsWhatsMissing": "¿Qué datos faltan?",
-  "resultsWhatsMissingBody": "Para mostrar una cifra, FERROLAB necesita un dato experimental o un modelo validado para esta condición exacta (material, estado inicial, protocolo publicado, temperatura y tiempo), con fuente, localizador y rango de validez, revisado por una persona con formación metalúrgica.",
   "evidence_validated": "Validado",
   "evidence_bounded_estimate": "Estimación acotada",
   "evidence_qualitative": "Cualitativo",
@@ -248,7 +223,6 @@
   },
   "practiceNext": "Siguiente pregunta",
   "practiceRestart": "Empezar de nuevo",
-  "practiceHypothesis": "Antes de simular: ¿qué esperas que ocurra?",
   "historyTitle": "Historial local",
   "historyEmpty": "Aún no has guardado simulaciones.",
   "historyLocalNote": "Se guarda solo en este dispositivo/navegador. Si borras los datos o cambias de dispositivo, se pierde. No hay sincronización.",
@@ -283,12 +257,6 @@
   "achAllTreatments": "Probaste los seis tratamientos",
   "achPractice": "Cinco respuestas correctas en práctica",
   "achHonest": "Encontraste un límite de la evidencia",
-  "achUnlocked": "Logro desbloqueado: {name}",
-  "@achUnlocked": {
-    "placeholders": {
-      "name": {}
-    }
-  },
   "teacherTitle": "Modo docente",
   "teacherIntro": "Crea un código de actividad con una configuración fija. Los estudiantes lo introducen sin cuenta ni datos personales. Un código no es una contraseña ni autentica a nadie.",
   "teacherCreate": "Crear código con la configuración actual",
@@ -297,7 +265,6 @@
   "teacherLoad": "Cargar actividad",
   "teacherInvalid": "Código no válido",
   "teacherNoConfig": "Primero configura una simulación (material y tratamiento).",
-  "teacherPresentation": "Modo presentación",
   "networkError": "Sin conexión al motor. Tu configuración sigue aquí.",
   "networkRetry": "Reintentar",
   "internalError": "No pudimos completar esta solicitud.",
@@ -337,10 +304,8 @@
   "adminActivate": "Activar (revertir a esta)",
   "adminVersion": "Versión (p. ej. 1.0.0)",
   "adminActive": "Activa",
-  "adminProblems": "Problemas que bloquean la publicación",
   "adminReport": "Informe",
   "adminReviewWarning": "Revisar significa que una persona con formación metalúrgica comprobó la fuente, el localizador, las unidades y el dominio. No lo marques si no lo hiciste.",
-  "adminJsonField": "(JSON)",
   "settingsServer": "Servidor de FERROLAB",
   "settingsServerHint": "p. ej. http://192.168.1.20:8000",
   "settingsServerSave": "Guardar y probar",
@@ -360,12 +325,6 @@
   },
   "settingsServerNote": "La app necesita el servidor de FERROLAB para calcular. En tu casa puedes usar tu computadora en la misma Wi‑Fi (http://IP:8000). Las direcciones http:// no van cifradas: úsalas solo en tu red local.",
   "homeConfigureServer": "Configurar servidor",
-  "recTitle": "Práctica recomendada",
-  "recUse": "Usar valores recomendados",
-  "recOutsideTemp": "Esta temperatura está fuera de lo recomendado por la literatura: es una mala práctica. Puedes simularla para ver qué pasa, pero el resultado lo advertirá.",
-  "recOutsideHold": "Este tiempo está fuera de lo recomendado.",
-  "recNoNumber": "la fuente no da cifra",
-  "recBath": "Baño",
   "constFerrite": "Ferrita proeutectoide",
   "constPearlite": "Perlita",
   "constBainite": "Bainita",
@@ -386,8 +345,6 @@
   "microGesture": "Pellizca o usa la rueda del ratón para acercar; arrastra para recorrer la muestra.",
   "microReset": "Volver al aumento inicial",
   "microRealTitle": "Micrografía real con licencia",
-  "microQualitative": "Fundición gris: matriz y grafito cualitativos (sin fracciones calculadas).",
-  "microUnchanged": "No hubo austenización: la microestructura de partida no cambia y no se dibuja una nueva.",
   "microOpen": "Abrir el microscopio",
   "diagTitle": "Diagramas TTT y CCT de tu práctica",
   "diagTtt": "TTT",
@@ -404,38 +361,6 @@
   "modelPrior": "Estado templado de partida (calculado con la práctica recomendada de temple)",
   "modelSpecimen": "Probeta de referencia: cilindro de 12,7 mm, resultados en el centro.",
   "factBand": "Banda de incertidumbre",
-  "recTemperature": "Temperatura: {range}",
-  "@recTemperature": {
-    "placeholders": {
-      "range": {
-        "type": "String"
-      }
-    }
-  },
-  "recHold": "Mantenimiento: {range}",
-  "@recHold": {
-    "placeholders": {
-      "range": {
-        "type": "String"
-      }
-    }
-  },
-  "recMedium": "Medio de enfriamiento: {medium}",
-  "@recMedium": {
-    "placeholders": {
-      "medium": {
-        "type": "String"
-      }
-    }
-  },
-  "recSources": "Fuentes: {sources}",
-  "@recSources": {
-    "placeholders": {
-      "sources": {
-        "type": "String"
-      }
-    }
-  },
   "microMagnification": "≈ {x}× en pantalla",
   "@microMagnification": {
     "placeholders": {
@@ -570,7 +495,6 @@
   "goalMachinability": "Maquinabilidad",
   "goalPending": "Pendiente",
   "mediumTinBath": "baño de estaño",
-  "furnaceBathScene": "Baño isotérmico",
   "lpLimitationsCount": "{n} avisos agrupados por causa",
   "@lpLimitationsCount": {
     "placeholders": {
@@ -748,5 +672,8 @@
   "learnResearch": "Artículos",
   "learnResearchNote": "Resúmenes de artículos científicos e informes de ACCESO LIBRE, con su cita completa (autores, año, revista y DOI). Abre el enlace para leer el texto original.",
   "learnCitation": "Cita",
-  "sourceStandard": "Norma ASTM (texto oficial en ASTM International)"
+  "sourceStandard": "Norma ASTM (texto oficial en ASTM International)",
+  "resultsArticles": "Artículos científicos que respaldan este resultado",
+  "resultsArticlesNote": "Artículos de acceso libre sobre este material y tratamiento. Toca uno para leer la ficha completa.",
+  "learnTreatmentArticles": "Artículos sobre este tratamiento"
 }

@@ -470,3 +470,16 @@ def test_only_astm_and_aisi_designations(seed_data):
     text = _json.dumps(seed_data, ensure_ascii=False)
     for banned in ("EN 1561", "EN-GJL", "GG25", "GG-25", "DIN 1691", "JIS ", "EN 10083", "Saarstahl", "ISO 643"):
         assert banned not in text, banned
+
+
+def test_cached_diagrams_are_not_shared_between_requests(seed_snapshot):
+    """Optimización: los diagramas TTT/CCT se reutilizan, pero cada resultado lleva su propia trayectoria."""
+    eng = ScientificEngine(seed_snapshot)
+    a = eng.simulate(req(m="aisi_1045", t="quench", temp=845, hold=7.5))
+    b = eng.simulate(req(m="aisi_1045", t="quench", temp=845, hold=15))
+    a2 = eng.simulate(req(m="aisi_1045", t="quench", temp=845, hold=7.5))
+    assert a.diagrams == a2.diagrams  # determinista
+    assert a.diagrams[0] is not a2.diagrams[0]  # copias, no el objeto en caché
+    a.diagrams[0]["user_path"].append([1.0, 1.0])
+    assert a2.diagrams[0]["user_path"] != a.diagrams[0]["user_path"]
+    assert b.diagrams[0]["user_path"] != a2.diagrams[0]["user_path"]

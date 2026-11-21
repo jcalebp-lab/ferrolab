@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/l10n.dart';
@@ -233,6 +234,32 @@ class KeyValue extends StatelessWidget {
           ?trailing,
         ]),
       );
+}
+
+/// Artículo científico que respalda un resultado o un tratamiento: título (abre la ficha), resumen y cita.
+class ArticleTile extends StatelessWidget {
+  const ArticleTile(this.a, {super.key});
+  final ArticleRef a;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => GoRouter.of(context).push('/learn/${a.slug}'),
+      borderRadius: BorderRadius.circular(FlRadius.input),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: FlSpace.s),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(a.title, style: context.text.titleSmall),
+          const Gap(FlSpace.xs),
+          Text(a.summary, style: context.text.bodyMedium),
+          for (final s in a.sources.where((s) => s.kind == 'article'))
+            Padding(
+              padding: const EdgeInsets.only(top: FlSpace.xs),
+              child: SelectableText(ArticleRef.cite(s), style: context.text.bodySmall),
+            ),
+        ]),
+      ),
+    );
+  }
 }
 
 class SourceTile extends StatelessWidget {

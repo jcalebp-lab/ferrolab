@@ -11,7 +11,6 @@ import datetime as dt
 import json
 import logging
 import re
-import unicodedata
 from typing import Any, Literal
 
 from ferrolab_fse.result import SimulationResult
@@ -19,6 +18,7 @@ from ferrolab_fse.snapshot import DatasetSnapshot, KnowledgeEntry
 from pydantic import BaseModel, Field, ValidationError
 
 from ..core.config import Settings
+from . import knowledge_service as ks
 
 log = logging.getLogger("ferrolab.tutor")
 
@@ -80,8 +80,7 @@ Responde solo con el JSON del esquema."""
 
 
 def _norm(s: str) -> str:
-    s = unicodedata.normalize("NFKD", s.lower())
-    return "".join(c for c in s if not unicodedata.combining(c))
+    return ks.norm(s)
 
 
 _NUM = re.compile(r"(?<![\w.])\d+(?:[.,]\d+)?")
@@ -154,6 +153,18 @@ class TutorService:
             related = [entry.slug, *entry.related_slugs]
             if not summary:
                 summary = entry.title_en if en else entry.title_es
+        # Artículos científicos de acceso libre como fuente (D-40): los del material/tratamiento y los de la pregunta.
+        inp = result.input if result is not None else None
+        for art in ks.related(snap, material_id=inp.material_id if inp else None,
+                              treatment_id=inp.treatment_id if inp else None, text=question, limit=2):
+            if art.slug in related:
+                continue
+            title = art.title_en if en else art.title_es
+            claims.append(TutorClaim(claim=f"{title}: {ks.summary(art.body_en if en else art.body_es, 420)}",
+                                     source_ids=list(art.suggested_source_ids)))
+            related.append(art.slug)
+            if not summary:
+                summary = title
         if not claims:
             summary = ("I don't have a reviewed explanation for that question yet. Try the Learn section or the "
                        "frequently asked questions." if en else

@@ -588,6 +588,8 @@ class SimulationResultDto {
   Json? get illustration => raw['microstructure_illustration'] as Json?;
   List<MicrographDto> get relatedMicrographs =>
       ((raw['related_micrographs'] as List?) ?? const []).map((e) => MicrographDto.fromJson(e as Json)).toList();
+  List<ArticleRef> get relatedArticles =>
+      ((raw['related_articles'] as List?) ?? const []).map((e) => ArticleRef.fromJson(e as Json)).toList();
   Json? get modelEstimate => raw['model_estimate'] as Json?;
   ProtocolCard? get protocolCard => raw['protocol_card'] == null ? null : ProtocolCard.fromJson(raw['protocol_card'] as Json);
   String? get resultLevel => raw['result_level'] as String?;
@@ -649,9 +651,10 @@ class SimulationResultDto {
 
 class KnowledgeEntryDto {
   KnowledgeEntryDto({required this.slug, required this.category, required this.title, required this.body,
-      required this.related, required this.sources, required this.reviewStatus});
+      required this.related, required this.sources, required this.reviewStatus, this.materials = const [],
+      this.treatments = const []});
   final String slug, category, title, body, reviewStatus;
-  final List<String> related;
+  final List<String> related, materials, treatments;
   final List<SourceRef> sources;
   factory KnowledgeEntryDto.fromJson(Json j) => KnowledgeEntryDto(
         slug: j['slug'] as String,
@@ -661,7 +664,30 @@ class KnowledgeEntryDto {
         related: _ls(j['related_slugs']),
         sources: _l(j['suggested_sources'], SourceRef.fromJson),
         reviewStatus: j['review_status'] as String,
+        materials: _ls(j['materials']),
+        treatments: _ls(j['treatments']),
       );
+}
+
+/// Artículo científico de acceso libre que respalda un resultado (D-40).
+class ArticleRef {
+  ArticleRef({required this.slug, required this.title, required this.summary, required this.sources});
+  final String slug, title, summary;
+  final List<SourceRef> sources;
+  factory ArticleRef.fromJson(Json j) => ArticleRef(
+        slug: j['slug'] as String,
+        title: j['title'] as String,
+        summary: j['summary'] as String,
+        sources: _l(j['sources'], SourceRef.fromJson),
+      );
+
+  /// Cita en formato autor-año: «Autores (año). Título. Revista. doi:…».
+  static String cite(SourceRef s) => [
+        if (s.authors != null) '${s.authors} (${s.year ?? 's. f.'}).',
+        '${s.title}.',
+        if (s.edition != null) '${s.edition}.',
+        if (s.doi != null) 'doi:${s.doi}' else if (s.url != null) s.url!,
+      ].join(' ');
 }
 
 class PracticeQuestionDto {

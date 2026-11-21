@@ -368,15 +368,34 @@ class _Intercepts {
       ],
     ];
     final sites = [for (final cell in m.cells) cell.site];
+    // Rejilla espacial: el grano más cercano se busca por anillos de celdas vecinas (exacto, sin recorrer todos).
+    final size = m.dGrain;
+    final cols = (kFieldUm / size).ceil() + 1;
+    final grid = <int, List<int>>{};
+    for (var i = 0; i < sites.length; i++) {
+      final key = (sites[i].dy ~/ size) * cols + (sites[i].dx ~/ size);
+      (grid[key] ??= <int>[]).add(i);
+    }
     int nearest(Offset p) {
-      var best = 0;
+      final cx = (p.dx ~/ size), cy = (p.dy ~/ size);
+      var best = -1;
       var bd = double.infinity;
-      for (var i = 0; i < sites.length; i++) {
-        final d = (sites[i] - p).distanceSquared;
-        if (d < bd) {
-          bd = d;
-          best = i;
+      for (var r = 0; r <= cols; r++) {
+        for (var y = cy - r; y <= cy + r; y++) {
+          for (var x = cx - r; x <= cx + r; x++) {
+            if ((y - cy).abs() != r && (x - cx).abs() != r) continue; // solo el borde del anillo
+            if (x < 0 || y < 0 || x >= cols || y >= cols) continue;
+            for (final i in grid[y * cols + x] ?? const <int>[]) {
+              final d = (sites[i] - p).distanceSquared;
+              if (d < bd) {
+                bd = d;
+                best = i;
+              }
+            }
+          }
         }
+        // ya no puede haber nada más cerca fuera del anillo r
+        if (best >= 0 && bd <= (r * size) * (r * size)) break;
       }
       return best;
     }

@@ -147,6 +147,18 @@ class ResultsBody extends ConsumerWidget {
         ]),
       ),
       const Gap(FlSpace.m),
+      if (r.relatedArticles.isNotEmpty) ...[
+        SectionCard(
+          key: const Key('relatedArticles'),
+          title: t.resultsArticles,
+          icon: Icons.article_outlined,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Text(t.resultsArticlesNote, style: context.text.bodySmall),
+            for (final a in r.relatedArticles) ArticleTile(a),
+          ]),
+        ),
+        const Gap(FlSpace.m),
+      ],
       _Foundation(r: r),
       const Gap(FlSpace.m),
       _KeepLearning(r: r),

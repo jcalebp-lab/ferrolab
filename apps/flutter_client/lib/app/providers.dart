@@ -173,7 +173,6 @@ class SimulationController extends Notifier<SimState> {
     );
   }
 
-  void setInitialCondition(String id) => state = state.copyWith(initialConditionId: id, clearOutcome: true);
   void setTemperature(double c) => state = state.copyWith(temperatureC: c, phase: SimPhase.editing, clearOutcome: true);
   void setHold(double m) => state = state.copyWith(holdMin: m, phase: SimPhase.editing, clearOutcome: true);
   void setBathTemperature(double c) =>

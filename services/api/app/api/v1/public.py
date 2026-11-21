@@ -13,6 +13,7 @@ from ferrolab_fse.result import Warning as FseWarning
 from ... import __version__
 from ...core.errors import ApiError
 from ...schemas.public import SimulationCreate, TutorAsk, TutorExplain
+from ...services import knowledge_service as ks
 from ...services import micrograph_service as mg
 from ...services.state import AppState
 from ..deps import get_state, locale_q, rate_limit
@@ -34,10 +35,7 @@ def _cache(response: Response, request: Request, etag: str) -> bool:
 
 
 def _source(snap, sid):
-    s = snap.source(sid)
-    return None if s is None else {"id": s.id, "title": s.title, "authors": s.authors, "year": s.year,
-                                   "kind": s.kind, "url": s.url, "doi": s.doi, "edition": s.edition,
-                                   "verification_status": s.verification_status}
+    return ks.source_dict(snap, sid)
 
 
 # ------------------------------------------------------------------ salud
@@ -173,7 +171,7 @@ def simulate(body: SimulationCreate, request: Request, st: AppState = Depends(ge
     result = loaded.engine.simulate(_to_req(body))
     micro = None
     warnings = list(result.warnings)
-    rel = []
+    rel, arts = [], []
     if result.simulation_status not in ("invalid_input", "unsupported"):
         found = mg.select(loaded.snapshot, body.material_id, body.treatment_id, result.input.initial_condition_id)
         if found is not None:
@@ -181,12 +179,15 @@ def simulate(body: SimulationCreate, request: Request, st: AppState = Depends(ge
         family, weights = mg.weights_for(result.microstructure_illustration or {}, body.treatment_id)
         rel = [mg.public_micrograph(m, body.locale) for m in
                mg.related(loaded.snapshot, family, weights, other_families=family == "gray_cast_iron")]
+        arts = [ks.public_article(loaded.snapshot, k, body.locale) for k in
+                ks.related(loaded.snapshot, material_id=body.material_id, treatment_id=body.treatment_id,
+                           constituents=set(weights))]
         if found is None and not rel:
             warnings.append(FseWarning(code="NO_SUITABLE_MICROGRAPH", severity="info",
                                        message_key="scientific.no_suitable_micrograph",
                                        message=localize(MESSAGES, "NO_SUITABLE_MICROGRAPH", body.locale)))
     return result.model_copy(update={"request_id": request.state.request_id, "micrograph": micro,
-                                     "warnings": warnings, "related_micrographs": rel})
+                                     "warnings": warnings, "related_micrographs": rel, "related_articles": arts})
 
 
 # ------------------------------------------------------------------ contenidos
@@ -208,6 +209,7 @@ def micrographs(locale: str = Depends(locale_q), st: AppState = Depends(get_stat
 def _k(snap, k, loc):
     return {"slug": k.slug, "category": k.category, "title": _l(k, "title", loc), "body": _l(k, "body", loc),
             "related_slugs": k.related_slugs, "review_status": k.review_status,
+            "materials": [m.value for m in k.materials], "treatments": [t.value for t in k.treatments],
             "suggested_sources": [x for x in (_source(snap, s) for s in k.suggested_source_ids) if x]}
 
 

@@ -2,8 +2,8 @@
 implementación abierta de Collins et al. (2023, Metals 13:1168; código MIT en Zenodo 10.5281/zenodo.7767620),
 regla de aditividad de Scheil y Koistinen–Marburger.
 
-Coeficientes contrastados en dos fuentes (arXiv:2412.08217 y el código de Collins). Diferencia
-detectada: arXiv da 0.36·Mo en la perlita; el código de Collins usa 5.19·√Mo (forma de Li 1998), que es la usada.
+Coeficientes según el código abierto de Collins et al. (2023), que reproduce la forma de Li (1998); en la perlita el
+molibdeno entra como 5.19·√Mo.
 Solo para ACEROS de baja aleación; nunca para la fundición gris.
 """
 
@@ -21,7 +21,7 @@ REACTIONS = ("ferrite", "pearlite", "bainite")
 
 
 def _g(c: dict[str, float], el: str) -> float:
-    return float(c.get(el, 0.0))
+    return c.get(el, 0.0)  # las composiciones ya son float (se llama ~10⁵ veces por simulación)
 
 
 # ---------------------------------------------------------------- temperaturas del modelo de Li
@@ -115,14 +115,23 @@ def li_temps(c: dict[str, float]) -> Temps:
     return Temps(ae3=ae3_li(c), ae1=ae1_li(c), bs=bs_li(c), ms=ms_andrews(c))
 
 
-def rate_k(reaction: str, t_c: float, c: dict[str, float], tm: Temps, grain: float) -> float:
-    """1/τ sin S(X) [1/s]: 2^{aG} ΔT^n exp(−Q/RT) / F."""
+_F = {"ferrite": f_ferrite, "pearlite": f_pearlite, "bainite": f_bainite}
+
+
+def factors(c: dict[str, float]) -> dict[str, float]:
+    """Factores de composición F de Li para las tres reacciones (se calculan una vez por composición)."""
+    return {r: fn(c) for r, fn in _F.items()}
+
+
+def rate_k(reaction: str, t_c: float, c: dict[str, float], tm: Temps, grain: float, f: float | None = None) -> float:
+    """1/τ sin S(X) [1/s]: 2^{aG} ΔT^n exp(−Q/RT) / F. `f` evita recalcular F si ya se conoce."""
     a, n = _EXP[reaction]
-    top = {"ferrite": tm.ae3, "pearlite": tm.ae1, "bainite": tm.bs}[reaction]
+    top = tm.ae3 if reaction == "ferrite" else tm.ae1 if reaction == "pearlite" else tm.bs
     dt = top - t_c
     if dt <= 0 or t_c <= tm.ms:
         return 0.0
-    f = {"ferrite": f_ferrite, "pearlite": f_pearlite, "bainite": f_bainite}[reaction](c)
+    if f is None:
+        f = _F[reaction](c)
     return (2 ** (a * grain)) * dt ** n * math.exp(-Q_OVER_R / (t_c + 273.15)) / f
 
 
@@ -158,6 +167,8 @@ def integrate(path: list[tuple[float, float]], c: dict[str, float], grain: float
     tm = li_temps(c)
     st = State(austenite=austenite0, untransformed_ferrite=1 - austenite0,
                carbon_austenite=_g(c, "C") if carbon0 is None else carbon0)
+    f_nom = factors(c)  # la ferrita usa la composición nominal: F constante en toda la trayectoria
+    max_f = {}  # palanca de ferrita por temperatura (solo depende de la composición nominal)
     for (t0, a), (t1, b) in zip(path, path[1:], strict=False):
         span = t1 - t0
         if span <= 0:
@@ -170,18 +181,22 @@ def integrate(path: list[tuple[float, float]], c: dict[str, float], grain: float
             ltm = Temps(ae3=tm.ae3, ae1=tm.ae1, bs=bs_li(local) if st.started["bainite"] is None else tm.bs,
                         ms=ms_andrews(local))
             remaining, now = sub, t0 + i * sub
+            # F de perlita/bainita con el C de la austenita en este subpaso (una vez, no en cada iteración)
+            fk = {"ferrite": f_nom["ferrite"], "pearlite": f_pearlite(local), "bainite": f_bainite(local)}
             while remaining > 1e-9 and st.austenite > 1e-6:
                 dt = remaining
                 for r in REACTIONS:
                     if not _allowed(st, r):
                         continue
-                    k = rate_k(r, tc, local if r != "ferrite" else c, ltm, grain)
+                    k = rate_k(r, tc, local if r != "ferrite" else c, ltm, grain, fk[r])
                     if k > 0:
                         if st.started[r] is None:
                             dt = min(dt, max(0.05 * sigmoid_s(X_NUC) / k, 1e-4))
                         else:
                             dt = min(dt, max(0.005 / k, 1e-4))
-                _advance_mixed(st, tc, dt, now + dt, c, local, ltm, grain)
+                if tc not in max_f:
+                    max_f[tc] = max_ferrite(c, tc)
+                _advance_mixed(st, tc, dt, now + dt, c, local, ltm, grain, fk, max_f[tc])
                 remaining -= dt
                 now += dt
             if tc < ltm.ms:
@@ -190,13 +205,13 @@ def integrate(path: list[tuple[float, float]], c: dict[str, float], grain: float
     return st
 
 
-def _advance_mixed(st, tc, dt, now, c, local, tm, grain):
+def _advance_mixed(st, tc, dt, now, c, local, tm, grain, fk=None, max_f=None):
     """Ferrita con la composición nominal; perlita/bainita con la austenita enriquecida."""
     for r in REACTIONS:
         comp = c if r == "ferrite" else local
         if st.austenite <= 1e-6 or not _allowed(st, r):
             continue
-        k = rate_k(r, tc, comp, tm, grain)
+        k = rate_k(r, tc, comp, tm, grain, None if fk is None else fk[r])
         if k <= 0:
             continue
         if st.started[r] is None:
@@ -208,7 +223,8 @@ def _advance_mixed(st, tc, dt, now, c, local, tm, grain):
         else:
             inc = dt * k * _sx_integrand(max(min(st.frac[r], 0.999), X_NUC))
         if r == "ferrite":
-            inc = min(inc, max(0.0, max_ferrite(c, tc) - st.frac["ferrite"] - st.untransformed_ferrite))
+            mf = max_ferrite(c, tc) if max_f is None else max_f
+            inc = min(inc, max(0.0, mf - st.frac["ferrite"] - st.untransformed_ferrite))
         inc = min(inc, st.austenite)
         if inc <= 0:
             continue

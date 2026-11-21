@@ -10,7 +10,6 @@ class LocalStore {
   static const _settingsKey = 'fl.settings.v1';
   static const _historyKey = 'fl.history.v1';
   static const _achKey = 'fl.achievements.v1';
-  static const _practiceKey = 'fl.practice.v1';
   static const maxHistory = 30;
 
   Map<String, dynamic> readSettings() => _readMap(_settingsKey);
@@ -31,9 +30,6 @@ class LocalStore {
 
   Map<String, dynamic> readAchievements() => _readMap(_achKey);
   Future<void> writeAchievements(Map<String, dynamic> v) => _p.setString(_achKey, jsonEncode(v));
-
-  Map<String, dynamic> readPractice() => _readMap(_practiceKey);
-  Future<void> writePractice(Map<String, dynamic> v) => _p.setString(_practiceKey, jsonEncode(v));
 
   Future<void> clearHistory() => _p.remove(_historyKey);
 

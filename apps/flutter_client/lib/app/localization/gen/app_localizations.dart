@@ -182,12 +182,6 @@ abstract class AppLocalizations {
   /// **'Siguiente'**
   String get next;
 
-  /// No description provided for @back.
-  ///
-  /// In es, this message translates to:
-  /// **'Atrás'**
-  String get back;
-
   /// No description provided for @continueLabel.
   ///
   /// In es, this message translates to:
@@ -404,18 +398,6 @@ abstract class AppLocalizations {
   /// **'Lo que tú controlas'**
   String get paramsYouControl;
 
-  /// No description provided for @paramsProtocolDefines.
-  ///
-  /// In es, this message translates to:
-  /// **'Lo que define el protocolo'**
-  String get paramsProtocolDefines;
-
-  /// No description provided for @paramsTemperature.
-  ///
-  /// In es, this message translates to:
-  /// **'Temperatura objetivo'**
-  String get paramsTemperature;
-
   /// No description provided for @paramsHold.
   ///
   /// In es, this message translates to:
@@ -428,59 +410,17 @@ abstract class AppLocalizations {
   /// **'minutos'**
   String get paramsMinutes;
 
-  /// No description provided for @paramsHoldStage.
-  ///
-  /// In es, this message translates to:
-  /// **'Se aplica a: {stage}'**
-  String paramsHoldStage(Object stage);
-
-  /// No description provided for @paramsFurnaceRange.
-  ///
-  /// In es, this message translates to:
-  /// **'Rango del horno (interfaz): {min}–{max} °C'**
-  String paramsFurnaceRange(Object min, Object max);
-
-  /// No description provided for @paramsThermalLimit.
-  ///
-  /// In es, this message translates to:
-  /// **'Rango válido del protocolo'**
-  String get paramsThermalLimit;
-
   /// No description provided for @paramsRangeUnpublished.
   ///
   /// In es, this message translates to:
   /// **'Rango válido del protocolo: aún no documentado'**
   String get paramsRangeUnpublished;
 
-  /// No description provided for @paramsRangeTooltip.
-  ///
-  /// In es, this message translates to:
-  /// **'El rango válido depende del material y del tratamiento; el máximo del horno es solo la capacidad visual del instrumento.'**
-  String get paramsRangeTooltip;
-
   /// No description provided for @paramsPhysicalLimit.
   ///
   /// In es, this message translates to:
   /// **'Límite físico de seguridad: {limit} °C (fusión)'**
   String paramsPhysicalLimit(Object limit);
-
-  /// No description provided for @protocolLocked.
-  ///
-  /// In es, this message translates to:
-  /// **'Enfriamiento definido por protocolo'**
-  String get protocolLocked;
-
-  /// No description provided for @protocolLockedWhy.
-  ///
-  /// In es, this message translates to:
-  /// **'Se selecciona automáticamente según el protocolo revisado por material y tratamiento; no es configurable para mantener la simulación trazable.'**
-  String get protocolLockedWhy;
-
-  /// No description provided for @protocolPending.
-  ///
-  /// In es, this message translates to:
-  /// **'Protocolo pendiente de revisión'**
-  String get protocolPending;
 
   /// No description provided for @protocolMedium.
   ///
@@ -505,12 +445,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Fuera del rango de la interfaz'**
   String get paramsOutOfUi;
-
-  /// No description provided for @runReview.
-  ///
-  /// In es, this message translates to:
-  /// **'Revisar experimento'**
-  String get runReview;
 
   /// No description provided for @reviewTitle.
   ///
@@ -740,12 +674,6 @@ abstract class AppLocalizations {
   /// **'tiempo'**
   String get chartTimeAxis;
 
-  /// No description provided for @chartNoData.
-  ///
-  /// In es, this message translates to:
-  /// **'Sin trayectoria para mostrar'**
-  String get chartNoData;
-
   /// No description provided for @resultsTitle.
   ///
   /// In es, this message translates to:
@@ -878,23 +806,11 @@ abstract class AppLocalizations {
   /// **'No estimable con la evidencia actual'**
   String get resultsUnavailable;
 
-  /// No description provided for @resultsViewSource.
-  ///
-  /// In es, this message translates to:
-  /// **'Ver fuente y límites'**
-  String get resultsViewSource;
-
   /// No description provided for @resultsWhatsMissing.
   ///
   /// In es, this message translates to:
   /// **'¿Qué datos faltan?'**
   String get resultsWhatsMissing;
-
-  /// No description provided for @resultsWhatsMissingBody.
-  ///
-  /// In es, this message translates to:
-  /// **'Para mostrar una cifra, FERROLAB necesita un dato experimental o un modelo validado para esta condición exacta (material, estado inicial, protocolo publicado, temperatura y tiempo), con fuente, localizador y rango de validez, revisado por una persona con formación metalúrgica.'**
-  String get resultsWhatsMissingBody;
 
   /// No description provided for @evidence_validated.
   ///
@@ -1298,12 +1214,6 @@ abstract class AppLocalizations {
   /// **'Empezar de nuevo'**
   String get practiceRestart;
 
-  /// No description provided for @practiceHypothesis.
-  ///
-  /// In es, this message translates to:
-  /// **'Antes de simular: ¿qué esperas que ocurra?'**
-  String get practiceHypothesis;
-
   /// No description provided for @historyTitle.
   ///
   /// In es, this message translates to:
@@ -1508,12 +1418,6 @@ abstract class AppLocalizations {
   /// **'Encontraste un límite de la evidencia'**
   String get achHonest;
 
-  /// No description provided for @achUnlocked.
-  ///
-  /// In es, this message translates to:
-  /// **'Logro desbloqueado: {name}'**
-  String achUnlocked(Object name);
-
   /// No description provided for @teacherTitle.
   ///
   /// In es, this message translates to:
@@ -1561,12 +1465,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Primero configura una simulación (material y tratamiento).'**
   String get teacherNoConfig;
-
-  /// No description provided for @teacherPresentation.
-  ///
-  /// In es, this message translates to:
-  /// **'Modo presentación'**
-  String get teacherPresentation;
 
   /// No description provided for @networkError.
   ///
@@ -1742,12 +1640,6 @@ abstract class AppLocalizations {
   /// **'Activa'**
   String get adminActive;
 
-  /// No description provided for @adminProblems.
-  ///
-  /// In es, this message translates to:
-  /// **'Problemas que bloquean la publicación'**
-  String get adminProblems;
-
   /// No description provided for @adminReport.
   ///
   /// In es, this message translates to:
@@ -1759,12 +1651,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Revisar significa que una persona con formación metalúrgica comprobó la fuente, el localizador, las unidades y el dominio. No lo marques si no lo hiciste.'**
   String get adminReviewWarning;
-
-  /// No description provided for @adminJsonField.
-  ///
-  /// In es, this message translates to:
-  /// **'(JSON)'**
-  String get adminJsonField;
 
   /// No description provided for @settingsServer.
   ///
@@ -1819,42 +1705,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Configurar servidor'**
   String get homeConfigureServer;
-
-  /// No description provided for @recTitle.
-  ///
-  /// In es, this message translates to:
-  /// **'Práctica recomendada'**
-  String get recTitle;
-
-  /// No description provided for @recUse.
-  ///
-  /// In es, this message translates to:
-  /// **'Usar valores recomendados'**
-  String get recUse;
-
-  /// No description provided for @recOutsideTemp.
-  ///
-  /// In es, this message translates to:
-  /// **'Esta temperatura está fuera de lo recomendado por la literatura: es una mala práctica. Puedes simularla para ver qué pasa, pero el resultado lo advertirá.'**
-  String get recOutsideTemp;
-
-  /// No description provided for @recOutsideHold.
-  ///
-  /// In es, this message translates to:
-  /// **'Este tiempo está fuera de lo recomendado.'**
-  String get recOutsideHold;
-
-  /// No description provided for @recNoNumber.
-  ///
-  /// In es, this message translates to:
-  /// **'la fuente no da cifra'**
-  String get recNoNumber;
-
-  /// No description provided for @recBath.
-  ///
-  /// In es, this message translates to:
-  /// **'Baño'**
-  String get recBath;
 
   /// No description provided for @constFerrite.
   ///
@@ -1976,18 +1826,6 @@ abstract class AppLocalizations {
   /// **'Micrografía real con licencia'**
   String get microRealTitle;
 
-  /// No description provided for @microQualitative.
-  ///
-  /// In es, this message translates to:
-  /// **'Fundición gris: matriz y grafito cualitativos (sin fracciones calculadas).'**
-  String get microQualitative;
-
-  /// No description provided for @microUnchanged.
-  ///
-  /// In es, this message translates to:
-  /// **'No hubo austenización: la microestructura de partida no cambia y no se dibuja una nueva.'**
-  String get microUnchanged;
-
   /// No description provided for @microOpen.
   ///
   /// In es, this message translates to:
@@ -2083,30 +1921,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Banda de incertidumbre'**
   String get factBand;
-
-  /// No description provided for @recTemperature.
-  ///
-  /// In es, this message translates to:
-  /// **'Temperatura: {range}'**
-  String recTemperature(String range);
-
-  /// No description provided for @recHold.
-  ///
-  /// In es, this message translates to:
-  /// **'Mantenimiento: {range}'**
-  String recHold(String range);
-
-  /// No description provided for @recMedium.
-  ///
-  /// In es, this message translates to:
-  /// **'Medio de enfriamiento: {medium}'**
-  String recMedium(String medium);
-
-  /// No description provided for @recSources.
-  ///
-  /// In es, this message translates to:
-  /// **'Fuentes: {sources}'**
-  String recSources(String sources);
 
   /// No description provided for @microMagnification.
   ///
@@ -2564,12 +2378,6 @@ abstract class AppLocalizations {
   /// **'baño de estaño'**
   String get mediumTinBath;
 
-  /// No description provided for @furnaceBathScene.
-  ///
-  /// In es, this message translates to:
-  /// **'Baño isotérmico'**
-  String get furnaceBathScene;
-
   /// No description provided for @lpLimitationsCount.
   ///
   /// In es, this message translates to:
@@ -2959,6 +2767,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Norma ASTM (texto oficial en ASTM International)'**
   String get sourceStandard;
+
+  /// No description provided for @resultsArticles.
+  ///
+  /// In es, this message translates to:
+  /// **'Artículos científicos que respaldan este resultado'**
+  String get resultsArticles;
+
+  /// No description provided for @resultsArticlesNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Artículos de acceso libre sobre este material y tratamiento. Toca uno para leer la ficha completa.'**
+  String get resultsArticlesNote;
+
+  /// No description provided for @learnTreatmentArticles.
+  ///
+  /// In es, this message translates to:
+  /// **'Artículos sobre este tratamiento'**
+  String get learnTreatmentArticles;
 }
 
 class _AppLocalizationsDelegate

@@ -88,6 +88,19 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           for (final (i, s) in tr.stages.indexed) Text('${i + 1}. ${s.label}'),
                           const Gap(FlSpace.s),
                           Text(tr.qualitativeOutcome),
+                          if (entries.any((e) => e.category == 'research' && e.treatments.contains(tr.id))) ...[
+                            const Gap(FlSpace.m),
+                            Text(t.learnTreatmentArticles, style: context.text.titleSmall),
+                            for (final e in entries.where((e) => e.category == 'research' && e.treatments.contains(tr.id)))
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                dense: true,
+                                leading: const Icon(Icons.article_outlined),
+                                title: Text(e.title),
+                                trailing: const Icon(Icons.chevron_right),
+                                onTap: () => context.push('/learn/${e.slug}'),
+                              ),
+                          ],
                         ]),
                       ),
                     ),

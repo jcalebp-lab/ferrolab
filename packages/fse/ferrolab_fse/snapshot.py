@@ -448,6 +448,11 @@ class KnowledgeEntry(_Frozen):
     body_en: str
     related_slugs: list[str] = Field(default_factory=list)
     suggested_source_ids: list[str] = Field(default_factory=list)
+    # Ámbito de la ficha (D-40): permite usarla como fuente en resultados y tutor del material/tratamiento adecuados.
+    materials: list[MaterialId] = Field(default_factory=list)
+    treatments: list[TreatmentId] = Field(default_factory=list)
+    constituents: list[str] = Field(default_factory=list)
+    keywords: list[str] = Field(default_factory=list)
     review_status: ReviewStatus = ReviewStatus.DRAFT
 
 

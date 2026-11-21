@@ -1,7 +1,7 @@
 name: ferrolab
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.7.0+15
+version: 0.8.0+16
 
 environment:
   sdk: ^3.14.0

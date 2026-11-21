@@ -1376,7 +1376,10 @@
       "suggested_source_ids": [
         "src_asm_4a",
         "src_krauss",
-        "src_callister"
+        "src_callister",
+        "src_art_vieira_2021",
+        "src_art_mazuera_2011",
+        "src_art_collins_2023"
       ],
       "stage_outline": [
         {
@@ -1418,7 +1421,9 @@
       "qualitative_outcome_en": "In general tempered martensite loses hardness and gains toughness as temperature and time increase; the magnitude depends on the steel and requires validated correlations.",
       "suggested_source_ids": [
         "src_krauss",
-        "src_asm_4a"
+        "src_asm_4a",
+        "src_art_kang_lee_2014",
+        "src_art_nist_2025"
       ],
       "stage_outline": [
         {
@@ -1454,7 +1459,10 @@
       "qualitative_outcome_en": "Martensite tempered at high temperature (sorbite): lower hardness than as-quenched, much higher toughness and fatigue strength. It is the usual treatment for shafts, connecting rods and non-carburized gears.",
       "suggested_source_ids": [
         "src_krauss",
-        "src_asm_4a"
+        "src_asm_4a",
+        "src_art_nist_2025",
+        "src_art_mazuera_2011",
+        "src_art_kang_lee_2014"
       ],
       "stage_outline": [
         {
@@ -1514,7 +1522,8 @@
       "qualitative_outcome_en": "In a full anneal of a hypoeutectoid steel, slow cooling favors ferrite and coarse pearlite and low hardness. In gray iron, some anneals aim for a more ferritic matrix. Without the variant and protocol nothing more can be concluded.",
       "suggested_source_ids": [
         "src_asm_4a",
-        "src_callister"
+        "src_callister",
+        "src_art_collins_2023"
       ],
       "stage_outline": [
         {
@@ -1550,7 +1559,9 @@
       "qualitative_outcome_en": "In hypoeutectoid steels it usually gives finer ferrite and pearlite than a full anneal, with somewhat higher strength. Air cooling depends on part size, which is not modeled here.",
       "suggested_source_ids": [
         "src_asm_4a",
-        "src_callister"
+        "src_callister",
+        "src_art_collins_2023",
+        "src_art_razali_2023"
       ],
       "stage_outline": [
         {
@@ -1586,7 +1597,9 @@
       "qualitative_outcome_en": "It aims for bainite with good toughness and less distortion than conventional quenching; it usually does not require tempering. It requires isothermal (TTT) data for the specific material.",
       "suggested_source_ids": [
         "src_asm_4a",
-        "src_bhadeshia"
+        "src_bhadeshia",
+        "src_art_wang_2019",
+        "src_art_zhu_2026"
       ],
       "stage_outline": [
         {
@@ -1640,7 +1653,8 @@
       "qualitative_outcome_en": "The goal is martensite with lower thermal gradients and stresses than direct quenching; it is usually tempered afterwards. It is not the same as austempering, whose goal is bainite.",
       "suggested_source_ids": [
         "src_asm_4a",
-        "src_totten"
+        "src_totten",
+        "src_art_collins_2023"
       ],
       "stage_outline": [
         {
@@ -8129,7 +8143,34 @@
       "suggested_source_ids": [
         "src_art_collins_2023"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "aisi_1045",
+        "aisi_8620"
+      ],
+      "treatments": [
+        "quench",
+        "normalize",
+        "anneal",
+        "austemper",
+        "martemper",
+        "quench_temper"
+      ],
+      "constituents": [
+        "proeutectoid_ferrite",
+        "pearlite",
+        "bainite",
+        "martensite"
+      ],
+      "keywords": [
+        "cct",
+        "ttt",
+        "diagrama",
+        "diagram",
+        "li",
+        "templabilidad",
+        "hardenability"
+      ]
     },
     {
       "slug": "art-crecimiento-grano",
@@ -8145,7 +8186,27 @@
         "src_art_razali_2023",
         "src_astm_e112"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "aisi_1045",
+        "aisi_8620"
+      ],
+      "treatments": [
+        "quench",
+        "quench_temper",
+        "normalize",
+        "anneal",
+        "austemper",
+        "martemper"
+      ],
+      "constituents": [],
+      "keywords": [
+        "grano",
+        "grain",
+        "astm",
+        "e112",
+        "austeniz"
+      ]
     },
     {
       "slug": "art-dureza-revenido",
@@ -8160,7 +8221,26 @@
       "suggested_source_ids": [
         "src_art_kang_lee_2014"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "aisi_1045",
+        "aisi_8620"
+      ],
+      "treatments": [
+        "temper",
+        "quench_temper"
+      ],
+      "constituents": [
+        "tempered_martensite"
+      ],
+      "keywords": [
+        "revenido",
+        "tempering",
+        "temper",
+        "dureza",
+        "hardness",
+        "kang"
+      ]
     },
     {
       "slug": "art-tenacidad-revenido",
@@ -8176,7 +8256,27 @@
         "src_art_nist_2025",
         "src_astm_e23"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "aisi_1045",
+        "aisi_8620"
+      ],
+      "treatments": [
+        "temper",
+        "quench_temper"
+      ],
+      "constituents": [
+        "tempered_martensite"
+      ],
+      "keywords": [
+        "tenacidad",
+        "toughness",
+        "charpy",
+        "impacto",
+        "impact",
+        "bonificado",
+        "fragil"
+      ]
     },
     {
       "slug": "art-temple-polimero-1045",
@@ -8192,7 +8292,27 @@
       "suggested_source_ids": [
         "src_art_vieira_2021"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "aisi_1045"
+      ],
+      "treatments": [
+        "quench"
+      ],
+      "constituents": [
+        "martensite"
+      ],
+      "keywords": [
+        "medio",
+        "medium",
+        "polimero",
+        "polymer",
+        "agua",
+        "water",
+        "aceite",
+        "oil",
+        "severidad"
+      ]
     },
     {
       "slug": "art-1045-industrial",
@@ -8207,7 +8327,25 @@
       "suggested_source_ids": [
         "src_art_mazuera_2011"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "aisi_1045"
+      ],
+      "treatments": [
+        "quench",
+        "temper",
+        "quench_temper"
+      ],
+      "constituents": [
+        "martensite",
+        "tempered_martensite"
+      ],
+      "keywords": [
+        "industrial",
+        "barra",
+        "bar",
+        "austeniz"
+      ]
     },
     {
       "slug": "art-1045-intercritico",
@@ -8223,7 +8361,25 @@
       "suggested_source_ids": [
         "src_art_garzon_2016"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "aisi_1045"
+      ],
+      "treatments": [
+        "quench",
+        "temper"
+      ],
+      "constituents": [
+        "proeutectoid_ferrite",
+        "martensite",
+        "tempered_martensite"
+      ],
+      "keywords": [
+        "intercritic",
+        "intercrit",
+        "ac1",
+        "ac3"
+      ]
     },
     {
       "slug": "art-8620-fase-dual",
@@ -8240,7 +8396,26 @@
         "src_art_castillo_2018",
         "src_astm_e112"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "aisi_8620"
+      ],
+      "treatments": [
+        "quench",
+        "normalize"
+      ],
+      "constituents": [
+        "proeutectoid_ferrite",
+        "martensite"
+      ],
+      "keywords": [
+        "fase dual",
+        "dual",
+        "grano",
+        "grain",
+        "ferrita",
+        "ferrite"
+      ]
     },
     {
       "slug": "art-fundicion-austemperizada",
@@ -8256,7 +8431,30 @@
       "suggested_source_ids": [
         "src_art_wang_2019"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "astm_a48_class_35"
+      ],
+      "treatments": [
+        "austemper",
+        "quench",
+        "temper",
+        "quench_temper"
+      ],
+      "constituents": [
+        "graphite_flakes",
+        "ausferrite",
+        "bainite",
+        "tempered_martensite"
+      ],
+      "keywords": [
+        "fundicion",
+        "cast iron",
+        "desgaste",
+        "wear",
+        "ausferrit",
+        "austemper"
+      ]
     },
     {
       "slug": "art-fundicion-austenizacion",
@@ -8272,7 +8470,24 @@
         "src_art_zhu_2026",
         "src_astm_a247"
       ],
-      "review_status": "draft"
+      "review_status": "draft",
+      "materials": [
+        "astm_a48_class_35"
+      ],
+      "treatments": [
+        "austemper"
+      ],
+      "constituents": [
+        "graphite_flakes",
+        "ausferrite"
+      ],
+      "keywords": [
+        "fundicion",
+        "cast iron",
+        "ausferrit",
+        "austeniz",
+        "austemper"
+      ]
     },
     {
       "slug": "austenita",
@@ -8346,10 +8561,14 @@
       "body_en": "Metastable phase formed without diffusion when austenite is cooled fast enough below Ms. In carbon-bearing steels it is very hard and, untempered, brittle. Its amount and hardness depend on composition and thermal path.",
       "related_slugs": [
         "ms",
-        "austenita"
+        "austenita",
+        "art-dureza-revenido",
+        "art-temple-polimero-1045"
       ],
       "suggested_source_ids": [
-        "src_callister"
+        "src_callister",
+        "src_art_kang_lee_2014",
+        "src_art_vieira_2021"
       ],
       "review_status": "draft"
     },
@@ -8361,10 +8580,12 @@
       "body_es": "Microconstituyente de ferrita y carburos que se forma a temperaturas intermedias, por debajo del intervalo perlítico y por encima de Ms. El austempering busca obtenerla de forma isotérmica.",
       "body_en": "Microconstituent of ferrite and carbides formed at intermediate temperatures, below the pearlite range and above Ms. Austempering aims to obtain it isothermally.",
       "related_slugs": [
-        "ttt"
+        "ttt",
+        "art-fundicion-austemperizada"
       ],
       "suggested_source_ids": [
-        "src_bhadeshia"
+        "src_bhadeshia",
+        "src_art_wang_2019"
       ],
       "review_status": "draft"
     },
@@ -8375,10 +8596,15 @@
       "title_en": "Flake graphite",
       "body_es": "En la fundición gris gran parte del carbono aparece como láminas de grafito. Le dan una fractura gris, buena amortiguación de vibraciones y maquinabilidad, pero poca ductilidad. Forma, tamaño y matriz dependen del proceso de colada.",
       "body_en": "In gray cast iron much of the carbon appears as graphite flakes. They give a gray fracture, good vibration damping and machinability, but little ductility. Shape, size and matrix depend on the casting process.",
-      "related_slugs": [],
+      "related_slugs": [
+        "art-fundicion-austemperizada",
+        "art-fundicion-austenizacion"
+      ],
       "suggested_source_ids": [
         "src_angus",
-        "src_asm_15"
+        "src_asm_15",
+        "src_art_wang_2019",
+        "src_art_zhu_2026"
       ],
       "review_status": "draft"
     },
@@ -8405,10 +8631,12 @@
       "body_es": "Tiempo–Temperatura–Transformación: describe cómo se transforma la austenita cuando se mantiene a temperatura constante (isotérmica). Es específico de cada acero y condición de austenitización.",
       "body_en": "Time–Temperature–Transformation: describes how austenite transforms when held at constant (isothermal) temperature. It is specific to each steel and austenitizing condition.",
       "related_slugs": [
-        "cct"
+        "cct",
+        "art-cct-abierto"
       ],
       "suggested_source_ids": [
-        "src_callister"
+        "src_callister",
+        "src_art_collins_2023"
       ],
       "review_status": "draft"
     },
@@ -8420,10 +8648,12 @@
       "body_es": "Enfriamiento Continuo–Transformación: describe la transformación durante un enfriamiento continuo. No es intercambiable con un TTT; superponer una curva de enfriamiento sobre un TTT no es un método válido.",
       "body_en": "Continuous Cooling Transformation: describes transformation during continuous cooling. It is not interchangeable with a TTT; overlaying a cooling curve on a TTT is not a valid method.",
       "related_slugs": [
-        "ttt"
+        "ttt",
+        "art-cct-abierto"
       ],
       "suggested_source_ids": [
-        "src_callister"
+        "src_callister",
+        "src_art_collins_2023"
       ],
       "review_status": "draft"
     },
@@ -8450,9 +8680,14 @@
       "title_en": "Hardenability",
       "body_es": "Capacidad de un acero para formar martensita hasta cierta profundidad al templarlo. Se mide, por ejemplo, con el ensayo Jominy (ASTM A255). No es lo mismo que dureza.",
       "body_en": "Ability of a steel to form martensite to a certain depth when quenched. It is measured, for example, with the Jominy test (ASTM A255). It is not the same as hardness.",
-      "related_slugs": [],
+      "related_slugs": [
+        "art-temple-polimero-1045",
+        "art-cct-abierto"
+      ],
       "suggested_source_ids": [
-        "src_astm_a255"
+        "src_astm_a255",
+        "src_art_vieira_2021",
+        "src_art_collins_2023"
       ],
       "review_status": "draft"
     },
@@ -8520,10 +8755,12 @@
       "body_en": "Austenite needs time to transform by diffusion into ferrite and pearlite. If cooling is fast enough for the steel's hardenability, there is no time and martensite forms. The real rate depends on the medium, agitation and part size.",
       "related_slugs": [
         "templabilidad",
-        "cct"
+        "cct",
+        "art-temple-polimero-1045"
       ],
       "suggested_source_ids": [
-        "src_callister"
+        "src_callister",
+        "src_art_vieira_2021"
       ],
       "review_status": "draft"
     },
@@ -8537,10 +8774,12 @@
       "related_slugs": [
         "bainita",
         "martensita",
-        "ms"
+        "ms",
+        "art-fundicion-austemperizada"
       ],
       "suggested_source_ids": [
-        "src_callister"
+        "src_callister",
+        "src_art_wang_2019"
       ],
       "review_status": "draft"
     },
@@ -8552,10 +8791,12 @@
       "body_es": "No. Tiene mucho más carbono, gran parte en forma de grafito laminar, y su respuesta a los tratamientos depende de la matriz y del grafito. FERROLAB no le aplica curvas ni modelos de acero.",
       "body_en": "No. It has much more carbon, much of it as flake graphite, and its response to treatments depends on the matrix and graphite. FERROLAB does not apply steel curves or models to it.",
       "related_slugs": [
-        "grafito-laminar"
+        "grafito-laminar",
+        "art-fundicion-austemperizada"
       ],
       "suggested_source_ids": [
-        "src_angus"
+        "src_angus",
+        "src_art_wang_2019"
       ],
       "review_status": "draft"
     },

@@ -220,6 +220,7 @@ class SimulationResult(BaseModel):
     micrograph: dict[str, Any] | None = None
     # Ejemplos reales (otras muestras) de los constituyentes calculados; nunca son la muestra del estudiante.
     related_micrographs: list[dict[str, Any]] = Field(default_factory=list)
+    related_articles: list[dict[str, Any]] = Field(default_factory=list)  # artículos de acceso libre (D-40)
     diagrams: list[dict[str, Any]] = Field(default_factory=list)
     model_estimate: dict[str, Any] | None = None
     microstructure_illustration: dict[str, Any] | None = None

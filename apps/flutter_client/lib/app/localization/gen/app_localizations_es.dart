@@ -57,9 +57,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get next => 'Siguiente';
 
   @override
-  String get back => 'Atrás';
-
-  @override
   String get continueLabel => 'Continuar';
 
   @override
@@ -173,52 +170,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get paramsYouControl => 'Lo que tú controlas';
 
   @override
-  String get paramsProtocolDefines => 'Lo que define el protocolo';
-
-  @override
-  String get paramsTemperature => 'Temperatura objetivo';
-
-  @override
   String get paramsHold => 'Tiempo de mantenimiento';
 
   @override
   String get paramsMinutes => 'minutos';
 
   @override
-  String paramsHoldStage(Object stage) {
-    return 'Se aplica a: $stage';
-  }
-
-  @override
-  String paramsFurnaceRange(Object min, Object max) {
-    return 'Rango del horno (interfaz): $min–$max °C';
-  }
-
-  @override
-  String get paramsThermalLimit => 'Rango válido del protocolo';
-
-  @override
   String get paramsRangeUnpublished =>
       'Rango válido del protocolo: aún no documentado';
-
-  @override
-  String get paramsRangeTooltip =>
-      'El rango válido depende del material y del tratamiento; el máximo del horno es solo la capacidad visual del instrumento.';
 
   @override
   String paramsPhysicalLimit(Object limit) {
     return 'Límite físico de seguridad: $limit °C (fusión)';
   }
-
-  @override
-  String get protocolLocked => 'Enfriamiento definido por protocolo';
-
-  @override
-  String get protocolLockedWhy =>
-      'Se selecciona automáticamente según el protocolo revisado por material y tratamiento; no es configurable para mantener la simulación trazable.';
-
-  @override
-  String get protocolPending => 'Protocolo pendiente de revisión';
 
   @override
   String get protocolMedium => 'Medio';
@@ -231,9 +195,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get paramsOutOfUi => 'Fuera del rango de la interfaz';
-
-  @override
-  String get runReview => 'Revisar experimento';
 
   @override
   String get reviewTitle => 'Tu experimento';
@@ -359,9 +320,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chartTimeAxis => 'tiempo';
 
   @override
-  String get chartNoData => 'Sin trayectoria para mostrar';
-
-  @override
   String get resultsTitle => 'Esto podemos concluir';
 
   @override
@@ -431,14 +389,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resultsUnavailable => 'No estimable con la evidencia actual';
 
   @override
-  String get resultsViewSource => 'Ver fuente y límites';
-
-  @override
   String get resultsWhatsMissing => '¿Qué datos faltan?';
-
-  @override
-  String get resultsWhatsMissingBody =>
-      'Para mostrar una cifra, FERROLAB necesita un dato experimental o un modelo validado para esta condición exacta (material, estado inicial, protocolo publicado, temperatura y tiempo), con fuente, localizador y rango de validez, revisado por una persona con formación metalúrgica.';
 
   @override
   String get evidence_validated => 'Validado';
@@ -655,9 +606,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get practiceRestart => 'Empezar de nuevo';
 
   @override
-  String get practiceHypothesis => 'Antes de simular: ¿qué esperas que ocurra?';
-
-  @override
   String get historyTitle => 'Historial local';
 
   @override
@@ -767,11 +715,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get achHonest => 'Encontraste un límite de la evidencia';
 
   @override
-  String achUnlocked(Object name) {
-    return 'Logro desbloqueado: $name';
-  }
-
-  @override
   String get teacherTitle => 'Modo docente';
 
   @override
@@ -796,9 +739,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get teacherNoConfig =>
       'Primero configura una simulación (material y tratamiento).';
-
-  @override
-  String get teacherPresentation => 'Modo presentación';
 
   @override
   String get networkError =>
@@ -896,17 +836,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminActive => 'Activa';
 
   @override
-  String get adminProblems => 'Problemas que bloquean la publicación';
-
-  @override
   String get adminReport => 'Informe';
 
   @override
   String get adminReviewWarning =>
       'Revisar significa que una persona con formación metalúrgica comprobó la fuente, el localizador, las unidades y el dominio. No lo marques si no lo hiciste.';
-
-  @override
-  String get adminJsonField => '(JSON)';
 
   @override
   String get settingsServer => 'Servidor de FERROLAB';
@@ -940,25 +874,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeConfigureServer => 'Configurar servidor';
-
-  @override
-  String get recTitle => 'Práctica recomendada';
-
-  @override
-  String get recUse => 'Usar valores recomendados';
-
-  @override
-  String get recOutsideTemp =>
-      'Esta temperatura está fuera de lo recomendado por la literatura: es una mala práctica. Puedes simularla para ver qué pasa, pero el resultado lo advertirá.';
-
-  @override
-  String get recOutsideHold => 'Este tiempo está fuera de lo recomendado.';
-
-  @override
-  String get recNoNumber => 'la fuente no da cifra';
-
-  @override
-  String get recBath => 'Baño';
 
   @override
   String get constFerrite => 'Ferrita proeutectoide';
@@ -1023,14 +938,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get microRealTitle => 'Micrografía real con licencia';
 
   @override
-  String get microQualitative =>
-      'Fundición gris: matriz y grafito cualitativos (sin fracciones calculadas).';
-
-  @override
-  String get microUnchanged =>
-      'No hubo austenización: la microestructura de partida no cambia y no se dibuja una nueva.';
-
-  @override
   String get microOpen => 'Abrir el microscopio';
 
   @override
@@ -1083,26 +990,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get factBand => 'Banda de incertidumbre';
-
-  @override
-  String recTemperature(String range) {
-    return 'Temperatura: $range';
-  }
-
-  @override
-  String recHold(String range) {
-    return 'Mantenimiento: $range';
-  }
-
-  @override
-  String recMedium(String medium) {
-    return 'Medio de enfriamiento: $medium';
-  }
-
-  @override
-  String recSources(String sources) {
-    return 'Fuentes: $sources';
-  }
 
   @override
   String microMagnification(String x) {
@@ -1353,9 +1240,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mediumTinBath => 'baño de estaño';
 
   @override
-  String get furnaceBathScene => 'Baño isotérmico';
-
-  @override
   String lpLimitationsCount(String n) {
     return '$n avisos agrupados por causa';
   }
@@ -1591,4 +1475,15 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get sourceStandard =>
       'Norma ASTM (texto oficial en ASTM International)';
+
+  @override
+  String get resultsArticles =>
+      'Artículos científicos que respaldan este resultado';
+
+  @override
+  String get resultsArticlesNote =>
+      'Artículos de acceso libre sobre este material y tratamiento. Toca uno para leer la ficha completa.';
+
+  @override
+  String get learnTreatmentArticles => 'Artículos sobre este tratamiento';
 }
