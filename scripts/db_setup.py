@@ -24,6 +24,28 @@ from app.repositories.postgres import PostgresRepository  # noqa: E402
 from app.services.release_builder import DEV, build_snapshot  # noqa: E402
 from sqlalchemy import text  # noqa: E402
 
+REFERENCING_TABLES = ("materials", "initial_conditions", "protocols", "material_treatments", "scientific_evidence",
+                      "micrographs", "knowledge_entries", "model_versions", "physical_guards", "practice_questions")
+
+
+def _referenced(engine, table: str, ident: str) -> bool:
+    """¿Algún registro VIGENTE de otra tabla cita este identificador? Entonces no se retira: un registro editado por
+    una persona (que la semilla ya no sobrescribe) puede seguir apoyándose en una fuente o evidencia antigua."""
+    with engine.connect() as c:
+        existing = {r[0] for r in c.execute(text("select table_name from information_schema.tables "
+                                                  "where table_schema = current_schema()"))}
+        for t in REFERENCING_TABLES:
+            if t == table or t not in existing:
+                continue
+            # Solo cuentan los registros de una PERSONA (editados o revisados): los de la semilla que siguen vigentes
+            # no citan ids retirados, y los obsoletos de la semilla también se retiran.
+            hit = c.execute(text(f"select 1 from {t} where review_status <> 'retired' "
+                                 "and (updated_by is not null or review_status in ('reviewed', 'published')) "
+                                 "and body::text like :pat limit 1"), {"pat": f'%"{ident}"%'}).first()
+            if hit:
+                return True
+    return False
+
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -87,7 +109,7 @@ def main() -> int:
                                    "where updated_by is null and review_status = 'draft'")).all()
         for row in stale:
             key = ":".join(str(v) for v in row[:-1])
-            if key not in wanted:
+            if key not in wanted and not (len(ent.key_fields) == 1 and _referenced(engine, ent.table, key)):
                 repo.transition(ent, key, "retired", row[-1], None, False)
                 retired += 1
     print(f"Catálogo: {created} creados, {updated} actualizados, {retired} registros retirados desde la semilla")

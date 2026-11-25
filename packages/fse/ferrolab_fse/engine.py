@@ -384,7 +384,7 @@ class ScientificEngine:
         return _Checked(material, treatment, ic, pair, protocol, resolved, t_dom, h_dom, guard, compat, quantitative,
                         dependency, level)
 
-    def _headline(self, ctx: _Ctx, k: _Checked, level: str) -> dict[str, Any]:
+    def _headline(self, ctx: _Ctx, k: _Checked, level: str, gray_reference: bool = False) -> dict[str, Any]:
         loc = ctx.locale
         if ctx.blocking:
             w = next(w for w in ctx.warnings if w.severity == "blocking")
@@ -406,7 +406,9 @@ class ScientificEngine:
                 else "HEADLINE_ILLUSTRATIVE"
             return {"code": code, "kind": "limitation", "message": localize(MESSAGES, code, loc)}
         if level == "B":
-            return {"code": "HEADLINE_PARTIAL", "kind": "limitation", "message": localize(MESSAGES, "HEADLINE_PARTIAL", loc)}
+            # Fundición gris con dureza publicada de otra muestra: el encabezado no debe decir que no hay dureza.
+            code = "HEADLINE_GRAY_REFERENCE" if gray_reference else "HEADLINE_PARTIAL"
+            return {"code": code, "kind": "limitation", "message": localize(MESSAGES, code, loc)}
         code = "HEADLINE_VALID" if k.protocol is not None and k.protocol.is_reference else "HEADLINE_VALID_VARIANT"
         return {"code": code, "kind": "ok", "message": localize(MESSAGES, code, loc, name=name or "—")}
 
@@ -472,8 +474,13 @@ class ScientificEngine:
     def _quench_temper(self, req: SimulationRequest, k: _Checked, model_ok: bool):
         """Bonificado: el temple del propio protocolo (cifras fijas con fuente) seguido del revenido del estudiante."""
         steps = k.resolved.steps
-        q = next(i for i, s in enumerate(steps) if s.kind == "quench")
-        i = next(j for j in range(q + 1, len(steps)) if steps[j].kind == "heat")
+        q = next((i for i, s in enumerate(steps) if s.kind == "quench"), None)
+        i = None if q is None else next((j for j in range(q + 1, len(steps)) if steps[j].kind == "heat"), None)
+        if i is None:  # protocolo incompleto (sin temple o sin recalentamiento): solo la parte válida, sin cifras
+            valid = [s for s in steps[: len(steps) if q is None else q + 1]
+                     if not (s.kind in ("heat", "hold") and s.temperature_c is None)]
+            return metallurgy_practice.simulate_steps(k.material.id, "quench_temper", valid, model=False,
+                                                      diagrams=False)
         aust = next((s for s in steps[:q] if s.kind == "heat"), None)
         soak = next((s for s in steps[:q] if s.kind == "hold"), None)
         hp = k.resolved.params.get("hold_time")
@@ -605,9 +612,16 @@ class ScientificEngine:
             model_sources += [s for s in protocol.source_ids if s not in model_sources]
 
         why = self._why_missing(k, level, ctx, practice)
+        why_q = {q: why for q in QuantityCode}
+        if level == "A" and practice is not None:
+            # Cifras que faltan POR DISEÑO aunque el protocolo sea válido: motivo concreto, no «usa el recomendado».
+            if treatment.id in (TreatmentId.TEMPER, TreatmentId.QUENCH_TEMPER) and not facts.get("phase_fractions"):
+                why_q[QuantityCode.PHASE_FRACTIONS] = "WHY_TEMPER_PHASES_LOW"
+            if facts.get("hardness") is not None and not facts.get("mechanical_properties"):
+                why_q[QuantityCode.MECHANICAL_PROPERTIES] = "WHY_STRENGTH_HV_RANGE"
         results = Results(**facts)
         result_status = {
-            q: self._quantity_status(q, facts.get(q.value), status, loc, why) for q in QuantityCode
+            q: self._quantity_status(q, facts.get(q.value), status, loc, why_q[q]) for q in QuantityCode
         }
 
         return SimulationResult(
@@ -645,7 +659,8 @@ class ScientificEngine:
             model_estimate=estimate,
             microstructure_illustration=illustration,
             result_level=level,
-            headline=self._headline(ctx, k, level),
+            headline=self._headline(ctx, k, level, gray_reference=material.family == MaterialFamily.GRAY_CAST_IRON
+                                    and facts.get("hardness") is not None),
             protocol_card=card,
             assumptions=[
                 Assumption(code=c, text=localize(ASSUMPTIONS, c, loc))

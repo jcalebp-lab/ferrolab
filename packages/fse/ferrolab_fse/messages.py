@@ -188,6 +188,18 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "Austenización incompleta (intercrítica): el tamaño de grano no se estima. Sube la temperatura por encima de Ac3.",
         "Incomplete (intercritical) austenitization: grain size is not estimated. Raise the temperature above Ac3.",
     ),
+    "WHY_TEMPER_PHASES_LOW": (
+        "Por debajo de 350 °C el carbono del revenido forma carburos de transición, no cementita: la regla de la palanca "
+        "Fe–Fe₃C no aplica y no se dan fracciones de fases. Los constituyentes sí se muestran.",
+        "Below 350 °C tempering carbon forms transition carbides, not cementite: the Fe–Fe₃C lever rule does not apply "
+        "and phase fractions are not given. Constituents are shown.",
+    ),
+    "WHY_STRENGTH_HV_RANGE": (
+        "La dureza calculada queda fuera del rango de la correlación de Pavlina y Van Tyne (129–632 HV para fluencia y "
+        "129–592 HV para tracción): la resistencia no se extrapola.",
+        "The computed hardness is outside the Pavlina and Van Tyne correlation range (129–632 HV for yield and "
+        "129–592 HV for tensile): strength is not extrapolated.",
+    ),
     "WHY_GENERIC": (
         "Para esta condición no hay un modelo o dato publicado aplicable. Usa el protocolo recomendado.",
         "No applicable published model or data for this condition. Use the recommended protocol.",
@@ -372,6 +384,14 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "coincide con la fuente: revisa el valor de referencia.",
         "{param_name} is outside the documented interval. The model still applies, but your practice does not match "
         "the source: check the reference value.",
+    ),
+    "HEADLINE_GRAY_REFERENCE": (
+        "La fundición gris no tiene un modelo de cálculo en FERROLAB: la dureza mostrada es un valor PUBLICADO de otra "
+        "muestra en una condición parecida, y la resistencia es el mínimo de la norma ASTM A48. Consulta el resultado "
+        "esperado del protocolo y las micrografías reales.",
+        "Gray iron has no calculation model in FERROLAB: the hardness shown is a PUBLISHED value from another specimen in "
+        "a similar condition, and the strength is the ASTM A48 minimum. See the protocol's expected result and the real "
+        "micrographs.",
     ),
     "HEADLINE_PARTIAL": (
         "Este tratamiento puede estudiarse de forma educativa. Sin embargo, todavía no hay datos suficientes para "

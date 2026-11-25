@@ -257,3 +257,9 @@ def test_tutor_cites_articles(client):
                                                                  "target_temperature_c": 600, "hold_time_min": 30}}).json()
     cited = {s for c in body["explanations"] for s in c["source_ids"]}
     assert "src_art_nist_2025" in cited and "art-tenacidad-revenido" in body["related_slugs"]
+
+
+def test_article_keywords_match_whole_words(client):
+    """Hallazgo 2: «li» ya no casa con «aplica» ni con «límite»."""
+    body = client.post("/api/v1/tutor/ask", json={"question": "¿Cómo se aplica el límite elástico en una línea?"}).json()
+    assert "art-cct-abierto" not in body["related_slugs"]

@@ -19,6 +19,16 @@ def norm(s: str) -> str:
     return "".join(c for c in s if not unicodedata.combining(c))
 
 
+def _has_keyword(words: str, kw: str) -> bool:
+    """Palabra clave como palabra o prefijo de palabra («austeniz» casa con «austenizar»), nunca dentro de otra
+    («li» no casa con «aplica» ni con «límite»)."""
+    k = norm(kw)
+    if not k or not words:
+        return False
+    tail = "" if len(k) >= 5 else r"\b"  # las claves cortas deben ser palabra completa
+    return re.search(rf"\b{re.escape(k)}{tail}", words) is not None
+
+
 def articles(snap: DatasetSnapshot) -> list[KnowledgeEntry]:
     out = []
     for k in snap.knowledge:
@@ -41,7 +51,7 @@ def _score(k: KnowledgeEntry, material_id: str | None, treatment_id: str | None,
         score += 3 + (2 if len(k.treatments) <= 3 else 0)  # un artículo centrado en el tratamiento pesa más
     score += len(constituents & set(k.constituents))
     if words:
-        score += 2 * sum(1 for kw in k.keywords if norm(kw) in words)
+        score += 2 * sum(1 for kw in k.keywords if _has_keyword(words, kw))
     return score
 
 
@@ -54,13 +64,14 @@ def related(snap: DatasetSnapshot, *, material_id: str | None = None, treatment_
     for k in articles(snap):
         sc = _score(k, material_id, treatment_id, cons, words)
         relevant = (treatment_id is not None and treatment_id in k.treatments) or (
-            words and any(norm(kw) in words for kw in k.keywords))
+            words and any(_has_keyword(words, kw) for kw in k.keywords))
         if sc > 0 and relevant:
             scored.append((-sc, k.slug, k))
     return [k for *_, k in sorted(scored)[:limit]]
 
 
-_SENTENCE = re.compile(r"(?<=[.!?])\s+")
+# Fin de oración: punto, ! o ? seguido de espacio, salvo abreviaturas («et al.», «p. ej.», «e.g.», «i.e.», «aprox.»).
+_SENTENCE = re.compile(r"(?<!\bal\.)(?<!\bej\.)(?<!\be\.g\.)(?<!\bi\.e\.)(?<!\baprox\.)(?<!\bp\.)(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ(«])")
 
 
 def summary(text: str, max_chars: int = 260) -> str:

@@ -2785,6 +2785,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Artículos sobre este tratamiento'**
   String get learnTreatmentArticles;
+
+  /// No description provided for @pointCountToggle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contar fases (ASTM E562)'**
+  String get pointCountToggle;
+
+  /// No description provided for @pointCountTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Conteo sistemático de puntos (ASTM E562)'**
+  String get pointCountTitle;
+
+  /// No description provided for @pointCountBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Se superpone una cuadrícula de {n} puntos (cruces amarillas) que toca {grains} granos, y se cuenta cuántos caen sobre cada constituyente: la fracción de puntos estima la fracción de volumen.'**
+  String pointCountBody(String n, String grains);
+
+  /// No description provided for @pointCountRow.
+  ///
+  /// In es, this message translates to:
+  /// **'{name}: medido {measured} ± {ci} · calculado {model}'**
+  String pointCountRow(String name, String measured, String ci, String model);
+
+  /// No description provided for @pointCountNote.
+  ///
+  /// In es, this message translates to:
+  /// **'± es el intervalo del 95 %: como los puntos de un mismo grano no son independientes, se calcula con el número de granos tocados, 1,96·√(p(1−p)/granos). Con granos grandes se tocan pocos y el intervalo se ensancha: por eso en el laboratorio se cuentan varios campos. Un constituyente minoritario (uno o dos granos) puede quedar fuera del campo. La imagen se genera para que su área coincida con el porcentaje calculado.'**
+  String get pointCountNote;
 }
 
 class _AppLocalizationsDelegate

@@ -12,7 +12,7 @@ import itertools
 import pytest
 from ferrolab_fse import ScientificEngine, SimulationRequest
 from ferrolab_fse import protocol_runtime as PR
-from ferrolab_fse.enums import MaterialId, TreatmentId
+from ferrolab_fse.enums import MaterialId, QuantityCode, TreatmentId
 
 COMBOS = list(itertools.product(MaterialId, TreatmentId))
 ROLE_ORDER = {"preheat": 0, "austenitize": 1, "subcritical": 1, "temper": 1, "soak": 2, "transfer": 3, "quench": 4,
@@ -243,3 +243,48 @@ def test_no_review_or_empirical_notices_and_complete_reference_results(seed_snap
             if pr.is_reference and m != MaterialId.ASTM_A48_CLASS_35:
                 missing = [q for q, v in r.results.model_dump().items() if not v]
                 assert not missing, (pr.id, missing)
+
+
+@pytest.mark.parametrize("m,t", COMBOS)
+def test_percentages_are_real_and_consistent(seed_snapshot, m, t):
+    """Los porcentajes que ve el estudiante suman 100,0 % y la imagen generada usa exactamente los del resultado."""
+    eng = ScientificEngine(seed_snapshot)
+    for pr in seed_snapshot.protocols_for(m.value, t.value):
+        r = eng.simulate(_ref_request(seed_snapshot, m, t, pr))
+        for group in (r.results.microconstituent_fractions, r.results.phase_fractions):
+            if group:
+                assert sum(round(f.value * 1000) for f in group.values()) == 1000, pr.id
+        fr = (r.microstructure_illustration or {}).get("fractions")
+        if fr and r.results.microconstituent_fractions:
+            res = {("martensite" if k == "tempered_martensite" else k): f.value
+                   for k, f in r.results.microconstituent_fractions.items()}
+            assert {k: v for k, v in fr.items() if v > 0} == res, pr.id
+
+
+def test_quench_temper_without_reheat_does_not_crash(seed_snapshot):
+    """Hallazgo 4: un bonificado sin etapa de recalentamiento devuelve un resultado, no un error 500."""
+    import copy
+    data = seed_snapshot.model_dump(mode="json")
+    for p in data["protocols"]:
+        if p["id"] == "prot_1045_qt_azom":
+            p["stages"] = [s for s in p["stages"] if s.get("role") != "temper" or s["kind"] != "heat"]
+            for i, s in enumerate(p["stages"], start=1):
+                s["ordinal"] = i
+    snap = type(seed_snapshot).model_validate(copy.deepcopy(data))
+    r = ScientificEngine(snap).simulate(_req("aisi_1045", "quench_temper", target_temperature_c=600, hold_time_min=30))
+    assert r.thermal_history and r.results.hardness is None
+
+
+def test_gray_iron_headline_matches_literature_hardness(seed_snapshot):
+    """Hallazgo 3: si se muestra la dureza publicada, el encabezado no dice que no hay datos de dureza."""
+    r = ScientificEngine(seed_snapshot).simulate(_req("astm_a48_class_35", "austemper", target_temperature_c=900,
+                                                      hold_time_min=30))
+    assert r.results.hardness is not None and r.headline["code"] == "HEADLINE_GRAY_REFERENCE"
+
+
+def test_specific_reason_when_missing_by_design(seed_snapshot):
+    """Hallazgo 6: un revenido bajo válido no pide «usar el protocolo recomendado»."""
+    r = ScientificEngine(seed_snapshot).simulate(_req("aisi_1045", "temper", target_temperature_c=180,
+                                                      hold_time_min=30, protocol_id="prot_1045_temper_voest"))
+    assert r.result_level == "A"
+    assert r.result_status[QuantityCode.PHASE_FRACTIONS].reason_code == "WHY_TEMPER_PHASES_LOW"

@@ -506,7 +506,7 @@ AUSTENITIZING = ("quench", "quench_temper", "normalize", "anneal", "austemper", 
 ARTICLE_SCOPE = {
     "art-cct-abierto": (STEELS, ("quench", "normalize", "anneal", "austemper", "martemper", "quench_temper"),
                         ("proeutectoid_ferrite", "pearlite", "bainite", "martensite"),
-                        ("cct", "ttt", "diagrama", "diagram", "li", "templabilidad", "hardenability")),
+                        ("cct", "ttt", "diagrama", "diagram", "templabilidad", "hardenability")),
     "art-crecimiento-grano": (STEELS, AUSTENITIZING, (), ("grano", "grain", "astm", "e112", "austeniz")),
     "art-dureza-revenido": (STEELS, ("temper", "quench_temper"), ("tempered_martensite",),
                             ("revenido", "tempering", "temper", "dureza", "hardness", "kang")),

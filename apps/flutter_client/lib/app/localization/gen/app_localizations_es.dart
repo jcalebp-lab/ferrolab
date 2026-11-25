@@ -1486,4 +1486,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get learnTreatmentArticles => 'Artículos sobre este tratamiento';
+
+  @override
+  String get pointCountToggle => 'Contar fases (ASTM E562)';
+
+  @override
+  String get pointCountTitle => 'Conteo sistemático de puntos (ASTM E562)';
+
+  @override
+  String pointCountBody(String n, String grains) {
+    return 'Se superpone una cuadrícula de $n puntos (cruces amarillas) que toca $grains granos, y se cuenta cuántos caen sobre cada constituyente: la fracción de puntos estima la fracción de volumen.';
+  }
+
+  @override
+  String pointCountRow(String name, String measured, String ci, String model) {
+    return '$name: medido $measured ± $ci · calculado $model';
+  }
+
+  @override
+  String get pointCountNote =>
+      '± es el intervalo del 95 %: como los puntos de un mismo grano no son independientes, se calcula con el número de granos tocados, 1,96·√(p(1−p)/granos). Con granos grandes se tocan pocos y el intervalo se ensancha: por eso en el laboratorio se cuentan varios campos. Un constituyente minoritario (uno o dos granos) puede quedar fuera del campo. La imagen se genera para que su área coincida con el porcentaje calculado.';
 }

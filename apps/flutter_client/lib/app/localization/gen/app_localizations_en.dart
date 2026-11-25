@@ -1478,4 +1478,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get learnTreatmentArticles => 'Articles on this treatment';
+
+  @override
+  String get pointCountToggle => 'Count phases (ASTM E562)';
+
+  @override
+  String get pointCountTitle => 'Systematic point count (ASTM E562)';
+
+  @override
+  String pointCountBody(String n, String grains) {
+    return 'A grid of $n points (yellow crosses) touching $grains grains is overlaid and the points falling on each constituent are counted: the point fraction estimates the volume fraction.';
+  }
+
+  @override
+  String pointCountRow(String name, String measured, String ci, String model) {
+    return '$name: measured $measured ± $ci · computed $model';
+  }
+
+  @override
+  String get pointCountNote =>
+      '± is the 95% interval: since points in the same grain are not independent, it uses the number of grains touched, 1.96·√(p(1−p)/grains). With large grains few are touched and the interval widens: that is why several fields are counted in the lab. A minor constituent (one or two grains) may fall outside the field. The image is generated so that its area matches the computed percentage.';
 }

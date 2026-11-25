@@ -143,7 +143,7 @@ def _temp_at(points, t):
 
 def _fact(value: float, unit: str, dataset_version: str, *, basis: str | None = None, scale: str | None = None,
           uncertainty: dict | None = None, method: str) -> ResultFact:
-    return ResultFact(value=math.floor(value * 1e4) / 1e4 if unit == "fraction" else round(value, 1), unit=unit, scale=scale,
+    return ResultFact(value=round(value, 4) if unit == "fraction" else round(value, 1), unit=unit, scale=scale,
                       fraction_basis=basis, method=method, evidence_kind=EvidenceKind.MODELED,
                       evidence_level=EvidenceLevel.BOUNDED_ESTIMATE, source_ids=list(P.MODEL_SOURCES),
                       model_version=P.MODEL_VERSION, dataset_version=dataset_version,
@@ -273,11 +273,22 @@ def gray_iron_hardness(treatment_id: str, dataset_version: str) -> ResultFact | 
                       uncertainty={"min": d["min"], "max": d["max"], "basis": "published_range"})
 
 
+FRACTION_STEP = 1000  # resolución de 0,1 %: lo que el estudiante ve
+
+
 def _normalized(d: dict[str, float]) -> dict[str, float]:
+    """Fracciones que suman EXACTAMENTE 1 a la resolución mostrada (0,1 %), por el método del mayor resto: cada
+    valor se redondea hacia abajo y las décimas que faltan se reparten a los mayores restos. Así los porcentajes de
+    un grupo siempre suman 100,0 % y coinciden en resultados, leyenda e imagen."""
     total = sum(max(v, 0.0) for v in d.values())
     if total <= 0:
         return d
-    return {k: math.floor(max(v, 0.0) / total * 1e4) / 1e4 for k, v in d.items()}
+    exact = {k: max(v, 0.0) / total * FRACTION_STEP for k, v in d.items()}
+    units = {k: math.floor(v + 1e-9) for k, v in exact.items()}
+    missing = FRACTION_STEP - sum(units.values())
+    for k in sorted(exact, key=lambda k: (-(exact[k] - units[k]), k))[:max(missing, 0)]:
+        units[k] += 1
+    return {k: u / FRACTION_STEP for k, u in units.items()}
 
 
 def _r(v):
@@ -313,8 +324,11 @@ def illustration(material_id: str, treatment_id: str, request_hash: str, p: P.Pr
         spec["astm_grain_size"] = round(p.grain["ferrite_g"] if shown_ferrite else p.grain["austenite_g"], 2)
         spec["grain_kind"] = "ferrite" if shown_ferrite else "prior_austenite"
         spec["grain_computed"] = True
-    if treatment_id in ("temper", "quench_temper") and p.prior and p.prior.get("fractions"):
-        spec.update({"fractions": _normalized(p.prior["fractions"]), "tempered": True, "quantitative": True,
+    if treatment_id in ("temper", "quench_temper") and p.fractions:
+        # Mismas fracciones que el resultado (tras el revenido: la austenita retenida ya descompuesta si procede);
+        # el cliente dibuja la martensita revenida como «martensite» con tempered = True.
+        shown = {("martensite" if k == "tempered_martensite" else k): v for k, v in _normalized(p.fractions).items()}
+        spec.update({"fractions": shown, "tempered": True, "quantitative": True,
                      "tempering_temperature_c": round(p.max_center_c)})
     elif p.fractions:
         spec.update({"fractions": _normalized(p.fractions), "tempered": False, "quantitative": True})
